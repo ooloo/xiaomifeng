@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<!--
+link: http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_2_100_0.htm 
+-->
+
+<start>
+	<modules>
+		<layer>0</layer>
+		<begin>b5 b5f</begin>
+		<end>AspNetPager</end>
+	</modules>
+</start>
+
+<rule>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>&lt;a href="</begin>
+		<end>"</end>
+		<static>false</static>
+		<name>link</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>&lt;img src="</begin>
+		<end>"</end>
+		<static>false</static>
+		<name>img</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>&lt;a title='</begin>
+		<end>'</end>
+		<static>false</static>
+		<name>titlebrand</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>&lt;a title="</begin>
+		<end>"</end>
+		<static>false</static>
+		<name>titleproduct</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>￥</begin>
+		<end>&lt;</end>
+		<static>false</static>
+		<name>price</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>href="</begin>
+		<end>&lt;/p></end>
+		<static>false</static>
+		<name>detail</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+</rule>
+
