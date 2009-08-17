@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<start>
+	<modules>
+		<layer>0</layer>
+		<begin>txt_13px_b_EB6495</begin>
+		<end>category product list end</end>
+	</modules>
+</start>
+
+<rule>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>txt_11px_n_666666">&lt;a href="</begin>
+		<end>"</end>
+		<static>false</static>
+		<name>link</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+</rule>
+
