@@ -1,0 +1,9 @@
+dict.c dict.o
+hb_tree.c hb_tree.o     
+rb_tree.c rb_tree.o   
+test.c test.o
+hashtable.c hashtable.o 
+pr_tree.c pr_tree.o     
+sp_tree.c sp_tree.o    
+wb_tree.c wb_tree.o
+
