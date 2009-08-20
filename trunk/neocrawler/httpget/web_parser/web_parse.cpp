@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdlib.h>
 #include "utils.h"
 #include "html_parser.h"
 
