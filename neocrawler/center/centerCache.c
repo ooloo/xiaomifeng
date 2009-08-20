@@ -38,7 +38,7 @@ int get_domain(char *url, char *domain, int maxLen)
 {
 	int dotFlag=0;
 	char *s=NULL,*t=NULL;
-	
+
 	assert(url && domain);
 
 	if(strncasecmp(url, "http://", 7))
@@ -64,7 +64,7 @@ int get_domain(char *url, char *domain, int maxLen)
 		return -1;
 	else
 		strncpy(domain, s, t - s);
-	
+
 	*(domain + (t - s)) = 0;
 
 	return 0;
@@ -306,16 +306,16 @@ int NEO_cache_url(TRbDict *dict, char *str, URLNODE_T *node)
 
 	if(rb_dict_search(dict, signs, (void**)&tmp) != 0)
 	{
-//#ifndef BBS
-//		he = gethostbyname(domain);
-//		if(he == NULL)
-//			return -1;
-//#endif
-		
+		//#ifndef BBS
+		//		he = gethostbyname(domain);
+		//		if(he == NULL)
+		//			return -1;
+		//#endif
+
 		// insert domain & url to cahae
 		printf("warning new domain: %s\n", str);
 		NEO_cache_domain(g_domainRBdict, str, node);
-		
+
 		// save to dumpfile
 		dumpfp = fopen(dumpfile, "ab+");
 		assert(dumpfp);
