@@ -1,8 +1,8 @@
 #include <assert.h>
 #include <stdio.h>
-#include <linux/list.h>
 #include <pthread.h>
 #include <strings.h>
+#include <linux/list.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include "centerCache.h"
