@@ -78,14 +78,14 @@ void guide_work_thr()
 	int gsocket=-1;
 	long memoryPageSize,maxCahceNum;
 	char buf[2048],url[MAX_URL_LEN];
-    URLNODE_T *urlNode;
+	URLNODE_T *urlNode;
 
 	urlNode = (URLNODE_T*)buf;
 	assert((memoryPageSize = sysconf(_SC_PHYS_PAGES)) > 0);
 	maxCahceNum = memoryPageSize * 48;
 
-    while( 1 )
-    {
+	while( 1 )
+	{
 		if(total_count > maxCahceNum)
 		{
 			sleep(5);
@@ -149,12 +149,12 @@ void cache_work_thr()
 {
 	unsigned ret;
 	char buf[2048],url[MAX_URL_LEN];
-    URLNODE_T *urlNode;
+	URLNODE_T *urlNode;
 
 	urlNode = (URLNODE_T*)buf;
 
-    while( 1 )
-    {
+	while( 1 )
+	{
 		node_recv(buf, 2048);
 
 		if(urlNode->urlLen > MAX_URL_LEN)
@@ -316,7 +316,7 @@ int load_file(char *manualFile)
 int main(int argc, char **argv)
 {
 	int ret;
-    FILE *fp;
+	FILE *fp;
 	pthread_t cacheid,updateid,logid,dumpid;
 
 	if(argc < 3 || argc > 4)
