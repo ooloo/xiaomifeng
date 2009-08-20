@@ -1,5 +1,5 @@
-INC = -I../../../../parser/html/
-LIB = ../../../../parser/html/htmlparser.a ../../../../parser/html/libcharsetdetector.a
+INC = -I../../../libhtml-2.0/
+LIB = ../../../libhtml-2.0/htmlparser.a ../../../libhtml-2.0/libcharsetdetector.a
 
 CPPFLAGS := $(CPPFLAGS) -g -Wall $(INC)
 
@@ -10,7 +10,7 @@ $(LIBO): $(OBJS)
 	rm -f $@
 	g++ $(CPPFLAGS) -shared -Wl,-soname,$@ -o $@ $? $(INC) $(LIB)
 	rm -f *.o
-	cp ./libparse.so ../../../../lib/
+	cp ./libparse.so ../../../libhtml-2.0/
 
 all :  clean $(LIBO)
 
