@@ -1,6 +1,7 @@
+#include <assert.h>
 #include <string>
 #include <iconv.h>
-#include <assert.h>
+#include <openssl/md5.h>
 #include "utils.h"
 #include "predefine.h"
 #include "CFilter.h"
@@ -37,6 +38,8 @@ int convert2gbk(char *str)
 	size_t bufsize, inlen, oleft;
 	char *pin, *pout, *outbuff;
 
+		printf("%d\n", strlen(str));
+
 	//cd = iconv_open((const char *)"gbk//ignore", (const char *)charset);
 	cd = iconv_open((const char *)"gbk//ingore", (const char *)charset);
 	if (cd == (iconv_t)-1) {
@@ -44,8 +47,8 @@ int convert2gbk(char *str)
 	}
 	else
 	{
-		bufsize = strlen(str) + 128;
-		outbuff=(char*)malloc(bufsize + 1);
+		bufsize = (strlen(str) + 1024) * 2;
+		outbuff=(char*)malloc(bufsize);
 		assert(outbuff);
 
 		bzero(outbuff, bufsize);
@@ -66,21 +69,26 @@ int convert2gbk(char *str)
 			strcpy(str, outbuff);
 		}
 		//printf("iconv title: %s\n", outbuff);
+		free(outbuff);
 	}
 
-	free(outbuff);
 	return 0;
 }
 
 int get_html(char *rulefile, char *url, char *src)
 {
-	char *p;
 	FILE *fp;
+	char *p, tmpfile[128];
+	unsigned long long key[2];
 
 	if(*url == 0)
 		return -1;
 
-	sprintf(src, "wget --timeout=30 -O tmp.html \"%s\"", url);
+	assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
+	sprintf(tmpfile, "%llx.html", key[0]);
+	printf("%s \n", key);
+
+	sprintf(src, "wget -U \"Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)\" --timeout=30 -O %s \"%s\"", tmpfile, url);
 	if(system(src) != 0)
 		return -1;
 
@@ -91,6 +99,7 @@ int get_html(char *rulefile, char *url, char *src)
 	fread(src, 1024*1024-2, 1, fp);
 
 	fclose(fp);
+	unlink(tmpfile);
 
 	if(strlen(src) < 10)
 		return -1;
@@ -195,7 +204,7 @@ int main(int argc, char **argv)
 		}
 		else if(b->bStatic != true)
 		{
-			convert2gbk(src);
+			//convert2gbk(src);
 		}
 
 		std::cout<< b->strName << ": "<< src <<std::endl;
