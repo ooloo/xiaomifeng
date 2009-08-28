@@ -1,4 +1,4 @@
-edit:	neoparse.o neoclaw.o NetEntrance.o CDataParserPThread.o CSpiderPthread.o NetMonitorPthread.o \
+edit:	neocharset.o neoparse.o neoclaw.o NetEntrance.o CDataParserPThread.o CSpiderPthread.o NetMonitorPthread.o \
 	CDataClassifyPthread.o CDataParserPThread.o DataProcessThread.o CNetSitAnalyse.o \
 	CFilter.o CRawData.o CRuleMgr.o tinystr.o safe-ctype.o utils.o URL.o \
 	tinyxmlerror.o tinyxmlparser.o tinyxml.o dReader.o CData.o tradebdb.o
@@ -9,7 +9,7 @@ edit:	neoparse.o neoclaw.o NetEntrance.o CDataParserPThread.o CSpiderPthread.o N
 	CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o dReader.o CData.o
 
 	g++ -o neoparse -g neoparse.o safe-ctype.o utils.o URL.o CFilter.o CRawData.o \
-	CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o CData.o -I./ ./libcharsetdetector.a
+	CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o CData.o -I./ -lssl ./libcharsetdetector.a
 
 	g++ -o neocharset -g neocharset.o -I./ ./libcharsetdetector.a
 all:	$(clear) $(edit)
