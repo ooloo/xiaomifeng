@@ -10,6 +10,8 @@ edit:	neoparse.o neoclaw.o NetEntrance.o CDataParserPThread.o CSpiderPthread.o N
 
 	g++ -o neoparse -g neoparse.o safe-ctype.o utils.o URL.o CFilter.o CRawData.o \
 	CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o CData.o -I./ ./libcharsetdetector.a
+
+	g++ -o neocharset -g neocharset.o -I./ ./libcharsetdetector.a
 all:	$(clear) $(edit)
 #Exe:	g++ -o neoclaw -g neoclaw.o CDataClassifyPthread.o CDataParserPThread.o \
 #	CSpiderPthread.o CNetSitAnalyse.o CNetDataSet.o \
@@ -59,6 +61,8 @@ CData.o:	CData.cpp
 	g++ -c -g CData.cpp
 tradebdb.o:	tradebdb.cpp
 	g++ -c -g tradebdb.cpp
+neocharset.o:	neocharset.cpp
+	g++ -c -g neocharset.cpp
 
 clear:
 	rm -f *.o
