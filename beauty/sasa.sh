@@ -1,7 +1,11 @@
 #!/bin/sh
 
+export LANG=c
+
 page=0
 site=sasa_queue
+
+rm -f $site
 
 while [ 1 ]
 do
@@ -12,12 +16,11 @@ do
 	fi
 
 	./neoparse sasa_product.xml \
-	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=101000000&sortBy=8&page=${page}" > tmp
+	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=101000000&sortBy=8&page=${page}" > /tmp/$site
 
-	grep "link: " tmp | awk '{print $2}' > $site 
+	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
 
-	wget -x -N --directory-prefix=/home/beauty/data/ --timeout=30 --wait=1 --random-wait -i $site 
-	sleep 5
+	sleep 2
 done
 
 page=0
@@ -31,11 +34,15 @@ do
 	fi
 
 	./neoparse sasa_product.xml \
-	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=102000000&sortBy=8&page=${page}" > tmp
+	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=102000000&sortBy=8&page=${page}" > /tmp/$site
 
-	grep "link: " tmp | awk '{print $2}' > $site 
+	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
 
-	wget -x -N --directory-prefix=/home/beauty/data/ --timeout=30 --wait=1 --random-wait -i $site 
-	sleep 5
+	sleep 2
 done
+
+sort -u $site > /tmp/$site
+cp /tmp/$site $site
+
+wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
 

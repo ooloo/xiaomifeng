@@ -3,21 +3,22 @@
 export LANG=c
 
 page=0
-site=yoka_queue
+site=2688_queue
 
 rm -f $site
 
 while [ 1 ]
 do
 	page=$(($page+1))
-	if [ $page -gt 200 ]
+	if [ $page -gt 311 ]
 	then
 		break
 	fi
 
-	./neoparse yoka_product.xml "http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_${page}_100_0.htm" > /tmp/$site 
+	./neoparse 2688_product.xml \
+	"http://www.2688.com/Search/iResult.aspx?Mt=COSMETIC&Pt=COSMETIC&SortType=1&PageNow=${page}" > /tmp/$site 
 
-	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
+	grep "dProduct.aspx" /tmp/$site | awk '{print $2}' >> $site 
 
 	sleep 2
 done
