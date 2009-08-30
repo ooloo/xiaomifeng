@@ -3,19 +3,19 @@
 export LANG=c
 
 page=0
-site=yoka_queue
+site=jafei_queue
 
 rm -f $site
 
 while [ 1 ]
 do
 	page=$(($page+1))
-	if [ $page -gt 200 ]
+	if [ $page -gt 440 ]
 	then
 		break
 	fi
 
-	./neoparse yoka_product.xml "http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_${page}_100_0.htm" > /tmp/$site 
+	./neoparse jafei_product.xml "http://www.jafei.com/catalog/70/index_${page}.shtml" > /tmp/$site 
 
 	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
 
