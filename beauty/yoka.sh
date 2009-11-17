@@ -19,11 +19,11 @@ do
 
 	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
 
-	sleep 2
+	sleep 3
 done
 
 sort -u $site > /tmp/$site
 cp /tmp/$site $site
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
+wget -x -N --directory-prefix=/data/ --timeout=30 --wait=3 --random-wait -i $site 
 
