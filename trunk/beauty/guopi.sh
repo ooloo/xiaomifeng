@@ -16,5 +16,5 @@ sleep 2
 sort -u $site > /tmp/$site
 cp /tmp/$site $site
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
+wget -x -N --directory-prefix=/data/ --timeout=30 --wait=2 -o /tmp/guopi.log --random-wait -i $site 
 

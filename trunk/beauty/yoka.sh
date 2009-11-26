@@ -25,5 +25,6 @@ done
 sort -u $site > /tmp/$site
 cp /tmp/$site $site
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=3 --random-wait -i $site 
+wget -x -N --directory-prefix=/data/ --timeout=30 --wait=3 --random-wait \
+	-U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" -o /tmp/yoka.log -i $site 
 
