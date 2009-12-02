@@ -5,13 +5,13 @@ dest=/home2/baijiapic/pic/
 
 sort -u $1 | while read link key
 do
-	file=`echo $link | awk -F"/" '{print $NF}'`
-	#echo $file
+	file=`echo $link | awk -F'[=/]' '{print $NF}' | perl -p -e 's/%(..)/pack("c", hex($1))/eg'`
+	echo $file
 
-	/usr/local/bin/convert $dir/$file -trim /tmp/a.jpg
-	if [ $? -ne 0 ]
+	if test ! -e $dir/$file
 	then
-		continue
+		echo "$dir/$file not exist."
+		continue;
 	fi
 
 	str=`expr substr "$key" 1 4`
@@ -22,6 +22,19 @@ do
 	
 	subdir=$dir1/$dir2
 	mkdir -p $dest/$subdir
+
+	ls $dest/$subdir/*_$key.jpg > /dev/null 2>&1
+	if [ $? == 0 ]
+	then
+		echo "$key.jpg exist."
+		continue;
+	fi
+
+	/usr/local/bin/convert $dir/$file -trim /tmp/a.jpg
+	if [ $? -ne 0 ]
+	then
+		continue
+	fi
 
 	size=`/usr/local/bin/identify /tmp/a.jpg | awk '{print $3}'`
 	pos=`expr index $size "x"`
@@ -47,6 +60,6 @@ do
 	echo $key.jpg
 	/usr/local/bin/convert -resize 150x150! /tmp/b.jpg $dest/$subdir/image_150x150_$key.jpg
 	/usr/local/bin/convert -resize 200x200! /tmp/b.jpg $dest/$subdir/image_200x200_$key.jpg
-	/usr/local/bin/convert -resize 200x250! /tmp/c.jpg $dest/$subdir/image_200x250_$key.jpg
+	/usr/local/bin/convert -resize 240x300! /tmp/c.jpg $dest/$subdir/image_240x300_$key.jpg
 done
 
