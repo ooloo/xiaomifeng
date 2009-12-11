@@ -3,29 +3,30 @@
 export LANG=c
 
 page=0
-site=amazon_queue
+site=amazon
+queue=${site}_queue
+savedir=/data/${site}/
 
 rm -f $site
 
 while [ 1 ]
 do
 	page=$(($page+1))
-	if [ $page -gt 350 ]
+	if [ $page -gt 360 ]
 	then
 		break
 	fi
 
-	./neoparse amazon_product.xml \
-	"http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}" > /tmp/$site
+	./neoparse ${site}_product.xml \
+	"http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}" > /tmp/$queue
 
-	grep "link: " /tmp/$site | grep detailApp | awk '{print $2}' >> $site
+	grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' >> $queue
 
-	sleep 3
+	sleep 2
 done
 
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
+sort -u $queue > /tmp/$queue
+cp /tmp/$queue $queue
 
-wget -x -N -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" \
-	--directory-prefix=/data/ --timeout=30 --wait=3 --random-wait -i $site 
+python neospider.py $queue $savedir
 

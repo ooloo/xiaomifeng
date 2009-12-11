@@ -1,84 +1,68 @@
-import httplib
-import md5
-import urlparse
-import time 
+import pycurl
+import md5,urlparse
+import time,StringIO
+import sys, os, re 
+import bsddb
 
-HEADERS = {
-			'User-Agent': 'Mozilla/4.0 (compatible; MSIE 6.0;Windows NT 5.0)',
-			'Accept': '*/*',
-			'Connection': 'Keep-Alive'
-			}
-
-dict = {}
-httplib.HTTPConnection.debuglevel = 1
-savePath='./'
-
-def httpExists(url, key):
+def httpGet(url, key):
 	host, path, params = urlparse.urlsplit(url)[1:4]
-	print host, path, params 
 	if ':' in host:
 		# port specified, try to use it
 		host, port = host.split(':', 1)
-		try:
-			port = int(port)
-		except ValueError:
-			print 'invalid port number %r' % (port,)
-			return False
-	else:
-		# no port specified, use default port
-		port = None
-	try:
-		if host in dict:
-			connection = dict[host]
-			print "aaaaaaaaaaaaaaa"
-		else:
-			connection = httplib.HTTPConnection(host, port=port)
-			dict[host] = connection
-			print "bbbbbbbbbbbbbb"
 
-		if connection.request("GET", path +"?" +params, "", HEADERS):
-			connection = httplib.HTTPConnection(host, port=port)
-			dict[host] = connection
-			print "cccccccccccccc"
-		
-		resp = connection.getresponse()
-		data = resp.read()
-		if resp.status == 200:
-			# normal 'found' status
-			found = True
-			pic = open(savePath + key + '.jpg', 'w+b')
-			pic.write(data)
-			pic.close()
-		elif resp.status == 302:
-			# recurse on temporary redirect
-			link = urlparse.urljoin(url,resp.getheader('location', ''))
-			print "------------------", link
-			found = httpExists(link, key)
-		else:
-			# everything else -> not found
-			print "Status %d %s : %s" % (resp.status, resp.reason, url)
-			found = False
+	filename = savePath + key + '.html'
+	fp = open(filename, 'w')
+
+	c.setopt(pycurl.URL, url)
+	c.setopt(pycurl.WRITEDATA, fp)
+	try:
+		c.perform()
 	except Exception, e:
 		print e.__class__, e, url
-		found = False
-	return found
+		return False
+	code = c.getinfo(pycurl.HTTP_CODE)
+	filesize = ' [' + str(fp.tell()) + ']'
+	fp.close()
+	print 'save to file: ' + filename + filesize
+
+	return True 
 
 
-file=open('test', 'r')
+if(len(sys.argv) != 3):
+	print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
+	exit(1)
+
+file=open(sys.argv[1], 'r')
 linkList = file.readlines()
 file.close() 
 
-for line in linkList:   
+savePath=sys.argv[2]
+
+c = pycurl.Curl()
+c.setopt(pycurl.FOLLOWLOCATION, 1)
+c.setopt(pycurl.CONNECTTIMEOUT, 30)
+c.setopt(pycurl.MAXREDIRS, 3)
+c.setopt(pycurl.HTTPHEADER, ['Connection: keep-alive',
+								'User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)',
+								'Keep-Alive: 300'])
+
+linkdb = bsddb.btopen(savePath + '/._link.bdb', 'c')
+
+for line in linkList:
 	tmp = line.split()
 	link = tmp[0]
-	key = tmp[1]
 	print '>>', link 
-	print '>>', key 
 	m1 = md5.new()
 	m1.update(link)
-	print '>>', m1.hexdigest()
+	key = m1.hexdigest()
 
-	httpExists(link, key)
-	
-	time.sleep(1)
+	if linkdb.has_key(key):
+		print 'this key id exist: ' + key
+	else:
+		httpGet(link, key)
+		linkdb[key] = link
+		linkdb.sync()
+		time.sleep(1)
+
+linkdb.close()
 
