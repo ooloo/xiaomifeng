@@ -10,7 +10,7 @@ rm -f $site
 while [ 1 ]
 do
 	page=$(($page+1))
-	if [ $page -gt 260 ]
+	if [ $page -gt 240 ]
 	then
 		break
 	fi
@@ -44,5 +44,5 @@ done
 sort -u $site > /tmp/$site
 cp /tmp/$site $site
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
+wget -x -N --directory-prefix=/data/ -o /tmp/sasa.log --timeout=30 --wait=2 --random-wait -i $site 
 
