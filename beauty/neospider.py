@@ -36,7 +36,7 @@ file=open(sys.argv[1], 'r')
 linkList = file.readlines()
 file.close() 
 
-savePath=sys.argv[2]
+savePath=sys.argv[2] + '/'
 
 c = pycurl.Curl()
 c.setopt(pycurl.FOLLOWLOCATION, 1)
@@ -46,7 +46,7 @@ c.setopt(pycurl.HTTPHEADER, ['Connection: keep-alive',
 								'User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)',
 								'Keep-Alive: 300'])
 
-linkdb = bsddb.btopen(savePath + '/._link.bdb', 'c')
+linkdb = bsddb.btopen(savePath + '._link.bdb', 'c')
 
 for line in linkList:
 	tmp = line.split()
