@@ -6,8 +6,10 @@ page=0
 site=amazon
 queue=${site}_queue
 savedir=/data/${site}/
+mkdir -p $savedir
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
 while [ 1 ]
 do

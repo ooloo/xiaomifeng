@@ -25,7 +25,10 @@ def httpGet(url, key):
 	fp.close()
 	print 'save to file: ' + filename + filesize
 
-	return True 
+	if(code == 200):
+		return True
+	else:
+		return False
 
 
 if(len(sys.argv) != 3):
@@ -43,8 +46,8 @@ c.setopt(pycurl.FOLLOWLOCATION, 1)
 c.setopt(pycurl.CONNECTTIMEOUT, 30)
 c.setopt(pycurl.MAXREDIRS, 3)
 c.setopt(pycurl.HTTPHEADER, ['Connection: keep-alive',
-								'User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)',
-								'Keep-Alive: 300'])
+							 'User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)',
+							 'Keep-Alive: 300'])
 
 linkdb = bsddb.btopen(savePath + '._link.bdb', 'c')
 
@@ -59,9 +62,9 @@ for line in linkList:
 	if linkdb.has_key(key):
 		print 'this key id exist: ' + key
 	else:
-		httpGet(link, key)
-		linkdb[key] = link
-		linkdb.sync()
+		if httpGet(link, key):
+			linkdb[key] = link
+			linkdb.sync()
 		time.sleep(1)
 
 linkdb.close()
