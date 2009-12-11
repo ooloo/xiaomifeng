@@ -7,7 +7,8 @@ site=dangdang
 queue=${site}_queue
 savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
 while [ 1 ]
 do
@@ -22,7 +23,7 @@ do
 
 	grep "link: " /tmp/$queue | grep "Product.aspx?product_id=" | awk '{print $2}' >> $queue
 
-	sleep 1
+	sleep 2
 done
 
 sort -u $queue > /tmp/$queue
