@@ -6,7 +6,6 @@ page=0
 site=amazon
 queue=${site}_queue
 savedir=/data/${site}/
-mkdir -p $savedir
 
 mkdir -p $savedir
 rm -f $queue
