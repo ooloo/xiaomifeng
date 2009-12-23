@@ -82,7 +82,6 @@ size_t CRule::_findPositiveDirection(const std::string& strRawData, CDataSets& d
 						cnt += _genData(_strTemp, dataSets, _pRule, strAddr);
 
 						beginPos = currPos + _pRule->strEnd.length() - 1;
-						std::cout<< "aaaaaaaaaaaaaa" << _strTemp << std::endl;
 					}
 					else
 					{
