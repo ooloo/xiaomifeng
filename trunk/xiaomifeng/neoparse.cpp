@@ -8,7 +8,39 @@
 #include "CRawData.h"
 #include "charset-detector.h"
 
+#define MAX_HTML_LEN (16*1024*1024)
+
 char charset[64]={0};
+
+void str_replace(char *pInput, char *pOutput, char *pSrc, char *pDst)
+{
+	char    *pi, *po, *p;
+	int     nSrcLen, nDstLen, nLen;
+
+	pi = pInput;    
+	po = pOutput;
+	nSrcLen = strlen(pSrc);
+	nDstLen = strlen(pDst);
+
+	p = strstr(pi, pSrc);
+	if(p)
+	{
+		while(p)
+		{
+			nLen = (int)(p - pi);
+			memcpy(po, pi, nLen);
+			memcpy(po + nLen, pDst, nDstLen);
+			pi = p + nSrcLen;
+			po = po + nLen + nDstLen;
+			p = strstr(pi, pSrc);
+		}
+		strcpy(po, pi);
+	}
+	else
+	{
+		strcpy(po, pi);
+	}
+}
 
 int convert2gbk(char *str)
 {
@@ -37,8 +69,6 @@ int convert2gbk(char *str)
 	iconv_t cd;
 	size_t bufsize, inlen, oleft;
 	char *pin, *pout, *outbuff;
-
-		printf("%d\n", strlen(str));
 
 	//cd = iconv_open((const char *)"gbk//ignore", (const char *)charset);
 	cd = iconv_open((const char *)"gbk//ingore", (const char *)charset);
@@ -78,6 +108,7 @@ int convert2gbk(char *str)
 int get_html(char *rulefile, char *url, char *src)
 {
 	FILE *fp;
+	int ret;
 	char *p, tmpfile[128];
 	unsigned long long key[2];
 
@@ -86,22 +117,20 @@ int get_html(char *rulefile, char *url, char *src)
 
 	assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
 	sprintf(tmpfile, "%llx.html", key[0]);
-	printf("%s \n", key);
 
 	sprintf(src, "wget -U \"Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)\" --timeout=30 -O %s \"%s\"", tmpfile, url);
 	if(system(src) != 0)
 		return -1;
 
-	fp = fopen("tmp.html", "r");
+	fp = fopen(tmpfile, "r");
 	assert(fp);
 
-	bzero(src, 1024*1024);
-	fread(src, 1024*1024-2, 1, fp);
+	ret = fread(src, MAX_HTML_LEN-2, 1, fp);
 
 	fclose(fp);
 	unlink(tmpfile);
 
-	if(strlen(src) < 10)
+	if(ret < 1)
 		return -1;
 
 	return 0;
@@ -111,8 +140,8 @@ int main(int argc, char **argv)
 {
 	int ret;
 	FILE *fp;
-	char *start=NULL, *end=NULL;
-	char url[1024]={0}, src[1024*1024]={0};
+	char *src, *start=NULL, *end=NULL;
+	char url[1024]={0};
 	char tmpurl[4096]={0};
 
 	if(argc != 3)
@@ -120,6 +149,9 @@ int main(int argc, char **argv)
 		printf("%s rulefile link\n", argv[0]);
 		exit(1);
 	}
+
+	src = (char*)calloc(MAX_HTML_LEN, 1);
+	assert(src);
 
 	ret = get_html(argv[1], argv[2], src);
 	if(ret == -1)
