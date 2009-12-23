@@ -130,9 +130,6 @@ int get_html(char *rulefile, char *url, char *src)
 	fclose(fp);
 	unlink(tmpfile);
 
-	if(ret < 1)
-		return -1;
-
 	return 0;
 }
 
