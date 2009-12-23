@@ -2,19 +2,26 @@
 
 export LANG=c
 
-page=0
-site=guopi_queue
+site=guopi
+queue=${site}_queue
+savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
-./neoparse guopi_product.xml "http://www.guopi.com/map.jsp" > /tmp/$site 
+explore=./.explore_${site}.bdb
+rm -f $explore
 
-grep "blk_product" /tmp/$site | awk '{print $2}' >> $site 
+./neoparse guopi_product.xml "http://www.guopi.com/map.jsp" > /tmp/$queue 
 
-sleep 2
+grep "link: " /tmp/$queue | grep "blk_product" | awk '{print $2}' > $queue 
 
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
+python neoexplore.py $queue $explore
+if [ $? -ne 0 ]
+then
+	break
+fi
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=2 -o /tmp/guopi.log --random-wait -i $site 
+python neospider.py $queue $savedir
+
 

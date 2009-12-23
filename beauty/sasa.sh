@@ -2,47 +2,42 @@
 
 export LANG=c
 
-page=0
-site=sasa_queue
+site=sasa
+queue=${site}_queue
+savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
-while [ 1 ]
-do
-	page=$(($page+1))
-	if [ $page -gt 240 ]
-	then
-		break
-	fi
+explore=./.explore_${site}.bdb
 
-	./neoparse sasa_product.xml \
-	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=101000000&sortBy=8&page=${page}" > /tmp/$site
+neorun()
+{
+	page=0
+	rm -f $explore
 
-	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
+	while [ 1 ]
+	do
+		page=$(($page+1))
 
-	sleep 2
-done
+		./neoparse ${site}_product.xml \
+		"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=$1&sortBy=8&page=${page}" > /tmp/$queue
 
-page=0
+		grep "link: " /tmp/$queue | grep "viewProductDetail" | awk '{print $2}' > $queue
 
-while [ 1 ]
-do
-	page=$(($page+1))
-	if [ $page -gt 20 ]
-	then
-		break
-	fi
+		python neoexplore.py $queue $explore
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
 
-	./neoparse sasa_product.xml \
-	"http://www.sasa.com/SasaWeb/sch/category/listByCategory.jspa?categoryId=102000000&sortBy=8&page=${page}" > /tmp/$site
+		python neospider.py $queue $savedir
+		sleep 2
+	done
+}
 
-	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
-
-	sleep 2
-done
-
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
-
-wget -x -N --directory-prefix=/data/ -o /tmp/sasa.log --timeout=30 --wait=2 --random-wait -i $site 
+neorun 101000000 
+neorun 102000000
+neorun 103000000
+neorun 104000000
 
