@@ -108,7 +108,6 @@ int convert2gbk(char *str)
 int get_html(char *rulefile, char *url, char *src)
 {
 	FILE *fp;
-	int ret;
 	char *p, tmpfile[128];
 	unsigned long long key[2];
 
@@ -125,7 +124,7 @@ int get_html(char *rulefile, char *url, char *src)
 	fp = fopen(tmpfile, "r");
 	assert(fp);
 
-	ret = fread(src, MAX_HTML_LEN-2, 1, fp);
+	fread(src, MAX_HTML_LEN-2, 1, fp);
 
 	fclose(fp);
 	unlink(tmpfile);
