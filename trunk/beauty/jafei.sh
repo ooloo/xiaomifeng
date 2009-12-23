@@ -2,28 +2,45 @@
 
 export LANG=c
 
-page=0
-site=jafei_queue
+site=jafei
+queue=${site}_queue
+savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
-while [ 1 ]
-do
-	page=$(($page+1))
-	if [ $page -gt 440 ]
-	then
-		break
-	fi
+explore=./.explore_${site}.bdb
 
-	./neoparse jafei_product.xml "http://www.jafei.com/catalog/70/index_${page}.shtml" > /tmp/$site 
+neorun()
+{
+	page=0
+	rm -f $explore
 
-	grep "link: " /tmp/$site | awk '{print $2}' >> $site 
+	while [ 1 ]
+	do
+		page=$(($page+1))
 
-	sleep 2
-done
+		./neoparse jafei_product.xml \
+		"http://www.jafei.com/catalog/$1/index_${page}.shtml" > /tmp/$queue 
 
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
+		grep "link: " /tmp/$queue | awk '{print $2}' > $queue 
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
+		python neoexplore.py $queue $explore
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
+
+		python neospider.py $queue $savedir
+		sleep 2
+	done
+}
+
+neorun 70
+neorun 71
+neorun 72
+neorun 73
+neorun 74
+neorun 75
+neorun 76
 
