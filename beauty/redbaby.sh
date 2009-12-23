@@ -2,30 +2,33 @@
 
 export LANG=c
 
-page=0
-site=redbaby_queue
+site=redbaby
+queue=${site}_queue
+savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
+
+page=0
+explore=./.explore_${site}.bdb
+rm -f $explore
 
 while [ 1 ]
 do
 	page=$(($page+1))
-	if [ $page -gt 160 ]
+
+	./neoparse redbaby_product.xml \
+	"http://www.redbaby.com.cn/Product/Product_List.aspx?&Site=01&BranchID=3&Page=${page}" > /tmp/$queue
+
+	grep "link: " /tmp/$queue | grep "/Product/ProductInfo" | awk '{print $2}' > $queue
+
+	python neoexplore.py $queue $explore
+	if [ $? -ne 0 ]
 	then
 		break
 	fi
 
-	./neoparse redbaby_product.xml \
-	"http://www.redbaby.com.cn/Product/Product_List.aspx?&Site=01&BranchID=3&Page=${page}" > /tmp/$site
-
-	grep "link: " /tmp/$site | grep "/Product/ProductInfo" | awk '{print $2}' >> $site
-
+	python neospider.py $queue $savedir
 	sleep 2
 done
-
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
-
-wget -x -N -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" \
-	--directory-prefix=/data/ -o /tmp/redbaby.log --timeout=30 --wait=2 --random-wait -i $site 
 

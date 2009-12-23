@@ -23,7 +23,7 @@ neorun()
 		./neoparse ${site}_product.xml \
 		"http://www.no5.com.cn/browse/$1_p${page}.html" > /tmp/$queue
 
-		grep "link: " /tmp/$queue | grep "\/goods\/" | awk '{print $2}' > $queue
+		grep "link: " /tmp/$queue | grep "/goods/" | awk '{print $2}' > $queue
 
 		python neoexplore.py $queue $explore
 		if [ $? -ne 0 ]
