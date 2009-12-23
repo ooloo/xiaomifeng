@@ -25,7 +25,7 @@ for line in linkList:
 	exdb[key] = 'explore'
 
 newNum = len(exdb)
-linkdb.close()
+exdb.close()
 
 if oldNum < newNum:
 	exit(0)
