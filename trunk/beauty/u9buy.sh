@@ -2,29 +2,42 @@
 
 export LANG=c
 
-page=0
-site=u9buy_queue
+site=u9buy
+queue=${site}_queue
+savedir=/data/${site}/
 
-rm -f $site
+mkdir -p $savedir
+rm -f $queue
 
-while [ 1 ]
-do
-	page=$(($page+1))
-	if [ $page -gt 196 ]
-	then
-		break
-	fi
+explore=./.explore_${site}.bdb
 
-	./neoparse u9buy_product.xml \
-	"http://www.u9buy.com/class.asp?action=new&LarCode=&MidCode=&page=${page}" > /tmp/$site 
+neorun()
+{
+	page=0
+	rm -f $explore
 
-	grep "list.asp?ProdId" /tmp/$site | awk '{print $2}' >> $site 
+	while [ 1 ]
+	do
+		page=$(($page+1))
 
-	sleep 2
-done
+		./neoparse u9buy_product.xml \
+		"http://www.u9buy.com/class.asp?action=$1&LarCode=&MidCode=&page=${page}" > /tmp/$queue
 
-sort -u $site > /tmp/$site
-cp /tmp/$site $site
+		grep "list.asp?ProdId" /tmp/$queue | awk '{print $2}' > $queue 
+		python neoexplore.py $queue $explore
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
 
-wget -x -N --directory-prefix=/data/ --timeout=30 --wait=1 --random-wait -i $site 
+		python neospider.py $queue $savedir
+		sleep 2
+	done
+}
+
+neorun new
+neorun tuijian
+neorun hot
+neorun tejia 
+
 
