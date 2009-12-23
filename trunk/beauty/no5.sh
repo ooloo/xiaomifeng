@@ -2,7 +2,6 @@
 
 export LANG=c
 
-page=0
 site=no5
 queue=${site}_queue
 savedir=/data/${site}/
@@ -10,23 +9,38 @@ savedir=/data/${site}/
 mkdir -p $savedir
 rm -f $queue
 
-while [ 1 ]
-do
-	page=$(($page+1))
+explore=./.explore_${site}.bdb
 
-	./neoparse ${site}_product.xml \
-	"http://www.no5.com.cn/browse/c1_p${page}.html" > /tmp/$queue
+neorun()
+{
+	page=0
+	rm -f $explore
 
-	grep "link: " /tmp/$queue | grep "\/goods\/" | awk '{print $2}' > $queue
+	while [ 1 ]
+	do
+		page=$(($page+1))
 
-	python neoexplore.py $queue $savedir
-	if [ $? -ne 0 ]
-	then
-		break
-	fi
+		./neoparse ${site}_product.xml \
+		"http://www.no5.com.cn/browse/$1_p${page}.html" > /tmp/$queue
 
-	python neospider.py $queue $savedir
+		grep "link: " /tmp/$queue | grep "\/goods\/" | awk '{print $2}' > $queue
 
-	sleep 2
-done
+		python neoexplore.py $queue $explore
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
+
+		python neospider.py $queue $savedir
+
+		sleep 2
+	done
+}
+
+neorun c1
+neorun c2
+neorun c3
+neorun c4
+neorun c5
+neorun c6
 
