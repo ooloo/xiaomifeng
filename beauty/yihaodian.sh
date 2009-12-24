@@ -2,7 +2,7 @@
 
 export LANG=c
 
-site=yoyo18
+site=yihaodian
 queue=${site}_queue
 savedir=/data/${site}/
 
@@ -18,9 +18,9 @@ do
 	page=$(($page+1))
 
 	./neoparse ${site}_product.xml \
-	"http://www.yoyo18.com/web/searchProductPage-12-0-0-0-0-0-0-0-0-0-0-0-${page}.htm" > /tmp/$queue
+	"http://www.yihaodian.com/search/0-5009/k/oempty-a0-s1-b-g-c-j-r-m-d-p${page}" > /tmp/$queue
 
-	grep "link: " /tmp/$queue | grep "/web/A" | awk '{print $2}' > $queue
+	grep "link: " /tmp/$queue | grep "/product/" | awk '{print $2}' > $queue
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
