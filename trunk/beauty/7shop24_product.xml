@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="gb2312"?>
+
+<start>
+	<modules>
+		<layer>0</layer>
+		<begin>class="p2l" style="z-index</begin>
+		<end>div id="browse_right"</end>
+	</modules>
+</start>
+
+<rule>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>&lt;A href="</begin>
+		<end>"</end>
+		<static>false</static>
+		<name>link</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+	<modules>
+		<type>data</type>
+		<layer>1</layer>
+		<begin>img src</begin>
+		<end>&lt;/td></end>
+		<static>false</static>
+		<name>detail</name>
+		<data>NULL</data>
+		<finddirection>true</finddirection>
+		<assistantdata>NULL</assistantdata>
+		<filteringlable>false</filteringlable>
+		<modulestype>brother</modulestype>
+	</modules>
+</rule>
+
