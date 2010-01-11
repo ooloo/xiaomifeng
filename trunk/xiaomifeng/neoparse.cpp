@@ -147,7 +147,7 @@ int main(int argc, char **argv)
 	char url[1024]={0};
 	char tmpurl[4096]={0};
 
-	if(argc!=3 || argc!=4)
+	if(argc!=3 && argc!=4)
 	{
 		printf("%s rulefile link [htmlfile]\n", argv[0]);
 		exit(1);
