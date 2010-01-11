@@ -60,9 +60,8 @@ int convert2gbk(char *str)
 		return -1;
 	}
 
-	if (strcasestr(charset, "utf" )== 0 &&
-		strcasestr(charset, "big" )== 0 )
-	{   
+	if(strcasestr(charset, "utf") != NULL)
+	{
 		return -1;
 	}
 
@@ -70,9 +69,9 @@ int convert2gbk(char *str)
 	size_t bufsize, inlen, oleft;
 	char *pin, *pout, *outbuff;
 
-	//cd = iconv_open((const char *)"gbk//ignore", (const char *)charset);
-	cd = iconv_open((const char *)"gbk//ingore", (const char *)charset);
-	if (cd == (iconv_t)-1) {
+	cd = iconv_open((const char *)"utf-8//ingore", (const char *)charset);
+	if (cd == (iconv_t)-1)
+  {
 		//printf("iconv_open(%s, %s) failed\n", "gbk", tree_->charset_);
 	}
 	else
@@ -243,10 +242,10 @@ int main(int argc, char **argv)
 
 			resovle_relative_URL(url, tmpurl, src);
 		}
-		else if(b->bStatic != true)
-		{
-			//convert2gbk(src);
-		}
+    else if(b->bStatic != true)
+    {
+      convert2gbk(src);
+    }
 
 		std::cout<< b->strName << ": "<< src <<std::endl;
 
