@@ -5,7 +5,11 @@
 #include <queue>
 #include <list>
 #include <stdio.h>
+#include <sys/types.h>
 #include "CMallocMemory.h"
+
+using namespace std;
+
 
 /*		网页层次索引规则描述
  *
@@ -44,12 +48,13 @@ PAGELAYER, *PPAGELAYER;
  * 3。这是一种相对于前面两种都要特殊一些的数据类型，它是一个逻辑数据类型，
  * 它既不表示实际的数据也不表示网页的地址，而是表示一个逻辑结果
  */
-typedef enum  eDataType
+typedef enum
 {
 	enSaveData = 1,		///	最终数据类型
-	enAddrData,		///	地址数据类型
-	enLogicData,	/// 逻辑数据类型	
-};
+	enAddrData = 2,		///	地址数据类型
+	enLogicData= 3,	/// 逻辑数据类型	
+}eDataType;
+
 /*
   //规则集合，提取规则中的各种属性数据，通过规则的的组织来规范数据的格式
   //

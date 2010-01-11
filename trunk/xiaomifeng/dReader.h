@@ -8,11 +8,11 @@ class dFileReader
 {
 	typedef std::vector< std::string > tStringArray1D;
 	typedef std::vector< tStringArray1D > tStringArray2D;
-	typedef enum READ_MODE
+	typedef enum
 	{
 		TXT_LINE,
 		TXT_FIEL
-	};
+	}READ_MODE;
 public:
 	//construct / destruct
 		dFileReader()

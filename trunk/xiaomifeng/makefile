@@ -64,5 +64,5 @@ tradebdb.o:	tradebdb.cpp
 neocharset.o:	neocharset.cpp
 	g++ -c -g neocharset.cpp
 
-clear:
+clean:
 	rm -f *.o
