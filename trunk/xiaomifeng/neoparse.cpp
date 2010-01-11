@@ -113,7 +113,7 @@ int get_html(char *htmlfile, char *url, char *src)
 	if(*url == 0)
 		return -1;
 
-  if(htmlfile != NULL)
+  if(htmlfile == NULL)
   {
     assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
     sprintf(tmpfile, "%llx.html", key[0]);
