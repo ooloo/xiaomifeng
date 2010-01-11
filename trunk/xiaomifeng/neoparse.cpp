@@ -105,7 +105,7 @@ int convert2gbk(char *str)
 	return 0;
 }
 
-int get_html(char *rulefile, char *url, char *src)
+int get_html(char *htmlfile, char *url, char *src)
 {
 	FILE *fp;
 	char *p, tmpfile[128];
@@ -114,17 +114,25 @@ int get_html(char *rulefile, char *url, char *src)
 	if(*url == 0)
 		return -1;
 
-	assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
-	sprintf(tmpfile, "%llx.html", key[0]);
+  if(htmlfile != NULL)
+  {
+    assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
+    sprintf(tmpfile, "%llx.html", key[0]);
 
-	sprintf(src, "wget -U \"Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)\" --timeout=30 -O %s \"%s\"", tmpfile, url);
-	if(system(src) != 0)
-		return -1;
+    sprintf(src, "wget -U \"Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)\" --timeout=30 -O %s \"%s\"", tmpfile, url);
+    if(system(src) != 0)
+      return -1;
 
-	fp = fopen(tmpfile, "r");
-	assert(fp);
+    fp = fopen(tmpfile, "r");
+    assert(fp);
+  }
+  else
+  {
+    fp = fopen(htmlfile, "r");
+    assert(fp);
+  }
 
-	fread(src, MAX_HTML_LEN-2, 1, fp);
+  fread(src, MAX_HTML_LEN-2, 1, fp);
 
 	fclose(fp);
 	unlink(tmpfile);
@@ -140,18 +148,23 @@ int main(int argc, char **argv)
 	char url[1024]={0};
 	char tmpurl[4096]={0};
 
-	if(argc != 3)
+	if(argc!=3 || argc!=4)
 	{
-		printf("%s rulefile link\n", argv[0]);
+		printf("%s rulefile link [htmlfile]\n", argv[0]);
 		exit(1);
 	}
 
 	src = (char*)calloc(MAX_HTML_LEN, 1);
 	assert(src);
 
-	ret = get_html(argv[1], argv[2], src);
-	if(ret == -1)
-		return 0;
+
+  if(argc == 4)
+    ret = get_html(argv[3], argv[2], src);
+  else
+    ret = get_html(NULL, argv[2], src);
+
+  if(ret == -1)
+    return 0;
 
 	strcpy(url, argv[2]);
 
