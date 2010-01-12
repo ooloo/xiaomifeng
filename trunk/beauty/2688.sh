@@ -18,9 +18,9 @@ do
 	page=$(($page+1))
 
 	./neoparse 2688_product.xml \
-	"http://www.2688.com/Search/iResult.aspx?Mt=cosmetic&Pt=cosmetic&SortType=1&listnum=30&PageNow=${page}" > /tmp/$site 
+	"http://www.2688.com/Search/iResult.aspx?Mt=cosmetic&Pt=cosmetic&SortType=1&listnum=30&PageNow=${page}" > /tmp/$queue
 
-	grep "dProduct.aspx" /tmp/$site | awk '{print $2}' > $site 
+	grep "dProduct.aspx" /tmp/$queue| awk '{print $2}' > $queue
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
