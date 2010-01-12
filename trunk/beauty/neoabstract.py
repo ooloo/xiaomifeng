@@ -14,15 +14,17 @@ def amazon(html):
 
   nodes=doc.xpath("//h1[@class='DetailTitle']")
   for node in nodes:
-    print node.text_content().encode('gb18030') 
+    print node.text_content().encode('gb18030').strip()
 
-  nodes=doc.xpath("//h1[@div='product-author']")
+  nodes=doc.xpath("//div[@class='product-author']/a")
   for node in nodes:
+    print 'aaaaa' 
+    print node.attrib
     print node.text_content().encode('gb18030') 
 
 
-#------------------ amazon ----------------
-def amazon(html):
+#------------------ xxx ----------------
+def xxx(html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
@@ -37,8 +39,8 @@ def amazon(html):
     print node.text_content().encode('gb18030') 
 
 
-#------------------ amazon ----------------
-def amazon(html):
+#------------------ xxx ----------------
+def xxx(html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
@@ -53,8 +55,8 @@ def amazon(html):
     print node.text_content().encode('gb18030') 
 
 
-#------------------ amazon ----------------
-def amazon(html):
+#------------------ xxx ----------------
+def xxx(html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
@@ -69,8 +71,8 @@ def amazon(html):
     print node.text_content().encode('gb18030') 
 
 
-#------------------ amazon ----------------
-def amazon(html):
+#------------------ xxx ----------------
+def xxx(html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
