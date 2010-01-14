@@ -10,9 +10,10 @@ import lxml.etree
 import lxml.html as H
 from _dict2xml import dict2Xml
 
-def _add2xml(title, brand, price, img, size):
+def _add2xml(link, title, brand, price, img, size):
   dict = {}
   dict['item'] = {}
+  dict['item']['link'] = link
   dict['item']['title'] = title 
   dict['item']['brand'] = brand 
   dict['item']['price'] = price 
@@ -21,39 +22,42 @@ def _add2xml(title, brand, price, img, size):
   fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
-def _amazon(html):
+def _amazon(link, html):
   title=brand=price=img=size=''
-
   doc = H.document_fromstring(html)
+
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
-    print node.text_content()
     price = node.text_content().encode('utf8').strip()
+    print price
 
   nodes=doc.xpath("//h1[@class='DetailTitle']")
   for node in nodes:
-    print node.text_content().encode('utf8').strip()
     title = node.text_content().encode('utf8').strip()
+    print title
 
   nodes=doc.xpath("//div[@class='product-author']/a")
   for node in nodes:
-    print node.text_content().encode('utf8').strip() 
     brand = node.text_content().encode('utf8').strip()
+    print brand
 
   nodes=doc.xpath("//div[@id='productshowmidpic']/a/img")
-  img = nodes[0].attrib['src']
-  print nodes[0].attrib['src']
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
 
   y = unicode('容量：', 'utf8')
   nodes=doc.xpath("//div[@class='Left']//text()")
   try:
     x = nodes.index(y) + 1
-    print nodes[x].encode('utf8').strip()
     size = nodes[x].encode('utf8').strip() 
+    print size
   except ValueError:
     pass
 
-  _add2xml(title, brand, price, img, size)
+  _add2xml(link, title, brand, price, img, size)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
     #tree=lxml.etree.ElementTree(node)
@@ -62,29 +66,37 @@ def _amazon(html):
     #print node.text_content().encode('utf8').strip()
 
 #------------------ 2688 ----------------
-def _2688(html):
+def _2688(link, html):
+  title=brand=price=img=size=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
+
   nodes=doc.xpath("//li/em")
   for node in nodes:
-    print node.text_content()
+    price = node.text_content().encode('utf8').strip()
+    print price 
 
   nodes=doc.xpath("//div[@class='Product_Name']")
   for node in nodes:
-    print node.text_content().encode('utf8') 
+    title = node.text_content().encode('utf8').strip()
+    print title
 
   nodes=doc.xpath("//div[@class='Product_Brand']/a")
   for node in nodes:
-    print node.text_content().encode('utf8') 
+    brand = node.text_content().encode('utf8').strip()
+    print brand
 
   nodes=doc.xpath("//div[@id='Product_MainPic']/img")
   try:
-    print nodes[0].attrib['src']
+    img = nodes[0].attrib['src']
+    print img
   except IndexError:
     pass
 
+  _add2xml(link, title, brand, price, img, size)
+
 #------------------ dangdang ----------------
-def _dangdang(html):
+def _dangdang(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//b[@id='salePriceTag']")
@@ -112,7 +124,7 @@ def _dangdang(html):
 
 
 #------------------ xxx ----------------
-def xxx(html):
+def xxx(link, html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
@@ -128,7 +140,7 @@ def xxx(html):
 
 
 #------------------ xxx ----------------
-def xxx(html):
+def xxx(link, html):
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
@@ -162,7 +174,7 @@ if __name__ == '__main__':
     f.close()
 
     t=eval("_" + sys.argv[2])
-    t(html)
+    t(v, html)
 
 #    break
 
