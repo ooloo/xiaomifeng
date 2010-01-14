@@ -69,9 +69,10 @@ class Dict2XML:
 
 #end class
 
-def createXML(dict,xml):
+def createXML(dict,xml,level):
     xmlout = Dict2XML()
     xmlout.setXml(xml)
+    xmlout.setLevel(level)
     return xmlout.dict2xml(dict)
 #end def
 
