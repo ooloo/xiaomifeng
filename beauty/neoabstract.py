@@ -10,37 +10,38 @@ import lxml.etree
 import lxml.html as H
 from _dict2xml import dict2Xml
 
-xml='<?xml version="1.0" encoding="UTF-8"?>\n'
-
-def _add2xml(title, price, img, brand):
+def _add2xml(title, brand, price, img, size):
   dict = {}
   dict['item'] = {}
-  dict['item']['1'] = '111'
-  dict['root']['2'] = 1
-  dict['root']['3'] = 1
-  dict['item']['1'] = '111'
-  dict['root']['2'] = 1
-  dict['root']['3'] = 1
-  
-  dict2Xml(dict, xml)
-  print xml
+  dict['item']['title'] = title 
+  dict['item']['brand'] = brand 
+  dict['item']['price'] = price 
+  dict['item']['img'] = img 
+  dict['item']['size'] = size
+  fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
 def _amazon(html):
+  title=brand=price=img=size=''
+
   doc = H.document_fromstring(html)
   nodes=doc.xpath("//span[@class='SalePrice']")
   for node in nodes:
     print node.text_content()
+    price = node.text_content().encode('utf8').strip()
 
   nodes=doc.xpath("//h1[@class='DetailTitle']")
   for node in nodes:
     print node.text_content().encode('utf8').strip()
+    title = node.text_content().encode('utf8').strip()
 
   nodes=doc.xpath("//div[@class='product-author']/a")
   for node in nodes:
     print node.text_content().encode('utf8').strip() 
+    brand = node.text_content().encode('utf8').strip()
 
   nodes=doc.xpath("//div[@id='productshowmidpic']/a/img")
+  img = nodes[0].attrib['src']
   print nodes[0].attrib['src']
 
   y = unicode('容量：', 'utf8')
@@ -48,9 +49,11 @@ def _amazon(html):
   try:
     x = nodes.index(y) + 1
     print nodes[x].encode('utf8').strip()
+    size = nodes[x].encode('utf8').strip() 
   except ValueError:
     pass
 
+  _add2xml(title, brand, price, img, size)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
     #tree=lxml.etree.ElementTree(node)
@@ -146,6 +149,9 @@ if __name__ == '__main__':
     print 'Usage: ' + sys.argv[0] + ' <datapath> <site>' 
     exit(1)
 
+  global fo
+  fo = open('/tmp/' + sys.argv[2] + '.xml', 'w')
+  fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
   for k, v in linkdb.iteritems():
@@ -158,16 +164,9 @@ if __name__ == '__main__':
     t=eval("_" + sys.argv[2])
     t(html)
 
-    break
+#    break
+
   linkdb.close()
-
-  dict = {}
-  dict['root'] = {}
-  dict['root']['item']=[{'id': {'value': '491691'}, 'name': {'value': 'test'}}]
-
-  print dict
-  #{'id': {'value': '491691'}}
-  
-  print dict2Xml(dict, xml)
-
+  fo.write('</items>\n')
+  fo.close()
 
