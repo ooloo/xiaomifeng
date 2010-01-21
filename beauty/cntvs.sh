@@ -18,7 +18,7 @@ do
 	page=$(($page+1))
 
 	./neoparse cntvs_product.xml \
-	"http://app.cntvs.com/catagory/list.aspx?id=5331cf73-e806-4424-b62b-9b6e01137df8&o=orders+desc&page=${page}" \
+	"http://app.cntvs.com/New_test/SecondNodes.aspx?id=fc2dbc81-25a1-4fb8-843f-9cc600bcf747&page=${page}" \
 	> /tmp/$queue 
 
 	grep "link: " /tmp/$queue | awk '{print $2}' > $queue
