@@ -17,7 +17,7 @@ def _add2xml(link, title, brand, price, img, size):
   dict['item']['title'] = title 
   dict['item']['brand'] = brand 
   dict['item']['price'] = price 
-  dict['item']['img'] = img 
+  dict['item']['img'] = urlparse.urljoin(link, img)  
   dict['item']['size'] = size
   fo.write(dict2Xml(dict, "", 1))
 
@@ -166,21 +166,76 @@ def _360buy(link, html):
 
   _add2xml(link, title, brand, price, img, size)
 
-#------------------ xxx ----------------
-def xxx(link, html):
+#------------------ no5 ----------------
+def _no5(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
   doc = H.document_fromstring(html)
-  nodes=doc.xpath("//span[@class='SalePrice']")
-  for node in nodes:
-    print node.text_content()
 
-  nodes=doc.xpath("//h1[@class='DetailTitle']")
+  nodes=doc.xpath("//div[@id='history']/a")
   for node in nodes:
-    print node.text_content().encode('utf8') 
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
 
-  nodes=doc.xpath("//h1[@div='product-author']")
+  nodes=doc.xpath("//td[@class='no5_price']")
   for node in nodes:
-    print node.attrib
-    print node.text_content().encode('utf8') 
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='history']/span[@class='redfont12']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//td[@vAlign='top' and @colSpan='2']")
+  for node in nodes:
+    size = node.text_content().encode('utf8').strip()
+    print size 
+
+  nodes=doc.xpath("//div[@id='middle_pic_show']/a/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
+#------------------ yoyo18 ----------------
+def _yoyo18(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='de_topPP']//font[@color='red']")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@class='detrc_text']/font")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@class='de_topT']/a/b")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//input[@id='metricsSelect']")
+  for node in nodes:
+    size = node.text_content().encode('utf8').strip()
+    print size 
+
+  nodes=doc.xpath("//div[@class='de_topImg']//a/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
 
 #------------------ main ----------------
 if __name__ == '__main__': 
