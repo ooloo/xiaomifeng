@@ -1,5 +1,8 @@
 #! /usr/bin/env python
 # -*- coding: iso-8859-15 -*-
+import sys 
+reload(sys)
+sys.setdefaultencoding("utf-8")
 
 """ Dictionary to XML - Library to convert a python dictionary to XML output
     Copyleft (C) 2007 Pianfetti Maurizio <boymix81@gmail.com>
@@ -58,11 +61,11 @@ class Dict2XML:
                     #end if
                 else:
                     self.xml += "\t"*(self.level)
-                    self.xml += "<%s>%s</%s>\n" % (key,value, key)
+                    self.xml += "<%s>%s</%s>\n" % (key, value, key)
                 #end if
         else:
             self.xml += "\t"*self.level
-            self.xml += "<%s>%s</%s>\n" % (key,value, key)
+            self.xml += "<%s>%s</%s>\n" % (key, value, key)
         #end if
         return self.xml
     #end def

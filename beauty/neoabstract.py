@@ -301,6 +301,97 @@ def _7shop24(link, html):
 
   _add2xml(link, title, brand, price, img, size)
 
+#------------------ lafaso ----------------
+def _lafaso(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('utf8')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='productdetail_row1right fl']/h2")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//form[@id='productForm']//span[@class='red size14']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='productdetail_row3_cpgg']//td/a")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@class='productdetail_rowleft_bigpic']/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
+#------------------ meixiu ----------------
+def _meixiu(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//th")
+  for node in nodes:
+    #tree=lxml.etree.ElementTree(node)   
+    #print tree.getpath(node)  
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[2]/table/tr[4]//strong")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[2]/table/tr[6]/td[2]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[1]/table/tr/td/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
+#------------------ strawberrynet ----------------
+def _strawberrynet(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='div_content19 fontBold']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//div[@class='div_left div_content33 fontBold']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@class='prodDetailPadding']/div/h3")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@class='div_width395 div_centerAlign']/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
 
 #------------------ xxx ----------------
 def _xxx(link, html):
@@ -357,11 +448,10 @@ if __name__ == '__main__':
     f.close()
 
     t=eval("_" + sys.argv[2])
-    t(v, html)
-#    try:
-#      t(v, html)
-#    except Exception, e:  
-#      pass
+    try:
+      t(v, html)
+    except Exception, e:  
+      pass
 #    break
 
   linkdb.close()
