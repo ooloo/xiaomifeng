@@ -236,6 +236,107 @@ def _yoyo18(link, html):
 
   _add2xml(link, title, brand, price, img, size)
 
+#------------------ redbaby ----------------
+def _redbaby(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@id='ware_txt1']/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//div[@id='ware_mine']//span[@id='price']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[1]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[2]")
+  for node in nodes:
+    size = node.text_content().encode('utf8').strip()
+    print size 
+
+  nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
+#------------------ 7shop24 ----------------
+def _7shop24(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='contright']/h3")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//div[@class='cproright']/p/span[@id='se']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@class='weizhi']/a")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@class='cproduct']//a/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
+
+#------------------ xxx ----------------
+def _xxx(link, html):
+  title=brand=price=img=size=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@id='ware_txt1']/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//div[@id='ware_mine']//span[@id='price']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[1]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[2]")
+  for node in nodes:
+    size = node.text_content().encode('utf8').strip()
+    print size 
+
+  nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, img, size)
+
 
 #------------------ main ----------------
 if __name__ == '__main__': 
@@ -257,7 +358,10 @@ if __name__ == '__main__':
 
     t=eval("_" + sys.argv[2])
     t(v, html)
-
+#    try:
+#      t(v, html)
+#    except Exception, e:  
+#      pass
 #    break
 
   linkdb.close()
