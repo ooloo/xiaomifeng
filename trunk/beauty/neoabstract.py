@@ -17,7 +17,7 @@ def _add2xml(link, title, brand, price, img, size):
   dict['item']['title'] = title 
   dict['item']['brand'] = brand 
   dict['item']['price'] = price 
-  dict['item']['img'] = urlparse.urljoin(link, img)  
+  dict['item']['img'] = urlparse.urljoin(link, img).replace('/../', '/') 
   dict['item']['size'] = size
   fo.write(dict2Xml(dict, "", 1))
 
