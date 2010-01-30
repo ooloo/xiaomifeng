@@ -10,20 +10,23 @@ import lxml.etree
 import lxml.html as H
 from _dict2xml import dict2Xml
 
-def _add2xml(link, title, brand, price, img, size):
+def _add2xml(link, title, brand, price, category, img, bigimg, size):
   dict = {}
   dict['item'] = {}
   dict['item']['link'] = link
   dict['item']['title'] = title 
   dict['item']['brand'] = brand 
   dict['item']['price'] = price 
+  dict['item']['category'] = category 
   dict['item']['img'] = urlparse.urljoin(link, img).replace('/../', '/') 
+  dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
   dict['item']['size'] = size
+  dict['item']['store'] = sys.argv[2] 
   fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
 def _amazon(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//span[@class='SalePrice']")
@@ -48,6 +51,17 @@ def _amazon(link, html):
   except IndexError:
     pass
 
+  nodes=doc.xpath("//div[@class='ContentText']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category
+
   y = unicode('容量：', 'utf8')
   nodes=doc.xpath("//div[@class='Left']//text()")
   try:
@@ -57,7 +71,7 @@ def _amazon(link, html):
   except ValueError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  _add2xml(link, title, brand, price, category, img, img.replace('AA200', 'AA500'), size)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
     #tree=lxml.etree.ElementTree(node)
@@ -67,7 +81,7 @@ def _amazon(link, html):
 
 #------------------ 2688 ----------------
 def _2688(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -97,7 +111,7 @@ def _2688(link, html):
 
 #------------------ dangdang ----------------
 def _dangdang(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -133,7 +147,7 @@ def _dangdang(link, html):
 
 #------------------ 360buy ----------------
 def _360buy(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -168,7 +182,7 @@ def _360buy(link, html):
 
 #------------------ no5 ----------------
 def _no5(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -203,7 +217,7 @@ def _no5(link, html):
 
 #------------------ yoyo18 ----------------
 def _yoyo18(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -238,7 +252,7 @@ def _yoyo18(link, html):
 
 #------------------ redbaby ----------------
 def _redbaby(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -273,7 +287,7 @@ def _redbaby(link, html):
 
 #------------------ 7shop24 ----------------
 def _7shop24(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -303,7 +317,7 @@ def _7shop24(link, html):
 
 #------------------ lafaso ----------------
 def _lafaso(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
@@ -333,7 +347,7 @@ def _lafaso(link, html):
 
 #------------------ meixiu ----------------
 def _meixiu(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -365,7 +379,7 @@ def _meixiu(link, html):
 
 #------------------ strawberrynet ----------------
 def _strawberrynet(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -395,7 +409,7 @@ def _strawberrynet(link, html):
 
 #------------------ xxx ----------------
 def _xxx(link, html):
-  title=brand=price=img=size=''
+  title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -452,7 +466,7 @@ if __name__ == '__main__':
       t(v, html)
     except Exception, e:  
       pass
-#    break
+ #   break
 
   linkdb.close()
   fo.write('</items>\n')
