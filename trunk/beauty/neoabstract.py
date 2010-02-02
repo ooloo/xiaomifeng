@@ -71,7 +71,8 @@ def _amazon(link, html):
   except ValueError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, img.replace('AA200', 'AA500'), size)
+  bigimg = img.replace('AA200', 'AA500')
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
     #tree=lxml.etree.ElementTree(node)
@@ -100,6 +101,17 @@ def _2688(link, html):
     brand = node.text_content().encode('utf8').strip()
     print brand
 
+  nodes=doc.xpath("//div[@id='Product_Info_Top']/div[@class='Product_Type']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
   nodes=doc.xpath("//div[@id='Product_MainPic']/img")
   try:
     img = nodes[0].attrib['src']
@@ -107,7 +119,8 @@ def _2688(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  bigimg = img.replace('_S.', '.')
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ dangdang ----------------
 def _dangdang(link, html):
@@ -136,6 +149,17 @@ def _dangdang(link, html):
       efficacy = node.text_content().encode('utf8').strip()
       print efficacy 
 
+  nodes=doc.xpath("//div[@class='mall_your_position']/span/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
   nodes=doc.xpath("//img[@id='largePic']")
   try:
     img = nodes[0].attrib['src']
@@ -143,7 +167,8 @@ def _dangdang(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  bigimg = img.replace('_b.', '_o.')
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ 360buy ----------------
 def _360buy(link, html):
@@ -201,19 +226,31 @@ def _no5(link, html):
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//td[@vAlign='top' and @colSpan='2']")
+  nodes=doc.xpath("//div[@id='top_pro']//tr/td")
   for node in nodes:
+    print node.attrib
     size = node.text_content().encode('utf8').strip()
-    print size 
+    print size
+
+  nodes=doc.xpath("//div[@id='top_pro']//td[@width='100%']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
 
   nodes=doc.xpath("//div[@id='middle_pic_show']/a/img")
   try:
-    img = nodes[0].attrib['src']
+    img = nodes[0].attrib['src'].strip()
     print img
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  _add2xml(link, title, brand, price, category, img, img, size)
 
 #------------------ yoyo18 ----------------
 def _yoyo18(link, html):
@@ -435,7 +472,7 @@ def _xxx(link, html):
 
   nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
   try:
-    img = nodes[0].attrib['src']
+    img = nodes[0].attrib['src'].strip()
     print img
   except IndexError:
     pass
@@ -466,7 +503,7 @@ if __name__ == '__main__':
       t(v, html)
     except Exception, e:  
       pass
- #   break
+   # break
 
   linkdb.close()
   fo.write('</items>\n')
