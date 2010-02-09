@@ -368,19 +368,28 @@ def _7shop24(link, html):
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='weizhi']/a")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
-
   nodes=doc.xpath("//div[@class='cproduct']//a/img")
   try:
     img = nodes[0].attrib['src']
     print img
   except IndexError:
     pass
+ 
+  nodes=doc.xpath("//div[@class='weizhi']/a")
+  brand = nodes[-1].text_content().encode('utf8').strip()
+  del nodes[-1]
+  print brand 
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
 
-  _add2xml(link, title, brand, price, img, size)
+  _add2xml(link, title, brand, price, category, img, img, size)
 
 #------------------ lafaso ----------------
 def _lafaso(link, html):
@@ -407,10 +416,23 @@ def _lafaso(link, html):
   try:
     img = nodes[0].attrib['src']
     print img
+    bigimg = nodes[0].attrib['alt']
+    print bigimg
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  nodes=doc.xpath("//div[@class='location']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ meixiu ----------------
 def _meixiu(link, html):
