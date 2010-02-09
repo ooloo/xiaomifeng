@@ -393,7 +393,7 @@ def _7shop24(link, html):
 
 #------------------ lafaso ----------------
 def _lafaso(link, html):
-  title=brand=price=img=size=category=''
+  title=brand=price=img=bigimg=size=category=''
   html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
@@ -452,10 +452,10 @@ def _meixiu(link, html):
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[2]/table/tr[6]/td[2]")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
+  #nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[2]/table/tr[6]/td[2]")
+  #for node in nodes:
+    #brand = node.text_content().encode('utf8').strip()
+    #print brand 
 
   nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[3]/td[1]/table/tr/td/img")
   try:
@@ -464,7 +464,21 @@ def _meixiu(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  nodes=doc.xpath("/html/body/table[2]/tr[1]/td[2]/table/tr[1]/td[1]/a")
+  brand = nodes[-1].text_content().encode('utf8').strip()
+  del nodes[-1]
+  print brand 
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
+  _add2xml(link, title, brand, price, category, img, img, size)
 
 #------------------ strawberrynet ----------------
 def _strawberrynet(link, html):
@@ -494,7 +508,60 @@ def _strawberrynet(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  nodes=doc.xpath("//div[@class='mainPadding fontBold']/h2")
+  for node in nodes:
+    category = node.text_content().replace('-',',').replace(' ', '').encode('utf8').strip()
+    print category 
+
+  _add2xml(link, title, brand, price, category, img, img, size)
+
+#------------------ m18 ----------------
+def _m18(link, html):
+  title=brand=price=img=bigimg=size=category=''
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//h1[@id='styleName']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//span[@id='stylePrice']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='styleBrand']")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//div[@class='bigpic fl']/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@class='goods-pic']/img")
+  try:
+    bigimg = nodes[0].attrib['src']
+    print bigimg
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@class='crumb']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
+
 
 #------------------ xxx ----------------
 def _xxx(link, html):
