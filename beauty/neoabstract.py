@@ -265,15 +265,26 @@ def _yoyo18(link, html):
 
   nodes=doc.xpath("//div[@class='detrc_text']/font")
   for node in nodes:
-    price = node.text_content().encode('utf8').strip()
-    print price 
+    price = node.text_content().split()[0].encode('utf8').strip()
+    print price
 
   nodes=doc.xpath("//div[@class='de_topT']/a/b")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//input[@id='metricsSelect']")
+  nodes=doc.xpath("//div[@class='de_topT']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
+  nodes=doc.xpath("//input[@id='metricsSelect']/parent::*")
   for node in nodes:
     size = node.text_content().encode('utf8').strip()
     print size 
@@ -285,7 +296,14 @@ def _yoyo18(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  nodes=doc.xpath("//div[@class='viewProductimg']/img")
+  try:
+    bigimg = nodes[0].attrib['src']
+    print bigimg
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ redbaby ----------------
 def _redbaby(link, html):
@@ -312,6 +330,17 @@ def _redbaby(link, html):
   for node in nodes:
     size = node.text_content().encode('utf8').strip()
     print size 
+  
+  nodes=doc.xpath("//div[@id='location_info']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
 
   nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
   try:
@@ -320,7 +349,8 @@ def _redbaby(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  bigimg = img.replace('Middle', 'Big')
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ 7shop24 ----------------
 def _7shop24(link, html):
