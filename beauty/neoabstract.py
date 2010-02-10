@@ -562,6 +562,39 @@ def _m18(link, html):
 
   _add2xml(link, title, brand, price, category, img, bigimg, size)
 
+#------------------ sasa ----------------
+def _sasa(link, html):
+  title=brand=price=img=bigimg=size=category=''
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//a[@class='txt_12px_n_666666']")
+  title = nodes[0].text_content().encode('utf8').strip()
+  print title 
+
+  nodes=doc.xpath("//td[@class='txt_11px_b_EB6495']")
+  price = nodes[1].text_content().encode('utf8').strip()
+  print price 
+
+  nodes=doc.xpath("//a[@class='txt_13px_b_666666']")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//td[@width='50' and @class='txt_12px_b_666666']/parent::*")
+  size = nodes[0].text_content().split()[1] + nodes[0].text_content().split()[2]
+  size = size.encode('utf8').strip()
+  print size 
+
+  nodes=doc.xpath("//td[@width='350' and @align='center']/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  bigimg = img.replace('n.jpg', 'l.jpg')
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
+
 
 #------------------ xxx ----------------
 def _xxx(link, html):
