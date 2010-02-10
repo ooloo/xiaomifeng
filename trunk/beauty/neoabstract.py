@@ -595,6 +595,95 @@ def _sasa(link, html):
   bigimg = img.replace('n.jpg', 'l.jpg')
   _add2xml(link, title, brand, price, category, img, bigimg, size)
 
+#------------------ guopi ----------------
+def _guopi(link, html):
+  title=brand=price=img=bigimg=size=category=''
+  #html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//table[@class='fw_layout pad1']/tr/td")
+  for i in range(len(nodes)):
+    if nodes[i].text_content().encode('utf8').find('货品名') >= 0:
+      title = nodes[i+1].text_content().encode('utf8').strip()
+      print title 
+    if nodes[i].text_content().encode('utf8').find('规格') >= 0:
+      size = nodes[i+1].text_content().encode('utf8').strip()
+      print size 
+    if nodes[i].text_content().encode('utf8').find('产品系列') >= 0:
+      category = nodes[i+1].text_content().encode('utf8').split()[0].replace('/',',').strip()
+      print category 
+    if nodes[i].text_content().encode('utf8').find('果皮价') >= 0:
+      price = nodes[i+1].text_content().encode('utf8').strip()
+      print price
+
+  nodes=doc.xpath("//a[@class='blueline']")
+  for node in nodes:
+    brand = node.text_content().split()[0].encode('utf8').strip()
+    print brand 
+
+  nodes=doc.xpath("//a[@title]/img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//a[@title]")
+  try:
+    bigimg = nodes[0].attrib['href']
+    print bigimg
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
+
+#------------------ yihaodian ----------------
+def _yihaodian(link, html):
+  title=brand=price=img=bigimg=size=category=''
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//span[@id='product_name']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//span[@id='product_list_price']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//span[@id='product_format']")
+  for node in nodes:
+    size = node.text_content().encode('utf8').strip()
+    print size 
+
+  nodes=doc.xpath("//div[@class='list_s']/div/a")
+  brand = nodes[1].text_content().encode('utf8').strip()
+  if brand.find('1号店') >= 0:
+    brand = ''
+  print brand 
+
+  nodes=doc.xpath("//span[@id='picDiv']//img")
+  try:
+    img = nodes[0].attrib['src']
+    print img
+    bigimg = nodes[0].attrib['alt']
+    print bigimg
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@class='nav blueT']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category 
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size)
 
 #------------------ xxx ----------------
 def _xxx(link, html):
