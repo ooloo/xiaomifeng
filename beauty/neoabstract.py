@@ -685,40 +685,48 @@ def _yihaodian(link, html):
 
   _add2xml(link, title, brand, price, category, img, bigimg, size)
 
-#------------------ xxx ----------------
-def _xxx(link, html):
+#------------------ meethall ----------------
+def _meethall(link, html):
   title=brand=price=img=size=category=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@id='ware_txt1']/h1")
+  nodes=doc.xpath("//div[@class='info']/ul/li[1]/strong")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//div[@id='ware_mine']//span[@id='price']")
+  nodes=doc.xpath("//div[@class='info']/ul/li[4]/a")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+    print brand
+
+  nodes=doc.xpath("//div[@class='meethallprice']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[1]")
+  nodes=doc.xpath("//font[@color='chocolate']")
   for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
+    category = node.text_content().encode('utf8').strip()
+    print category
+    break
 
-  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[2]")
-  for node in nodes:
-    size = node.text_content().encode('utf8').strip()
-    print size 
+  nodes=doc.xpath("//div[@class='info']/ul/li")
+  for i in range(len(nodes)):
+    if nodes[i].text_content().encode('utf8').find('规 格') >= 0:
+      size = nodes[i].text_content().encode('utf8').strip()
+      print size 
+      break
 
-  nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
+  nodes=doc.xpath("//div[@class='datu']/img")
   try:
     img = nodes[0].attrib['src'].strip()
     print img
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size)
+  _add2xml(link, title, brand, price, category, img, img, size)
 
 
 #------------------ main ----------------
