@@ -14,10 +14,10 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size):
   dict = {}
   dict['item'] = {}
   dict['item']['link'] = link
-  dict['item']['title'] = title 
-  dict['item']['brand'] = brand 
-  dict['item']['price'] = price 
-  dict['item']['category'] = category 
+  dict['item']['title'] = title
+  dict['item']['brand'] = brand
+  dict['item']['price'] = price.replace('￥','')
+  dict['item']['category'] = category
   dict['item']['img'] = urlparse.urljoin(link, img).replace('/../', '/') 
   dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
   dict['item']['size'] = size
@@ -143,10 +143,10 @@ def _dangdang(link, html):
   nodes=doc.xpath("//div[@class='mall_goods_foursort_style_frame']")
   for node in nodes:
     if node.text_content().find(x) >= 0:
-      brand = node.text_content().encode('utf8').strip()
+      brand = node.text_content().encode('utf8').split('：')[-1].strip()
       print brand 
     elif node.text_content().find(y) >= 0:
-      efficacy = node.text_content().encode('utf8').strip()
+      efficacy = node.text_content().encode('utf8').split('：')[-1].strip()
       print efficacy 
 
   nodes=doc.xpath("//div[@class='mall_your_position']/span/a")
@@ -228,7 +228,7 @@ def _no5(link, html):
 
   nodes=doc.xpath("//div[@id='top_pro']//tr/td")
   for node in nodes:
-    print node.attrib
+    #print node.attrib
     size = node.text_content().encode('utf8').strip()
     print size
 
@@ -323,12 +323,12 @@ def _redbaby(link, html):
 
   nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[1]")
   for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
+    brand = node.text_content().encode('utf8').split('：')[-1].strip()
     print brand 
 
   nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[2]")
   for node in nodes:
-    size = node.text_content().encode('utf8').strip()
+    size = node.text_content().encode('utf8').split('：')[-1].strip()
     print size 
   
   nodes=doc.xpath("//div[@id='location_info']/a")
@@ -483,7 +483,7 @@ def _meixiu(link, html):
 #------------------ strawberrynet ----------------
 def _strawberrynet(link, html):
   title=brand=price=img=size=category=''
-  html = html.decode('gb18030')
+  html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='div_content19 fontBold']")
@@ -572,7 +572,8 @@ def _sasa(link, html):
   print title 
 
   nodes=doc.xpath("//td[@class='txt_11px_b_EB6495']")
-  price = nodes[1].text_content().encode('utf8').strip()
+  price = nodes[1].text_content().encode('utf8').split()[-1]
+  price = str(float(price) * 6.8)
   print price 
 
   nodes=doc.xpath("//a[@class='txt_13px_b_666666']")
@@ -688,7 +689,7 @@ def _yihaodian(link, html):
 #------------------ meethall ----------------
 def _meethall(link, html):
   title=brand=price=img=size=category=''
-  html = html.decode('gb18030')
+  html = html.decode('gb18030').replace('&nbsp;&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='info']/ul/li[1]/strong")
@@ -708,14 +709,14 @@ def _meethall(link, html):
 
   nodes=doc.xpath("//font[@color='chocolate']")
   for node in nodes:
-    category = node.text_content().encode('utf8').strip()
+    category = node.text_content().encode('utf8').replace('/', ',').strip()
     print category
     break
 
   nodes=doc.xpath("//div[@class='info']/ul/li")
   for i in range(len(nodes)):
     if nodes[i].text_content().encode('utf8').find('规 格') >= 0:
-      size = nodes[i].text_content().encode('utf8').strip()
+      size = nodes[i].text_content().encode('utf8').split('：')[-1].strip()
       print size 
       break
 
