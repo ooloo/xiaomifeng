@@ -11,6 +11,9 @@ import lxml.html as H
 from _dict2xml import dict2Xml
 
 def _add2xml(link, title, brand, price, category, img, bigimg, size):
+  if brand == '':
+    brand = 'other'
+
   dict = {}
   dict['item'] = {}
   dict['item']['link'] = link
@@ -152,7 +155,7 @@ def _dangdang(link, html):
   nodes=doc.xpath("//div[@class='mall_your_position']/span/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
+    if(len(str) > 12 or str.find('当当网') >= 0):
       continue
     if(category == ''):
       category = str
@@ -381,7 +384,7 @@ def _7shop24(link, html):
   print brand 
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
+    if(len(str) > 12 or str.find('首页') >= 0):
       continue
     if(category == ''):
       category = str
@@ -424,7 +427,7 @@ def _lafaso(link, html):
   nodes=doc.xpath("//div[@class='location']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
+    if(len(str) > 12 or str.find('首页') >= 0):
       continue
     if(category == ''):
       category = str
@@ -552,7 +555,7 @@ def _m18(link, html):
   nodes=doc.xpath("//div[@class='crumb']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
+    if(len(str) > 12 or str.find('首页') >= 0):
       continue
     if(category == ''):
       category = str
@@ -676,13 +679,13 @@ def _yihaodian(link, html):
   nodes=doc.xpath("//div[@class='nav blueT']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
+    if(len(str) > 12 or str.find('一号店') >= 0):
       continue
     if(category == ''):
       category = str
     else:
       category = category + ',' + str
-    print category 
+    print category
 
   _add2xml(link, title, brand, price, category, img, bigimg, size)
 
@@ -744,9 +747,12 @@ if __name__ == '__main__':
   for k, v in linkdb.iteritems():
     #print '>>', k, v
     print '>>', v
-    f = open(sys.argv[1] + k + '.html', 'r')
-    html = f.read()
-    f.close()
+    try:
+      f = open(sys.argv[1] + k + '.html', 'r')
+      html = f.read()
+      f.close()
+    except IOError, e:
+      print 'No such file or directory'
 
     t=eval("_" + sys.argv[2])
     try:
