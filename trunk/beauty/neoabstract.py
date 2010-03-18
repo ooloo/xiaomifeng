@@ -19,7 +19,7 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size):
   dict['item']['link'] = link
   dict['item']['title'] = title
   dict['item']['brand'] = brand
-  dict['item']['price'] = price.replace('￥','')
+  dict['item']['price'] = price.replace('￥','').replace('元','')
   dict['item']['category'] = category
   dict['item']['img'] = urlparse.urljoin(link, img).replace('/../', '/') 
   dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
@@ -738,6 +738,8 @@ if __name__ == '__main__':
   if(len(sys.argv) != 3):
     print 'Usage: ' + sys.argv[0] + ' <datapath> <site>' 
     exit(1)
+  if(sys.argv[1][-1] != '/'):
+    sys.argv[1] += '/'
 
   global fo
   fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
