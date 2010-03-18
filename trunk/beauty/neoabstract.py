@@ -740,7 +740,7 @@ if __name__ == '__main__':
     exit(1)
 
   global fo
-  fo = open('/tmp/' + sys.argv[2] + '.xml', 'w')
+  fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
   fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
