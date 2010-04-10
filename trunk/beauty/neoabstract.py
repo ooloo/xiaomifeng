@@ -26,6 +26,7 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
   dict['item']['desc'] = desc 
+  dict['item']['avlid'] = 'true' 
   fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
@@ -47,6 +48,12 @@ def _amazon(link, html):
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand
+
+  nodes=doc.xpath("//div[@class='ContentText']")
+  for node in nodes:
+    if(node.text_content() != ''):
+      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      break;
 
   nodes=doc.xpath("//div[@id='productshowmidpic']/a/img")
   try:
@@ -141,6 +148,12 @@ def _dangdang(link, html):
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title
+
+  nodes=doc.xpath("//div[@class='right_content']")
+  for node in nodes:
+    if(node.text_content() != ''):
+      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      break;
 
   x = unicode('品牌：', 'utf8')
   y = unicode('功效：', 'utf8')
@@ -422,6 +435,12 @@ def _lafaso(link, html):
     brand = node.text_content().encode('utf8').strip()
     print brand 
 
+  nodes=doc.xpath("//div[@id='cont0']")
+  for node in nodes:
+    if(node.text_content() != ''):
+      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      break;
+
   nodes=doc.xpath("//div[@class='productdetail_rowleft_bigpic']/img")
   try:
     img = nodes[0].attrib['src']
@@ -510,6 +529,12 @@ def _strawberrynet(link, html):
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
+
+  nodes=doc.xpath("//div[@class='prodDetailPadding']//ul/li")
+  for node in nodes:
+    if(node.text_content() != ''):
+      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      break;
 
   nodes=doc.xpath("//div[@class='div_width395 div_centerAlign']/img")
   try:
