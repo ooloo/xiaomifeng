@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
 
+import re
 import urlparse
 import time,StringIO
 import sys, os, re 
@@ -19,13 +20,13 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
   dict['item']['link'] = link
   dict['item']['title'] = title
   dict['item']['brand'] = brand
-  dict['item']['price'] = price.replace('￥','').replace('元','')
+  dict['item']['price'] = re.search('[0-9.]+', price).group() 
   dict['item']['category'] = category
-  dict['item']['img'] = urlparse.urljoin(link, img).replace('/../', '/') 
-  dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
+  dict['item']['img'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
+  #dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
-  dict['item']['desc'] = desc 
+  dict['item']['desc'] = desc
   dict['item']['avlid'] = 'true' 
   fo.write(dict2Xml(dict, "", 1))
 
@@ -331,7 +332,7 @@ def _yoyo18(link, html):
 #------------------ redbaby ----------------
 def _redbaby(link, html):
   title=brand=price=img=size=category=desc=''
-  html = html.decode('gb18030')
+  html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@id='ware_txt1']/h1")
@@ -353,6 +354,12 @@ def _redbaby(link, html):
   for node in nodes:
     size = node.text_content().encode('utf8').split('：')[-1].strip()
     print size 
+  
+  nodes=doc.xpath("//div[@id='ware_description']//p")
+  for node in nodes:
+    if(len(node.text_content()) > 10):
+      desc += node.text_content().encode('utf8').strip() + '<br/>'
+  desc = '<![CDATA[' + desc + ']]>'
   
   nodes=doc.xpath("//div[@id='location_info']/a")
   for node in nodes:
@@ -420,17 +427,17 @@ def _lafaso(link, html):
   html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='productdetail_row1right fl']/h2")
+  nodes=doc.xpath("//div[@class='fr shopr_boxtopR']/h1")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//form[@id='productForm']//span[@class='red size14']")
+  nodes=doc.xpath("//span[@class='fl mr10']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@id='productdetail_row3_cpgg']//td/a")
+  nodes=doc.xpath("//div[@class='shopr_boxtopRcont mauto']//td/a")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
@@ -441,7 +448,7 @@ def _lafaso(link, html):
       desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
       break;
 
-  nodes=doc.xpath("//div[@class='productdetail_rowleft_bigpic']/img")
+  nodes=doc.xpath("//div[@class='fl shopr_boxtopL']/img")
   try:
     img = nodes[0].attrib['src']
     print img
@@ -450,7 +457,7 @@ def _lafaso(link, html):
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='location']/a")
+  nodes=doc.xpath("//h2[@class='crumbs']")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12 or str.find('首页') >= 0):
@@ -634,7 +641,7 @@ def _sasa(link, html):
 #------------------ guopi ----------------
 def _guopi(link, html):
   title=brand=price=img=bigimg=size=category=desc=''
-  #html = html.decode('gb18030')
+  html = html.replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//table[@class='fw_layout pad1']/tr/td")
@@ -656,6 +663,12 @@ def _guopi(link, html):
   for node in nodes:
     brand = node.text_content().split()[0].encode('utf8').strip()
     print brand 
+
+  nodes=doc.xpath("//div[@class='prIntro_title']")
+  for node in nodes:
+    if(len(node.text_content()) > 10):
+      desc += node.text_content().encode('utf8').strip() + '<br/>'
+  desc = '<![CDATA[' + desc + ']]>'
 
   nodes=doc.xpath("//a[@title]/img")
   try:
@@ -741,6 +754,12 @@ def _meethall(link, html):
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
+
+  nodes=doc.xpath("//div[@class='detail_content']//font")
+  for node in nodes:
+    if(len(node.text_content()) > 10):
+      desc += node.text_content().encode('utf8').strip() + '<br/>'
+  desc = '<![CDATA[' + desc + ']]>'
 
   nodes=doc.xpath("//font[@color='chocolate']")
   for node in nodes:
