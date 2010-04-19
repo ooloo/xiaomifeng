@@ -787,7 +787,7 @@ def _meethall(link, html):
 #------------------ main ----------------
 if __name__ == '__main__': 
   if(len(sys.argv) != 3):
-    print 'Usage: ' + sys.argv[0] + ' <datapath> <site>' 
+    print 'Usage: ' + sys.argv[0] + ' <datapath> <site>'
     exit(1)
   if(sys.argv[1][-1] != '/'):
     sys.argv[1] += '/'
@@ -796,6 +796,7 @@ if __name__ == '__main__':
   fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
   fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
+  fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
 
   for k, v in linkdb.iteritems():
     #print '>>', k, v
@@ -805,6 +806,7 @@ if __name__ == '__main__':
       html = f.read()
       f.close()
     except IOError, e:
+      fd.write(v)
       print 'No such file or directory'
 
     t=eval("_" + sys.argv[2])
@@ -817,4 +819,5 @@ if __name__ == '__main__':
   linkdb.close()
   fo.write('</items>\n')
   fo.close()
+  fd.close()
 
