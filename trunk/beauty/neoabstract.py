@@ -808,6 +808,7 @@ if __name__ == '__main__':
       if now - os.stat(filename).st_mtime > 86400.0 * 5:
         fd.write(v)
         os.remove(filename)
+        print 'This file is too old.'
         continue;
 
       f = open(filename, 'r')
@@ -815,7 +816,7 @@ if __name__ == '__main__':
       f.close()
     else:
       fd.write(v)
-      print 'No such file or directory'
+      print 'No such file or directory.'
 
     t=eval("_" + sys.argv[2])
     try:
