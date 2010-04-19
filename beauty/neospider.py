@@ -1,4 +1,4 @@
-import pycurl
+import pycurl,string
 import md5,urlparse
 import time,StringIO
 import sys, os, re 
@@ -67,11 +67,11 @@ for line in linkList:
 
   now = time.time()
   if timedb.has_key(key):
-    update = now - timedb[key]
+    update = now - string.atof(timedb[key])
   else:
     update = now
 
-  if uptime < 86400.0:
+  if update < 86400.0 * 3:
     print 'this key no need update: ' + key
   else:
     if httpGet(link, key):
@@ -79,7 +79,7 @@ for line in linkList:
       linkdb.sync()
     time.sleep(1)
 
-  timedb[key] = now
+  timedb[key] = str(now)
   timedb.sync()
 
 linkdb.close()
