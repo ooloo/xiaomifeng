@@ -39,7 +39,7 @@ if(len(sys.argv) != 3):
 
 file=open(sys.argv[1], 'r')
 linkList = file.readlines()
-file.close() 
+file.close()
 
 savePath=sys.argv[2] + '/'
 
@@ -53,6 +53,7 @@ c.setopt(pycurl.HTTPHEADER, ['Connection: keep-alive','Accept: */*',
   'User-Agent: Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1)'])
 
 linkdb = bsddb.btopen(savePath + '._link.bdb', 'c')
+timedb = bsddb.btopen(savePath + '._time.bdb', 'c')
 
 for line in linkList:
   tmp = line.split()
@@ -62,13 +63,23 @@ for line in linkList:
   m1.update(link)
   key = m1.hexdigest()
 
-  if linkdb.has_key(key):
-    print 'this key id exist: ' + key
+  now = time.time()
+  if timedb.has_key(key):
+    update = now - timedb[key]
+  else:
+    update = now
+
+  if uptime < 86400.0:
+    print 'this key no need update: ' + key
   else:
     if httpGet(link, key):
       linkdb[key] = link
       linkdb.sync()
     time.sleep(1)
 
+  timedb[key] = now
+  timedb.sync()
+
 linkdb.close()
+timedb.close()
 
