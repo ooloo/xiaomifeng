@@ -805,7 +805,7 @@ if __name__ == '__main__':
     filename = sys.argv[1] + k + '.html'
       
     if os.path.isfile(filename):
-      if now - os.stat(filename).st_mtime > 86400.0 * 7:
+      if now - os.stat(filename).st_mtime > 86400.0 * 5:
         fd.write(v)
         os.remove(filename)
         continue;
