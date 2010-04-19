@@ -798,14 +798,22 @@ if __name__ == '__main__':
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
   fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
 
+  now = time.time()
   for k, v in linkdb.iteritems():
     #print '>>', k, v
     print '>>', v
-    try:
-      f = open(sys.argv[1] + k + '.html', 'r')
+    filename = sys.argv[1] + k + '.html'
+      
+    if os.path.isfile(filename):
+      if now - os.stat(filename).st_mtime > 86400.0 * 7:
+        fd.write(v)
+        os.remove(filename)
+        continue;
+
+      f = open(filename, 'r')
       html = f.read()
       f.close()
-    except IOError, e:
+    else:
       fd.write(v)
       print 'No such file or directory'
 
