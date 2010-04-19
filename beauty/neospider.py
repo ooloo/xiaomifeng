@@ -30,6 +30,8 @@ def httpGet(url, key):
   if(code == 200):
     return True
   else:
+    if os.path.isfile(filename):
+      os.remove(filename)
     return False
 
 
