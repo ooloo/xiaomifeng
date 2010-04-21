@@ -13,7 +13,11 @@ from _dict2xml import dict2Xml
 
 def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
   if brand == '':
-    brand = 'other'
+    return
+  elif bigimg.find('.') < 0:
+    return
+  elif title == '':
+    return
 
   dict = {}
   dict['item'] = {}
