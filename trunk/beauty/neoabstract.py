@@ -798,11 +798,13 @@ if __name__ == '__main__':
 
   global fo
   fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
-  fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
-  linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
   fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
 
+  linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
+
   now = time.time()
+  fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
+
   for k, v in linkdb.iteritems():
     #print '>>', k, v
     print '>>', v
@@ -810,7 +812,7 @@ if __name__ == '__main__':
       
     if os.path.isfile(filename):
       if now - os.stat(filename).st_mtime > 86400.0 * 5:
-        fd.write(v)
+        fd.write(v + '\n')
         os.remove(filename)
         print 'This file is too old.'
         continue;
