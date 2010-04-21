@@ -20,7 +20,7 @@ do
 	./neoparse ${site}_product.xml \
 	"http://www.yoyo18.com/web/searchProductPage-12-0-0-0-0-0-0-0-0-0-0-0-${page}.htm" > /tmp/$queue
 
-	grep "link: " /tmp/$queue | grep "/web/A" | awk '{print $2}' > $queue
+	grep "link: " /tmp/$queue | grep "/A" | awk '{print $2}' > $queue
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
