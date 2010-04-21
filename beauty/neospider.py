@@ -1,5 +1,5 @@
 import pycurl,string
-import md5,urlparse
+import hashlib,urlparse
 import time,StringIO
 import sys, os, re 
 import bsddb
@@ -61,7 +61,7 @@ for line in linkList:
   tmp = line.split()
   link = tmp[0]
   print '>>', link 
-  m1 = md5.new()
+  m1 = hashlib.md5()
   m1.update(link)
   key = m1.hexdigest()
 
