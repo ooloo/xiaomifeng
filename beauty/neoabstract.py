@@ -428,7 +428,7 @@ def _7shop24(link, html):
 #------------------ lafaso ----------------
 def _lafaso(link, html):
   title=brand=price=img=bigimg=size=category=desc=''
-  html = html.decode('utf8')
+  html = html.decode('utf8').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='fr shopr_boxtopR']/h1")
@@ -441,18 +441,18 @@ def _lafaso(link, html):
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='shopr_boxtopRcont mauto']//td/a")
+  nodes=doc.xpath("//div[@class='shopr_boxtopRcont mauto']/ul[1]/li[1]/a")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
 
-  nodes=doc.xpath("//div[@id='cont0']")
+  nodes=doc.xpath("//div[@id='cont0']/div[@class='clear pa10 lh25']")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      desc = '<![CDATA[' + node.text_content().encode('utf8').replace(' ','') + ']]>'
       break;
 
-  nodes=doc.xpath("//div[@class='fl shopr_boxtopL']/img")
+  nodes=doc.xpath("//div[@class='fl shopr_boxtopL']//img")
   try:
     img = nodes[0].attrib['src']
     print img
@@ -461,7 +461,7 @@ def _lafaso(link, html):
   except IndexError:
     pass
 
-  nodes=doc.xpath("//h2[@class='crumbs']")
+  nodes=doc.xpath("//h2[@class='crumbs']/em")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12 or str.find('首页') >= 0):
@@ -798,7 +798,7 @@ if __name__ == '__main__':
 
   global fo
   fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
-  fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
+  fd = open('/deldata/' + sys.argv[2] + '.del', 'wb')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
@@ -821,8 +821,8 @@ if __name__ == '__main__':
       html = f.read()
       f.close()
     else:
-      fd.write(v)
-      print 'No such file or directory.'
+      fd.write(v + '\n')
+      continue
 
     t=eval("_" + sys.argv[2])
     try:
