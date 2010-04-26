@@ -61,11 +61,11 @@ class Dict2XML:
                     #end if
                 else:
                     self.xml += "\t"*(self.level)
-                    self.xml += "<%s>%s</%s>\n" % (key, value, key)
+                    self.xml += "<%s><![CDATA[%s]]></%s>\n" % (key, value, key)
                 #end if
         else:
             self.xml += "\t"*self.level
-            self.xml += "<%s>%s</%s>\n" % (key, value, key)
+            self.xml += "<%s><![CDATA[%s]]></%s>\n" % (key, value, key)
         #end if
         return self.xml
     #end def
