@@ -57,7 +57,7 @@ def _amazon(link, html):
   nodes=doc.xpath("//div[@class='ContentText']")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      desc = node.text_content().encode('utf8').strip()
       break;
 
   nodes=doc.xpath("//div[@id='productshowmidpic']/a/img")
@@ -157,7 +157,7 @@ def _dangdang(link, html):
   nodes=doc.xpath("//div[@class='right_content']")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      desc = node.text_content().encode('utf8').strip()
       break;
 
   x = unicode('品牌：', 'utf8')
@@ -246,7 +246,7 @@ def _no5(link, html):
   nodes=doc.xpath("//div[@class='pro_intro']/p")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      desc = node.text_content().encode('utf8').strip()
       break;
 
   nodes=doc.xpath("//div[@id='history']/span[@class='redfont12']")
@@ -363,7 +363,6 @@ def _redbaby(link, html):
   for node in nodes:
     if(len(node.text_content()) > 10):
       desc += node.text_content().encode('utf8').strip() + '<br/>'
-  desc = '<![CDATA[' + desc + ']]>'
   
   nodes=doc.xpath("//div[@id='location_info']/a")
   for node in nodes:
@@ -449,7 +448,7 @@ def _lafaso(link, html):
   nodes=doc.xpath("//div[@id='cont0']/div[@class='clear pa10 lh25']")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').replace(' ','') + ']]>'
+      desc = node.text_content().encode('utf8').replace(' ','')
       break;
 
   nodes=doc.xpath("//div[@class='fl shopr_boxtopL']//img")
@@ -544,7 +543,7 @@ def _strawberrynet(link, html):
   nodes=doc.xpath("//div[@class='prodDetailPadding']//ul/li")
   for node in nodes:
     if(node.text_content() != ''):
-      desc = '<![CDATA[' + node.text_content().encode('utf8').strip() + ']]>'
+      desc = node.text_content().encode('utf8').strip()
       break;
 
   nodes=doc.xpath("//div[@class='div_width395 div_centerAlign']/img")
@@ -672,7 +671,6 @@ def _guopi(link, html):
   for node in nodes:
     if(len(node.text_content()) > 10):
       desc += node.text_content().encode('utf8').strip() + '<br/>'
-  desc = '<![CDATA[' + desc + ']]>'
 
   nodes=doc.xpath("//a[@title]/img")
   try:
@@ -763,7 +761,6 @@ def _meethall(link, html):
   for node in nodes:
     if(len(node.text_content()) > 10):
       desc += node.text_content().encode('utf8').strip() + '<br/>'
-  desc = '<![CDATA[' + desc + ']]>'
 
   nodes=doc.xpath("//font[@color='chocolate']")
   for node in nodes:
