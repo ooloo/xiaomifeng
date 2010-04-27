@@ -794,8 +794,10 @@ if __name__ == '__main__':
     sys.argv[1] += '/'
 
   global fo
-  fo = open('/baijia/' + sys.argv[2] + '.xml', 'w')
-  fd = open('/deldata/' + sys.argv[2] + '.del', 'wb')
+  ISOTIMEFORMAT='%Y%m%d'
+  timestr = time.strftime(ISOTIMEFORMAT, time.localtime())
+  fo = open('/baijia/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
+  fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
@@ -808,7 +810,7 @@ if __name__ == '__main__':
     filename = sys.argv[1] + k + '.html'
       
     if os.path.isfile(filename):
-      if now - os.stat(filename).st_mtime > 86400.0 * 5:
+      if now - os.stat(filename).st_mtime > 86400.0 * 7:
         fd.write(v + '\n')
         os.remove(filename)
         print 'This file is too old.'
