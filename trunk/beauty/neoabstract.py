@@ -810,12 +810,6 @@ if __name__ == '__main__':
     filename = sys.argv[1] + k + '.html'
       
     if os.path.isfile(filename):
-      if now - os.stat(filename).st_mtime > 86400.0 * 7:
-        fd.write(v + '\n')
-        os.remove(filename)
-        print 'This file is too old.'
-        continue;
-
       f = open(filename, 'r')
       html = f.read()
       f.close()
