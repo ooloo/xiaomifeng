@@ -13,6 +13,7 @@ def httpGet(url, key):
   filename = savePath + key + '.html'
   fp = open(filename, 'w')
 
+  fileLen = 0
   c.setopt(pycurl.URL, url)
   c.setopt(pycurl.WRITEDATA, fp)
   try:
@@ -21,19 +22,19 @@ def httpGet(url, key):
     print e.__class__, e, url
     return False
   finally:
-    filesize = ' [' + str(fp.tell()) + ']'
+    fileLen = str(fp.tell())
+    filesize = ' [' + fileLen + ']'
     fp.close()
 
   code = c.getinfo(pycurl.HTTP_CODE)
   print 'save to file: ' + filename + filesize
 
-  if(code == 200):
+  if(string.atoi(fileLen) > 1024):
     return True
   else:
     if os.path.isfile(filename):
       os.remove(filename)
     return False
-
 
 if(len(sys.argv) != 3):
   print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
@@ -71,7 +72,7 @@ for line in linkList:
   else:
     update = now
 
-  if update < 86400.0 * 3:
+  if update < 86400.0 * 2:
     print 'this key no need update: ' + key
   else:
     if httpGet(link, key):
