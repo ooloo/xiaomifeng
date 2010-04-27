@@ -22,7 +22,7 @@ for line in linkList:
 	m1.update(link)
 	key = m1.hexdigest()
 
-	exdb[key] = 'explore'
+	exdb[key] = link
 
 newNum = len(exdb)
 exdb.close()
