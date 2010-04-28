@@ -19,7 +19,7 @@ def httpGet(url, key):
   try:
     c.perform()
   except Exception, e:
-    print e.__class__, e, url
+    print e.__class__
     return False
   finally:
     fileLen = str(fp.tell())
@@ -61,7 +61,7 @@ timedb = bsddb.btopen(savePath + '._time.bdb', 'c')
 for line in linkList:
   tmp = line.split()
   link = tmp[0]
-  print '>>', link 
+  print 'link:' + link 
   m1 = hashlib.md5()
   m1.update(link)
   key = m1.hexdigest()
