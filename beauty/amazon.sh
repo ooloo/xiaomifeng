@@ -21,7 +21,6 @@ do
 	"http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}" > /tmp/$queue
 
 	grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/&qid=[0-9]\{10\}//g' > $queue
-  cp $queue /tmp/$queue.$page
   
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
