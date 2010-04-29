@@ -4,7 +4,7 @@ import sys, os, re
 import bsddb
 
 if(len(sys.argv) != 3):
-  print 'Usage: ' + sys.argv[0] + ' <linkfile> <explore.bdb>'
+  #print 'Usage: ' + sys.argv[0] + ' <linkfile> <explore.bdb>'
   exit(1)
 
 file=open(sys.argv[1], 'r')

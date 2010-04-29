@@ -21,6 +21,7 @@ do
 	"http://category.dangdang.com/list?ps=28&cat=4002074&sort=5&store=eq0&p=${page}" > /tmp/$queue
 
 	grep "link: " /tmp/$queue | grep "Product.aspx?product_id=" | awk '{print $2}' > $queue
+  cp $queue /tmp/$queue.$page
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
