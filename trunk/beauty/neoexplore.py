@@ -14,6 +14,21 @@ file.close()
 exdb = bsddb.btopen(sys.argv[2], 'c')
 oldNum = len(exdb)
 
+failcount = 0
+
+if len(linkList) == 0:
+  if exdb.has_key('failcount'):
+    failcount = int(exdb['failcount'])
+  failcount += 1
+  exdb['failcount'] = str(failcount) 
+  exdb.close()
+  if failcount <= 3:
+    exit(0)
+  else:
+    exit(1)
+
+exdb['failcount'] = str(failcount) 
+
 for line in linkList:
   tmp = line.split()
   link = tmp[0]
