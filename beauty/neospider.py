@@ -27,7 +27,7 @@ def httpGet(url, key):
     fp.close()
 
   code = c.getinfo(pycurl.HTTP_CODE)
-  #print 'save to file: ' + filename + filesize
+  print 'save to file: ' + filename + filesize
 
   if(string.atoi(fileLen) > 1024):
     return True
@@ -37,7 +37,7 @@ def httpGet(url, key):
     return False
 
 if(len(sys.argv) != 3):
-  #print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
+  print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
   exit(1)
 
 file=open(sys.argv[1], 'r')
