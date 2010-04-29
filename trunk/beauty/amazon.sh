@@ -20,6 +20,7 @@ do
 	./neoparse ${site}_product.xml \
 	"http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}" > /tmp/$queue
 
+  echo "http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}"
 	grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/&qid=[0-9]\{10\}//g' > $queue
   
 	python neoexplore.py $queue $explore

@@ -19,7 +19,7 @@ def httpGet(url, key):
   try:
     c.perform()
   except Exception, e:
-    print e.__class__
+    #print e.__class__
     return False
   finally:
     fileLen = str(fp.tell())
@@ -27,7 +27,7 @@ def httpGet(url, key):
     fp.close()
 
   code = c.getinfo(pycurl.HTTP_CODE)
-  print 'save to file: ' + filename + filesize
+  #print 'save to file: ' + filename + filesize
 
   if(string.atoi(fileLen) > 1024):
     return True
@@ -37,7 +37,7 @@ def httpGet(url, key):
     return False
 
 if(len(sys.argv) != 3):
-  print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
+  #print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
   exit(1)
 
 file=open(sys.argv[1], 'r')
@@ -74,14 +74,14 @@ for line in linkList:
 
   if update < 86400.0 * 2:
     print 'this key no need update: ' + key
+    pass
   else:
     if httpGet(link, key):
       linkdb[key] = link
       linkdb.sync()
+      timedb[key] = str(now)
+      timedb.sync()
     time.sleep(1)
-
-  timedb[key] = str(now)
-  timedb.sync()
 
 linkdb.close()
 timedb.close()
