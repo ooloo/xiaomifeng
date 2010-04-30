@@ -36,8 +36,7 @@ neorun()
 }
 
 neorun new
-neorun tuijian
-neorun hot
 neorun tejia 
-
+#neorun tuijian
+#neorun hot
 
