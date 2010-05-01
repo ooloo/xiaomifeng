@@ -72,7 +72,7 @@ for line in linkList:
   else:
     update = now
 
-  if update < 86400.0 * 2:
+  if update < 86400.0 * 5:
     print 'this key no need update: ' + key
     pass
   else:

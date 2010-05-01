@@ -1,5 +1,4 @@
 #!/bin/sh
-
 export LANG=c
 
 site=7shop24
@@ -18,7 +17,7 @@ do
 	page=$(($page+1))
 
 	./neoparse ${site}_product.xml \
-	"http://www.7shop24.com/browse.asp?classid=1&Page=${page}" > /tmp/$queue
+	"http://www.7shop24.com/MakeUps/browse_MakeUps.asp?pagecode=skincare&searchtype=type&typeid=1&Page=${page}" > /tmp/$queue
 
 	grep "link: " /tmp/$queue | grep "classid=1&productid=" | awk '{print $2}' > $queue
 
