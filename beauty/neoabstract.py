@@ -39,7 +39,7 @@ def _amazon(link, html):
   title=brand=price=img=size=category=desc=''
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//span[@class='SalePrice']")
+  nodes=doc.xpath("//span[@class='OurPrice']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price
@@ -391,24 +391,24 @@ def _7shop24(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='contright']/h3")
+  nodes=doc.xpath("//div[@class='right_xb']/div[1]")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//div[@class='cproright']/p/span[@id='se']")
+  nodes=doc.xpath("//div[@class='pro_act']/ul/li[4]//span/span")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='cproduct']//a/img")
+  nodes=doc.xpath("//div[@class='show_sp_tp']/img")
   try:
     img = nodes[0].attrib['src']
     print img
   except IndexError:
     pass
  
-  nodes=doc.xpath("//div[@class='weizhi']/a")
+  nodes=doc.xpath("//div[@class='main']/div[1]//span")
   brand = nodes[-1].text_content().encode('utf8').strip()
   del nodes[-1]
   print brand 
@@ -420,7 +420,7 @@ def _7shop24(link, html):
       category = str
     else:
       category = category + ',' + str
-    print category 
+    print category
 
   _add2xml(link, title, brand, price, category, img, img, size, desc)
 
@@ -698,7 +698,7 @@ def _yihaodian(link, html):
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//span[@id='product_list_price']")
+  nodes=doc.xpath("//span[@id='product_sale_price' or @id='product_list_price']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
@@ -708,13 +708,12 @@ def _yihaodian(link, html):
     size = node.text_content().encode('utf8').strip()
     print size 
 
-  nodes=doc.xpath("//div[@class='list_s']/div/a")
-  brand = nodes[1].text_content().encode('utf8').strip()
-  if brand.find('1号店') >= 0:
-    brand = ''
+  nodes=doc.xpath("//div[@class='pt5 pb5 gray'][1]/a[1]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip() 
   print brand 
 
-  nodes=doc.xpath("//span[@id='picDiv']//img")
+  nodes=doc.xpath("//div[@id='picDiv']/img")
   try:
     img = nodes[0].attrib['src']
     print img
@@ -804,8 +803,11 @@ if __name__ == '__main__':
   now = time.time()
   fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
 
+  i = 0
   for k, v in linkdb.iteritems():
-    print 'link:' + v
+    print '---------------------------------'
+    i += 1
+    print str(i) + ', ' + v
     filename = sys.argv[1] + k + '.html'
       
     if os.path.isfile(filename):
