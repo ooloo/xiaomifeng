@@ -783,6 +783,47 @@ def _meethall(link, html):
 
   _add2xml(link, title, brand, price, category, img, img, size, desc)
 
+#------------------ qookoo ----------------
+def _qookoo(link, html):
+  title=brand=price=img=bigimg=size=category=desc=''
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='biaoti']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//font[@id='ECS_SHOPPRICE']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@class='pinp'][1]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip() 
+  print brand 
+
+  nodes=doc.xpath("//div[@class='goodspic']//img")
+  try:
+    img = nodes[0].attrib['src']
+    bigimg = img
+    print img
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@class='urhere']/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12 or str.find('首页') >= 0):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+
 
 #------------------ main ----------------
 if __name__ == '__main__': 
@@ -819,6 +860,7 @@ if __name__ == '__main__':
       continue
 
     t=eval("_" + sys.argv[2])
+    t(v, html)
     try:
       t(v, html)
     except Exception, e:  
