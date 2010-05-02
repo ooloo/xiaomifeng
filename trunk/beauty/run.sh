@@ -28,4 +28,5 @@ fi
 ./meethall.sh > /tmp/run.log
 ./u9buy.sh > /tmp/run.log
 ./strawberrynet.sh > /tmp/run.log
+./qookoo.sh > /tmp/run.log
 
