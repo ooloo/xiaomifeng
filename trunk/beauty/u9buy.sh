@@ -24,7 +24,6 @@ neorun()
 		"http://www.u9buy.com/class.asp?action=$1&LarCode=&MidCode=&page=${page}" > /tmp/$queue
 
 		grep "list.asp?ProdId" /tmp/$queue | awk '{print $2}' > $queue 
-    cp $queue /tmp/$queue.$page
 
 		python neoexplore.py $queue $explore
 		if [ $? -ne 0 ]
