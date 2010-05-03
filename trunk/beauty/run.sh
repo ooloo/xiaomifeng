@@ -8,7 +8,7 @@ then
   exit
 fi
 
-#./amazon.sh > /tmp/run.log
+./amazon.sh > /tmp/run.log
 ./dangdang.sh > /tmp/run.log
 ./no5.sh > /tmp/run.log
 ./guopi.sh > /tmp/run.log
