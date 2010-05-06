@@ -244,7 +244,7 @@ int main(int argc, char **argv)
 		}
     else if(b->bStatic != true)
     {
-      convert2gbk(src);
+      //convert2gbk(src);
     }
 
 		std::cout<< b->strName << ": "<< src <<std::endl;
