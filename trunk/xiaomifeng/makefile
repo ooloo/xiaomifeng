@@ -12,7 +12,7 @@ edit:	neocharset.o neoparse.o neoclaw.o NetEntrance.o CDataParserPThread.o CSpid
 	CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o CData.o -I./ -lssl ./libcharsetdetector.a
 
 	g++ -o neocharset -g neocharset.o -I./ ./libcharsetdetector.a
-all:	$(clear) $(edit)
+all:	$(clean) $(edit)
 #Exe:	g++ -o neoclaw -g neoclaw.o CDataClassifyPthread.o CDataParserPThread.o \
 #	CSpiderPthread.o CNetSitAnalyse.o CNetDataSet.o \
 #	CFilter.o CRawData.o CRuleMgr.o tinystr.o tinyxmlerror.o tinyxmlparser.o tinyxml.o dExcelReader.o CData.o
