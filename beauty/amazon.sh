@@ -9,27 +9,34 @@ savedir=/data/${site}/
 mkdir -p $savedir
 rm -f $queue
 
-page=0
 explore=./.explore_${site}.bdb
-rm -f $explore
 
-while [ 1 ]
-do
-	page=$(($page+1))
+neorun()
+{
+  page=0
+  rm -f $explore
 
-	./neoparse ${site}_product.xml \
-	"http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}" > /tmp/$queue
+  while [ 1 ]
+  do
+	  page=$(($page+1))
 
-  echo "http://www.amazon.cn/s/ref=?ie=UTF8&n=852804051&page=${page}"
-	grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/ref=.*?/?/g' |sed 's/&qid=[0-9]\{10\}//g' | sed 's/&sr=.*[^$^&]//g' > $queue
+	  ./neoparse ${site}_product.xml \
+	  "http://www.amazon.cn/s/ref=?ie=UTF8&n=$1&page=${page}" > /tmp/$queue
+
+	  grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/ref=.*?/?/g' |sed 's/&qid=[0-9]\{10\}//g' | sed 's/&sr=.*[^$^&]//g' > $queue
+
+    cp $queue /tmp/$queue.$page
   
-	python neoexplore.py $queue $explore
-	if [ $? -ne 0 ]
-	then
-		break
-	fi
+	  python neoexplore.py $queue $explore
+	  if [ $? -ne 0 ]
+	  then
+		  break
+	  fi
 
-	python neospider.py $queue $savedir
-	sleep 2
-done
+	  python neospider.py $queue $savedir
+	  sleep 2
+  done
+}
 
+neorun 852804051
+neorun 746776051
