@@ -842,8 +842,8 @@ def _jafei(link, html):
   nodes=doc.xpath("//div[@class='bjweb_product_n']/ul/li")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip() 
-    if(brand.find('品牌')):
-      brand = brand.split('：')[1].replace(' ->>','')
+    if(brand.find('品牌') >= 0):
+      brand = brand.split('：')[1].split('-')[0].split('0').strip()
       break
   print brand
 
@@ -857,11 +857,10 @@ def _jafei(link, html):
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='bjweb_dqwz']//a")
+  nodes=doc.xpath("//div[@class='bjweb_dqwz']//a[@href][3]")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(str.find('/') >= 0):
-      category = str.replace('/', ',')
+    category = str.replace('/', ',')
     print category
 
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
