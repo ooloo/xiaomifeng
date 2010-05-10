@@ -738,7 +738,7 @@ def _yihaodian(link, html):
 #------------------ meethall ----------------
 def _meethall(link, html):
   title=brand=price=img=size=category=desc=''
-  html = html.decode('gb18030').replace('&nbsp;&nbsp;', ' ')
+  html = html.decode('gb18030').replace('&nbsp;&nbsp;', '\t')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='info']/ul/li[1]/strong")
@@ -749,6 +749,10 @@ def _meethall(link, html):
   nodes=doc.xpath("//div[@class='info']/ul/li[4]/a")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
+    xb = brand.split('\t')
+    if(len(xb) >= 2):
+      if(xb[0] == xb[1]):
+        brand = xb[0]
     print brand
 
   nodes=doc.xpath("//div[@class='meethallprice']")
@@ -820,6 +824,44 @@ def _qookoo(link, html):
       category = str
     else:
       category = category + ',' + str
+    print category
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+
+#------------------ jafei ----------------
+def _jafei(link, html):
+  title=brand=price=img=bigimg=size=category=desc=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//span[@class='newPrice']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@class='bjweb_product_n']/ul/li")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip() 
+    if(brand.find('品牌')):
+      brand = brand.split('：')[1].replace(' ->>','')
+      break
+  print brand
+
+  nodes=doc.xpath("//div[@class='bjweb_product_img']/img")
+  try:
+    img = nodes[0].attrib['src']
+    bigimg = img
+    print img
+    title = nodes[0].attrib['alt']
+    print title 
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@class='bjweb_dqwz']//a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(str.find('/') >= 0):
+      category = str.replace('/', ',')
     print category
 
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
