@@ -198,7 +198,7 @@ def _360buy(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='Product_Name']/h1")
+  nodes=doc.xpath("//div[@class='Product_Name']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title
@@ -209,14 +209,16 @@ def _360buy(link, html):
     print price 
 
   nodes=doc.xpath("//div[@class='margin_b6' and @id='Position']/a")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
-
-  nodes=doc.xpath("//div[@id='EFF_PINFO_Con_1']")
-  for node in nodes:
-    size = node.text_content().encode('utf8').strip()
-    print size 
+  del nodes[-1]
+  brand = nodes[-1].text_content().encode('utf8').strip()
+  print brand
+  del nodes[-1]
+  for i in range(2, len(nodes)):
+    str = nodes[i].text_content().encode('utf8').strip()
+    if(category == ''):
+      category = str
+    else:
+      category += ',' + str
 
   nodes=doc.xpath("//div[@id='Product_BigImage']/img")
   try:
@@ -225,7 +227,7 @@ def _360buy(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, desc)
 
 #------------------ no5 ----------------
 def _no5(link, html):
