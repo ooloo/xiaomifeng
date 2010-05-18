@@ -843,9 +843,9 @@ def _jafei(link, html):
 
   nodes=doc.xpath("//div[@class='bjweb_product_n']/ul/li")
   for node in nodes:
-    brand = node.text_content().encode('utf8').strip() 
-    if(brand.find('品牌') >= 0):
-      brand = brand.split('：')[1].split('-')[0].split('0').strip()
+    str = node.text_content().encode('utf8').strip()
+    if(str.find('品牌') >= 0):
+      brand = str.split('：')[1].split('-')[0].split('0')[0].strip()
       break
   print brand
 
