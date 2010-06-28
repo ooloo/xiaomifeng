@@ -72,7 +72,7 @@ for line in linkList:
   else:
     update = now
 
-  if update < 86400.0 * 5:
+  if update < 86400.0 * 7:
     print 'this key no need update: ' + key
     pass
   else:
@@ -81,7 +81,7 @@ for line in linkList:
       linkdb.sync()
       timedb[key] = str(now)
       timedb.sync()
-    time.sleep(1)
+    time.sleep(2)
 
 linkdb.close()
 timedb.close()

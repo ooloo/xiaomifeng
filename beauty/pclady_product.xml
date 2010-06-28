@@ -7,8 +7,8 @@ link: http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_2_100_0.htm
 <start>
 	<modules>
 		<layer>0</layer>
-		<begin>b5 b5f</begin>
-		<end>AspNetPager</end>
+		<begin>current</begin>
+		<end>rBox1 boxB</end>
 	</modules>
 </start>
 

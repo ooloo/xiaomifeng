@@ -29,4 +29,6 @@ fi
 ./u9buy.sh > /tmp/run.log
 ./strawberrynet.sh > /tmp/run.log
 ./qookoo.sh > /tmp/run.log
+./yoka.sh > /tmp/run.log
+./pclady.sh > /tmp/run.log
 
