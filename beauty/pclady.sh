@@ -15,7 +15,7 @@ rm -f $explore
 
 while [ 1 ]
 do
-	./neoparse pclady_product.xml \
+	./neoparse ${site}_product.xml \
   "http://cosme.pclady.com.cn/products_list/br0_bs0_bi0_sm0_ef0_pb0_pe0_or0_p$page.html" > /tmp/$queue
 
 	page=$(($page+1))

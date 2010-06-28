@@ -1,7 +1,40 @@
 #!/bin/sh
 
-wget -r -I product -l 3 -A "*.html" -D "product.kimiss.com"\
-	-N -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" --directory-prefix=/data/ \
-	--timeout=30 --wait=3 --random-wait http://product.kimiss.com/
+export LANG=c
 
-rm -rf /data/www.kimiss.com/
+site=kimiss
+queue=${site}_queue
+savedir=/data/${site}/
+
+mkdir -p $savedir
+rm -f $queue
+
+explore=./.explore_${site}.bdb
+
+neorun()
+{
+	page=0
+	rm -f $explore
+
+	while [ 1 ]
+	do
+		page=$(($page+1))
+
+		./neoparse ${site}_product.xml \
+		"http://brand.kimiss.com/brand/$1/p/${page}/" > /tmp/$queue
+
+		grep "link: " /tmp/$queue | grep "/product/" | awk '{print $2}' > $queue
+
+		python neoexplore.py $queue $explore
+		if [ $? -ne 0 ]
+		then
+			break
+		fi
+
+		python neospider.py $queue $savedir
+		sleep 2
+	done
+}
+
+neorun 1000
+
