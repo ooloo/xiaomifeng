@@ -17,7 +17,7 @@ while [ 1 ]
 do
 	page=$(($page+1))
 
-	./neoparse yoka_product.xml \
+	./neoparse ${site}_product.xml \
   "http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_${page}_100_0.htm" > /tmp/$site 
 
 	grep "cosmetics" /tmp/$queue| awk '{print $2}' > $queue
