@@ -37,37 +37,38 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
 #------------------ amazon ----------------
 def _amazon(link, html):
   title=brand=price=img=size=category=desc=''
+  html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//span[@class='OurPrice']")
+  nodes=doc.xpath("//b[@class='priceLarge']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price
 
-  nodes=doc.xpath("//h1[@class='DetailTitle']")
+  nodes=doc.xpath("//span[@id='btAsinTitle']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title
 
-  nodes=doc.xpath("//div[@class='product-author']/a")
+  nodes=doc.xpath("//h1[@class='parseasinTitle']/following::*[1]")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand
 
-  nodes=doc.xpath("//div[@class='ContentText']")
-  for node in nodes:
-    if(node.text_content() != ''):
-      desc = node.text_content().encode('utf8').strip()
-      break;
+  #nodes=doc.xpath("//div[@class='ContentText']")
+  #for node in nodes:
+  #  if(node.text_content() != ''):
+  #    desc = node.text_content().encode('utf8').strip()
+  #    break;
 
-  nodes=doc.xpath("//div[@id='productshowmidpic']/a/img")
+  nodes=doc.xpath("//td[@id='prodImageCell']/a/img")
   try:
     img = nodes[0].attrib['src']
     print img
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='ContentText']/a")
+  nodes=doc.xpath("//div[@class='content']//a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12):
@@ -78,16 +79,16 @@ def _amazon(link, html):
       category = category + ',' + str
     print category
 
-  y = unicode('容量：', 'utf8')
-  nodes=doc.xpath("//div[@class='Left']//text()")
-  try:
-    x = nodes.index(y) + 1
-    size = nodes[x].encode('utf8').strip() 
-    print size
-  except ValueError:
-    pass
+  #y = unicode('容量：', 'utf8')
+  #nodes=doc.xpath("//div[@class='Left']//text()")
+  #try:
+  #  x = nodes.index(y) + 1
+  #  size = nodes[x].encode('utf8').strip() 
+  #  print size
+  #except ValueError:
+  #  pass
 
-  bigimg = img.replace('AA200', 'AA500')
+  bigimg = img
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:

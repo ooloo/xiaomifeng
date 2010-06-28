@@ -2,7 +2,7 @@
 
 export LANG=c
 
-site=yoka
+site=pclady
 queue=${site}_queue
 savedir=/data/${site}/
 
@@ -15,12 +15,12 @@ rm -f $explore
 
 while [ 1 ]
 do
+	./neoparse pclady_product.xml \
+  "http://cosme.pclady.com.cn/products_list/br0_bs0_bi0_sm0_ef0_pb0_pe0_or0_p$page.html" > /tmp/$queue
+
 	page=$(($page+1))
 
-	./neoparse yoka_product.xml \
-  "http://brand.yoka.com/cosmetics/all/product_0_0_0_21_all_0_${page}_100_0.htm" > /tmp/$site 
-
-	grep "cosmetics" /tmp/$queue| awk '{print $2}' > $queue
+	grep "/product/" /tmp/$queue| awk '{print $2}' > $queue
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
