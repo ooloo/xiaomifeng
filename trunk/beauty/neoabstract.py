@@ -73,6 +73,8 @@ def _amazon(link, html):
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12):
       continue
+    if(len(str) < 1):
+      category = ''
     if(category == ''):
       category = str
     else:
@@ -88,7 +90,7 @@ def _amazon(link, html):
   #except ValueError:
   #  pass
 
-  bigimg = img
+  bigimg = img.replace('_SL500_AA280_', '_AA500_')
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
