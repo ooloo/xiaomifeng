@@ -8,6 +8,8 @@ then
   exit
 fi
 
+./yoka.sh > /tmp/run.log
+./pclady.sh > /tmp/run.log
 ./amazon.sh > /tmp/run.log
 ./dangdang.sh > /tmp/run.log
 ./no5.sh > /tmp/run.log
@@ -29,6 +31,4 @@ fi
 ./u9buy.sh > /tmp/run.log
 ./strawberrynet.sh > /tmp/run.log
 ./qookoo.sh > /tmp/run.log
-./yoka.sh > /tmp/run.log
-./pclady.sh > /tmp/run.log
 

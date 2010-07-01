@@ -19,6 +19,8 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
   elif title == '':
     return
 
+  price = price.replace(',','')
+
   dict = {}
   dict['item'] = {}
   dict['item']['link'] = link
