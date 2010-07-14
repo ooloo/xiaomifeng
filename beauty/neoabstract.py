@@ -872,6 +872,70 @@ def _jafei(link, html):
 
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
 
+#------------------ yoka ----------------
+def _yoka(link, html):
+  title=brand=price=img=bigimg=size=category=desc=''
+  html = html.decode('utf-8')
+  doc = H.document_fromstring(html)
+
+  price = '0'
+  img=bigimg='http://images.yoka.com/pic/news/2009/0202/logo.jpg'
+
+  nodes=doc.xpath("//div[@class='box1tit']/div/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//dl[@class='bnav']/dt/a[2]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+  print brand
+
+  nodes=doc.xpath("//dl[@class='bnav']/dt/a[3]")
+  for node in nodes:
+    category = node.text_content().encode('utf8').replace('/', ',').strip()
+  print category 
+
+  nodes=doc.xpath("//div[@class='box1rg21']")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    desc += str + '\n'
+  print desc
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+
+#------------------ pclady ----------------
+def _pclady(link, html):
+  title=brand=price=img=bigimg=size=category=desc=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  price = '0'
+  img=bigimg='http://images.yoka.com/pic/news/2009/0202/logo.jpg'
+
+  nodes=doc.xpath("//div[@class='bigTit']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
+
+  nodes=doc.xpath("//div[@class='position']/a[2]")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').strip()
+  print brand
+
+  nodes=doc.xpath("//div[@class='position']/a[3]")
+  for node in nodes:
+    category = node.text_content().encode('utf8').replace('/', ',').strip()
+  print category 
+
+  nodes=doc.xpath("//div[@class='dTxt']/div[@class='pDes']")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    desc += str + '\n'
+  print desc
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+
 
 #------------------ main ----------------
 if __name__ == '__main__': 
