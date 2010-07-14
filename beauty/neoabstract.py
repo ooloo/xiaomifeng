@@ -911,7 +911,7 @@ def _pclady(link, html):
   doc = H.document_fromstring(html)
 
   price = '0'
-  img=bigimg='http://images.yoka.com/pic/news/2009/0202/logo.jpg'
+  img=bigimg='http://www1.pclady.com.cn/global/2009/images_d/index/lady_logo.gif'
 
   nodes=doc.xpath("//div[@class='bigTit']")
   for node in nodes:
