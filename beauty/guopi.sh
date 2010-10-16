@@ -12,7 +12,7 @@ rm -f $queue
 explore=./.explore_${site}.bdb
 rm -f $explore
 
-./neoparse guopi_product.xml "http://www.guopi.com/map.jsp" > /tmp/$queue 
+./neoparse guopi_product.xml "http://www.guopi.com/" > /tmp/$queue 
 
 grep "link: " /tmp/$queue | grep "blk_product" | awk '{print $2}' > $queue 
 
