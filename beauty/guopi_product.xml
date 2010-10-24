@@ -3,8 +3,8 @@
 <start>
 	<modules>
 		<layer>0</layer>
-		<begin>html></begin>
-		<end>/html></end>
+		<begin>browse_main</begin>
+		<end>browse_right</end>
 	</modules>
 </start>
 
@@ -12,7 +12,7 @@
 	<modules>
 		<type>data</type>
 		<layer>1</layer>
-		<begin>&lt;a href="</begin>
+		<begin>href="</begin>
 		<end>"</end>
 		<static>false</static>
 		<name>link</name>
