@@ -36,12 +36,11 @@ neorun()
 	done
 }
 
-neorun 10420
-neorun 10440
-neorun 10680
-neorun 10562
-neorun 8720
-neorun 10460
-neorun 10560
-neorun 10280
+neorun 19261
+neorun 18920
+neorun 19020 
+neorun 19304
+neorun 8300
+neorun 6781
+neorun 19120
 

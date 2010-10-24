@@ -18,7 +18,7 @@ do
 	page=$(($page+1))
 
 	./neoparse ${site}_product.xml \
-	"http://www.m18.com/FY-FY-12-40-${page}-00-1-0-0.htm" > /tmp/$queue
+	"http://list.m18.com/FY-FY-12-80-${page}-00-1-0-0.htm" > /tmp/$queue
 
 	grep "link: " /tmp/$queue | grep "product.m18.com" | awk '{print $2}' > $queue
 

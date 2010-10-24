@@ -34,7 +34,7 @@ neorun()
 		fi
 
 		python neospider.py $queue $savedir
-		sleep 2
+		sleep 3
 	done
 }
 
