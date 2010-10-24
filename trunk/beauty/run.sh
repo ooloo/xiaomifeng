@@ -12,7 +12,7 @@ fi
 #./pclady.sh >> /tmp/run.log &
 #./360buy.sh >> /tmp/run.log &
 ./amazon.sh >> /tmp/run.log &
-./strawberrynet.sh >> /tmp/run.log &
+./no5.sh >> /tmp/run.log &
 ./dangdang.sh >> /tmp/run.log
 ./guopi.sh >> /tmp/run.log
 ./sasa.sh >> /tmp/run.log
@@ -29,6 +29,6 @@ fi
 ./meethall.sh >> /tmp/run.log
 ./u9buy.sh >> /tmp/run.log
 ./qookoo.sh >> /tmp/run.log
-./no5.sh >> /tmp/run.log
+./strawberrynet.sh >> /tmp/run.log
 ./2688.sh >> /tmp/run.log
 
