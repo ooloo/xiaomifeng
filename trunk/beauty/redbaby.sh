@@ -9,6 +9,8 @@ savedir=/data/${site}/
 mkdir -p $savedir
 rm -f $queue
 
+neorun()
+{
 page=0
 explore=./.explore_${site}.bdb
 rm -f $explore
@@ -18,7 +20,7 @@ do
 	page=$(($page+1))
 
 	./neoparse redbaby_product.xml \
-	"http://www.redbaby.com.cn/Product/Product_List.aspx?&Site=01&BranchID=3&Page=${page}" > /tmp/$queue
+	"http://www.redbaby.com.cn/Product/ProductList_$1_11${page}.htm" > /tmp/$queue
 
 	grep "link: " /tmp/$queue | grep "/Product/ProductInfo" | awk '{print $2}' > $queue
 
@@ -31,4 +33,13 @@ do
 	python neospider.py $queue $savedir
 	sleep 2
 done
+}
 
+neorun 01_203_3035_80salenum_901_1096
+neorun 01_203_3036_80salenum_901_1096
+neorun 01_203_3037_80salenum_901_1096
+neorun 01_203_3046_80salenum_901_1096
+neorun 01_203_3047_80salenum_901_1096
+neorun 01_203_3039_80salenum_901_1096
+neorun 01_203_3040_80salenum_901_1096
+neorun 01_203_30197_80salenum_901_1096
