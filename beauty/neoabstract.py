@@ -107,7 +107,7 @@ def _2688(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//li/em")
+  nodes=doc.xpath("//span[@class='price2']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
@@ -149,34 +149,28 @@ def _dangdang(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//b[@id='salePriceTag']")
+  nodes=doc.xpath("//span[@id='salePriceTag']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='mall_goods_title_text']")
+  nodes=doc.xpath("//div[@class='h1_title']/h1")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title
 
-  nodes=doc.xpath("//div[@class='right_content']")
-  for node in nodes:
-    if(node.text_content() != ''):
-      desc = node.text_content().encode('utf8').strip()
-      break;
+  #nodes=doc.xpath("//div[@class='right_content']")
+  #for node in nodes:
+    #if(node.text_content() != ''):
+      #desc = node.text_content().encode('utf8').strip()
+      #break;
 
-  x = unicode('品牌：', 'utf8')
-  y = unicode('功效：', 'utf8')
-  nodes=doc.xpath("//div[@class='mall_goods_foursort_style_frame']")
+  nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
-    if node.text_content().find(x) >= 0:
-      brand = node.text_content().encode('utf8').split('：')[-1].strip()
-      print brand 
-    elif node.text_content().find(y) >= 0:
-      efficacy = node.text_content().encode('utf8').split('：')[-1].strip()
-      print efficacy 
+    brand = node.attrib['content'].encode('utf8').strip()
+    print brand 
 
-  nodes=doc.xpath("//div[@class='mall_your_position']/span/a")
+  nodes=doc.xpath("//div[@class='dp_break']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12 or str.find('当当网') >= 0):
@@ -346,32 +340,22 @@ def _redbaby(link, html):
   html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@id='ware_txt1']/h1")
+  nodes=doc.xpath("//div[@id='location_info02']/span")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//div[@id='ware_mine']//span[@id='price']")
+  nodes=doc.xpath("//span[@class='weightNumber']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[1]")
+  nodes=doc.xpath("//div[@class='Brand']/a")
   for node in nodes:
-    brand = node.text_content().encode('utf8').split('：')[-1].strip()
+    brand = node.text_content().encode('utf8').strip()
     print brand 
 
-  nodes=doc.xpath("//div[@id='ware_mine']/dl/dt[2]")
-  for node in nodes:
-    size = node.text_content().encode('utf8').split('：')[-1].strip()
-    print size 
-  
-  nodes=doc.xpath("//div[@id='ware_description']//p")
-  for node in nodes:
-    if(len(node.text_content()) > 10):
-      desc += node.text_content().encode('utf8').strip() + '<br/>'
-  
-  nodes=doc.xpath("//div[@id='location_info']/a")
+  nodes=doc.xpath("//div[@id='location_info02']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12):
@@ -395,7 +379,7 @@ def _redbaby(link, html):
 #------------------ 7shop24 ----------------
 def _7shop24(link, html):
   title=brand=price=img=size=category=desc=''
-  html = html.decode('gb18030')
+  html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='right_xb']/div[1]")
@@ -403,7 +387,7 @@ def _7shop24(link, html):
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//div[@class='pro_act']/ul/li[4]//span/span")
+  nodes=doc.xpath("//span[@class='f1 w']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
@@ -594,13 +578,6 @@ def _m18(link, html):
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='goods-pic']/img")
-  try:
-    bigimg = nodes[0].attrib['src']
-    print bigimg
-  except IndexError:
-    pass
-
   nodes=doc.xpath("//div[@class='crumb']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
@@ -612,31 +589,37 @@ def _m18(link, html):
       category = category + ',' + str
     print category 
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, desc)
 
 #------------------ sasa ----------------
 def _sasa(link, html):
   title=brand=price=img=bigimg=size=category=desc=''
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//a[@class='txt_12px_n_666666']")
-  title = nodes[0].text_content().encode('utf8').strip()
-  print title 
+  nodes=doc.xpath("//a[@class='txt_16px_n_666666']")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title 
 
   nodes=doc.xpath("//td[@class='txt_11px_b_EB6495']")
-  price = nodes[1].text_content().encode('utf8').split()[-1]
-  price = str(float(price) * 6.8)
-  print price 
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price
+    if price.find('US$') >= 0:
+      price = price.replace('US$','').strip()
+      price = str(float(price) * 6.8)
+      print price 
+      break 
 
-  nodes=doc.xpath("//a[@class='txt_13px_b_666666']")
+  nodes=doc.xpath("//a[@class='txt_16px_b_666666']")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
 
-  nodes=doc.xpath("//td[@width='50' and @class='txt_12px_b_666666']/parent::*")
-  size = nodes[0].text_content().split()[1] + nodes[0].text_content().split()[2]
-  size = size.encode('utf8').strip()
-  print size 
+  nodes=doc.xpath("//td[@class='txt_12px_n_666666']")
+  for node in nodes:
+    size = size.encode('utf8').strip()
+    print size 
 
   nodes=doc.xpath("//td[@width='350' and @align='center']/img")
   try:
@@ -872,6 +855,48 @@ def _jafei(link, html):
 
   _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
 
+#------------------ cntvs ----------------
+def _cntvs(link, html):
+  title=brand=price=img=bigimg=size=category=desc=''
+  html = html.decode('utf8')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='starprize']/span")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='proname']/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title
+
+  nodes=doc.xpath("//div[@class='pronumb']")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').replace('商品品牌：','').strip()
+    print brand
+
+  nodes=doc.xpath("//div[@id='ProBox2']//img")
+  try:
+    img = nodes[0].attrib['src']
+    bigimg = img
+    print img
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@style]/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12 or str.find('首页') >= 0 or len(str) <= 1):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+
 #------------------ yoka ----------------
 def _yoka(link, html):
   title=brand=price=img=bigimg=size=category=desc=''
@@ -972,6 +997,7 @@ if __name__ == '__main__':
       continue
 
     t=eval("_" + sys.argv[2])
+    t(v, html)
     try:
       t(v, html)
     except Exception, e:  
