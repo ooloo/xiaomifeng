@@ -176,7 +176,15 @@ def _dangdang(link, html):
 
   brand = keywords.split(',')[-1].encode('utf8')
   if brand == "":
-    brand = keywords.split(',')[0].encode('utf8')
+    vs = keywords.split(',')
+    for i in range(0, len(vs) - 1):
+      str = vs[i].upper().encode('utf8')
+      n = len(str)
+      if n > 10:
+        continue
+      if cmp(str[0:n], title.upper()[0:n]) == 0:
+        brand = vs[i]
+        break
   print brand
 
   nodes=doc.xpath("//div[@class='dp_break']/a")
