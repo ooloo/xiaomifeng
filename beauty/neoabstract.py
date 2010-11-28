@@ -11,7 +11,7 @@ import lxml.etree
 import lxml.html as H
 from _dict2xml import dict2Xml
 
-def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
+def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc):
   if brand == '':
     return
   elif bigimg.find('.') < 0:
@@ -32,13 +32,14 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, desc):
   #dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
+  dict['item']['keywords'] = keywords
   dict['item']['desc'] = desc
   dict['item']['avlid'] = 'true' 
   fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
 def _amazon(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
@@ -57,11 +58,15 @@ def _amazon(link, html):
     brand = node.text_content().encode('utf8').strip()
     print brand
 
-  #nodes=doc.xpath("//div[@class='ContentText']")
-  #for node in nodes:
-  #  if(node.text_content() != ''):
-  #    desc = node.text_content().encode('utf8').strip()
-  #    break;
+  nodes=doc.xpath("//meta[@name='description']")
+  for node in nodes:
+    desc = node.attrib['content'].encode('utf8').strip()
+    print desc
+
+  nodes=doc.xpath("//meta[@name='keywords']")
+  for node in nodes:
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords 
 
   nodes=doc.xpath("//td[@id='prodImageCell']/a/img")
   try:
@@ -93,7 +98,7 @@ def _amazon(link, html):
   #  pass
 
   bigimg = img.replace('_SL500_AA280_', '_AA500_')
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
   #nodes=doc.xpath("//h2[@class='DetailTitle']")
   #for node in nodes:
     #tree=lxml.etree.ElementTree(node)
@@ -103,7 +108,7 @@ def _amazon(link, html):
 
 #------------------ 2688 ----------------
 def _2688(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -141,11 +146,11 @@ def _2688(link, html):
     pass
 
   bigimg = img.replace('_S.', '.')
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ dangdang ----------------
 def _dangdang(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -159,16 +164,20 @@ def _dangdang(link, html):
     title = node.text_content().encode('utf8').strip()
     print title
 
-  #nodes=doc.xpath("//div[@class='right_content']")
-  #for node in nodes:
-    #if(node.text_content() != ''):
-      #desc = node.text_content().encode('utf8').strip()
-      #break;
+  nodes=doc.xpath("//meta[@name='description']")
+  for node in nodes:
+    desc = node.attrib['content'].encode('utf8').strip()
+    print desc
 
   nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
-    brand = node.attrib['content'].encode('utf8').strip()
-    print brand 
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords
+
+  brand = keywords.split(',')[-1].encode('utf8')
+  if brand == "":
+    brand = keywords.split(',')[0].encode('utf8')
+  print brand
 
   nodes=doc.xpath("//div[@class='dp_break']/a")
   for node in nodes:
@@ -189,11 +198,11 @@ def _dangdang(link, html):
     pass
 
   bigimg = img.replace('_b.', '_o.')
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ 360buy ----------------
 def _360buy(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -226,11 +235,11 @@ def _360buy(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ no5 ----------------
 def _no5(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -279,11 +288,11 @@ def _no5(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ yoyo18 ----------------
 def _yoyo18(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -332,11 +341,11 @@ def _yoyo18(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ redbaby ----------------
 def _redbaby(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
@@ -374,11 +383,11 @@ def _redbaby(link, html):
     pass
 
   bigimg = img.replace('Middle', 'Big')
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ 7shop24 ----------------
 def _7shop24(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
@@ -413,11 +422,11 @@ def _7shop24(link, html):
       category = category + ',' + str
     print category
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ lafaso ----------------
 def _lafaso(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.decode('utf8').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
@@ -462,11 +471,11 @@ def _lafaso(link, html):
       category = category + ',' + str
     print category 
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ meixiu ----------------
 def _meixiu(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -508,11 +517,11 @@ def _meixiu(link, html):
       category = category + ',' + str
     print category 
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ strawberrynet ----------------
 def _strawberrynet(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
@@ -549,11 +558,11 @@ def _strawberrynet(link, html):
     category = node.text_content().replace('-',',').replace(' ', '').encode('utf8').strip()
     print category 
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ m18 ----------------
 def _m18(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//h1[@id='styleName']")
@@ -589,11 +598,11 @@ def _m18(link, html):
       category = category + ',' + str
     print category 
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ sasa ----------------
 def _sasa(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//a[@class='txt_16px_n_666666']")
@@ -629,11 +638,11 @@ def _sasa(link, html):
     pass
 
   bigimg = img.replace('n.jpg', 'l.jpg')
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ guopi ----------------
 def _guopi(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
@@ -676,11 +685,11 @@ def _guopi(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ yihaodian ----------------
 def _yihaodian(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//span[@id='product_name']")
@@ -723,11 +732,11 @@ def _yihaodian(link, html):
       category = category + ',' + str
     print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ meethall ----------------
 def _meethall(link, html):
-  title=brand=price=img=size=category=desc=''
+  title=brand=price=img=size=category=keywords=desc=''
   html = html.decode('gb18030').replace('&nbsp;&nbsp;', '\t')
   doc = H.document_fromstring(html)
 
@@ -775,11 +784,11 @@ def _meethall(link, html):
   except IndexError:
     pass
 
-  _add2xml(link, title, brand, price, category, img, img, size, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ qookoo ----------------
 def _qookoo(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
   nodes=doc.xpath("//div[@class='biaoti']")
@@ -816,11 +825,11 @@ def _qookoo(link, html):
       category = category + ',' + str
     print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ jafei ----------------
 def _jafei(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -853,11 +862,11 @@ def _jafei(link, html):
     category = str.replace('/', ',')
     print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ cntvs ----------------
 def _cntvs(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
@@ -895,11 +904,86 @@ def _cntvs(link, html):
       category = category + ',' + str
     print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
+
+#------------------ d1 ----------------
+def _d1(link, html):
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
+  html = html.decode('gb18030')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//span[@style='color:#ff5901;']")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//meta[@name='keywords']")
+  for node in nodes:
+    keywords = node.attrib['content'].encode('utf8').strip()
+    vs = keywords.split('-')
+    title = vs[0].strip()
+    brand = vs[-1].split(' ')[1].strip()
+    for i in range(1, len(vs)-1):
+      if category=='':
+        category = vs[i]
+      else:
+        category = category + ',' +vs[i]
+        
+  nodes=doc.xpath("//div[@class='gdtltu2']//img")
+  try:
+    img = nodes[0].attrib['src']
+    bigimg = img
+    print img
+  except IndexError:
+    pass
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
+
+#------------------ u9buy ----------------
+def _u9buy(link, html):
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
+  html = html.decode('utf8')
+  doc = H.document_fromstring(html)
+
+  nodes=doc.xpath("//div[@class='starprize']/span")
+  for node in nodes:
+    price = node.text_content().encode('utf8').strip()
+    print price 
+
+  nodes=doc.xpath("//div[@id='proname']/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title
+
+  nodes=doc.xpath("//div[@class='pronumb']")
+  for node in nodes:
+    brand = node.text_content().encode('utf8').replace('商品品牌：','').strip()
+    print brand
+
+  nodes=doc.xpath("//div[@id='ProBox2']//img")
+  try:
+    img = nodes[0].attrib['src']
+    bigimg = img
+    print img
+  except IndexError:
+    pass
+
+  nodes=doc.xpath("//div[@style]/a")
+  for node in nodes:
+    str = node.text_content().encode('utf8').strip()
+    if(len(str) > 12 or str.find('首页') >= 0 or len(str) <= 1):
+      continue
+    if(category == ''):
+      category = str
+    else:
+      category = category + ',' + str
+    print category
+
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ yoka ----------------
 def _yoka(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.decode('utf-8')
   doc = H.document_fromstring(html)
 
@@ -927,11 +1011,11 @@ def _yoka(link, html):
     desc += str + '\n'
   print desc
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 #------------------ pclady ----------------
 def _pclady(link, html):
-  title=brand=price=img=bigimg=size=category=desc=''
+  title=brand=price=img=bigimg=size=category=keywords=desc=''
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
@@ -959,7 +1043,7 @@ def _pclady(link, html):
     desc += str + '\n'
   print desc
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, desc)
+  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
 
 #------------------ main ----------------
@@ -997,7 +1081,6 @@ if __name__ == '__main__':
       continue
 
     t=eval("_" + sys.argv[2])
-    t(v, html)
     try:
       t(v, html)
     except Exception, e:  
