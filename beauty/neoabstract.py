@@ -214,19 +214,18 @@ def _360buy(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='Product_Name']")
+  nodes=doc.xpath("//strong[@id='priceinfo']/parent::*")
   for node in nodes:
-    title = node.text_content().encode('utf8').strip()
-    print title
-
-  nodes=doc.xpath("//em[@class='m_line']")
-  for node in nodes:
+    print node.attrib
     price = node.text_content().encode('utf8').strip()
-    print price 
+    print price
 
-  nodes=doc.xpath("//div[@class='margin_b6' and @id='Position']/a")
+  nodes=doc.xpath("//div[@class='crumb']/a")
+  title = nodes[-1].text_content().encode('utf8').strip()
   del nodes[-1]
+  print title
   brand = nodes[-1].text_content().encode('utf8').strip()
+  del nodes[-1]
   print brand
   del nodes[-1]
   for i in range(2, len(nodes)):
@@ -236,7 +235,12 @@ def _360buy(link, html):
     else:
       category += ',' + str
 
-  nodes=doc.xpath("//div[@id='Product_BigImage']/img")
+  nodes=doc.xpath("//meta[@name='description']")
+  for node in nodes:
+    desc = node.attrib['content'].encode('utf8').strip()
+    #print desc
+
+  nodes=doc.xpath("//div[@class='jqzoom']/img")
   try:
     img = nodes[0].attrib['src']
     print img
@@ -799,20 +803,16 @@ def _qookoo(link, html):
   title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='biaoti']")
+  nodes=doc.xpath("//h1[@class='goodsname']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//font[@id='ECS_SHOPPRICE']")
+  nodes=doc.xpath("//span[@class='price1']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
-
-  nodes=doc.xpath("//div[@class='pinp'][1]")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip() 
-  print brand 
+    break
 
   nodes=doc.xpath("//div[@class='goodspic']//img")
   try:
@@ -822,18 +822,21 @@ def _qookoo(link, html):
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='urhere']/a")
+  nodes=doc.xpath("//div[@class='Navigation']/span/a")
+  del nodes[0]
+  del nodes[0]
+  brand = nodes[0].text_content().encode('utf8').strip()
+  del nodes[0]
+  print brand
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12 or str.find('首页') >= 0):
-      continue
     if(category == ''):
       category = str
     else:
       category = category + ',' + str
     print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ jafei ----------------
 def _jafei(link, html):

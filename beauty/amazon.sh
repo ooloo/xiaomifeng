@@ -25,8 +25,6 @@ neorun()
 
 	  grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/ref=.*?/?/g' |sed 's/&qid=[0-9]\{10\}//g' | sed 's/&sr=.*[^$^&]//g' > $queue
 
-    cp $queue /tmp/$queue.$page
-  
 	  python neoexplore.py $queue $explore
 	  if [ $? -ne 0 ]
 	  then
