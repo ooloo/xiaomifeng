@@ -3,8 +3,8 @@
 <start>
 	<modules>
 		<layer>0</layer>
-		<begin>View_List</begin>
-		<end>right_box1_right</end>
+		<begin>list-h</begin>
+		<end>right-extra end</end>
 	</modules>
 </start>
 
@@ -12,8 +12,8 @@
 	<modules>
 		<type>data</type>
 		<layer>1</layer>
-		<begin>href="</begin>
-		<end>"</end>
+		<begin>href='</begin>
+		<end>'</end>
 		<static>false</static>
 		<name>link</name>
 		<data>NULL</data>

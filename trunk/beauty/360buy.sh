@@ -9,26 +9,45 @@ savedir=/data/${site}/
 mkdir -p $savedir
 rm -f $queue
 
-page=0
 explore=./.explore_${site}.bdb
-rm -f $explore
 
-while [ 1 ]
-do
-	page=$(($page+1))
+neorun()
+{
+  page=0
+  rm -f $explore
 
-	./neoparse 360buy_product.xml \
-	"http://www.360buy.com/products/911-1125-0-0-0-0-0-0-0-0-1-1-${page}.html" > /tmp/$queue
+  while [ 1 ]
+  do
+	  page=$(($page+1))
 
-	grep "link: " /tmp/$queue | grep "/product/" | awk '{print $2}' > $queue
+	  ./neoparse ${site}_product.xml \
+	  "http://www.360buy.com/products/911-1125-$1-0-0-0-0-0-0-0-1-5-${page}.html" > /tmp/$queue
 
-	python neoexplore.py $queue $explore
-	if [ $? -ne 0 ]
-	then
-		break
-	fi
+	  grep "link: " /tmp/$queue | grep "/product/" | awk '{print $2}' > $queue
 
-	python neospider.py $queue $savedir
-	sleep 2
-done
+	  python neoexplore.py $queue $explore
+	  if [ $? -ne 0 ]
+	  then
+		  break
+	  fi
+
+	  python neospider.py $queue $savedir
+	  sleep 2
+  done
+}
+
+neorun 1139
+neorun 1146
+neorun 1140
+neorun 1138
+neorun 1134
+neorun 1149
+neorun 1150
+neorun 1128
+neorun 1129
+neorun 1142
+neorun 1127
+neorun 1143
+neorun 1141
+neorun 1130
 
