@@ -29,6 +29,6 @@ fi
 ./qookoo.sh >> /tmp/run.log &
 ./strawberrynet.sh >> /tmp/run.log &
 ./2688.sh >> /tmp/run.log &
-#./360buy.sh >> /tmp/run.log &
+./360buy.sh >> /tmp/run.log &
 #./u9buy.sh >> /tmp/run.log &
 
