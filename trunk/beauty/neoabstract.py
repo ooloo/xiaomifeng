@@ -214,9 +214,8 @@ def _360buy(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//strong[@id='priceinfo']/parent::*")
+  nodes=doc.xpath("//del")
   for node in nodes:
-    print node.attrib
     price = node.text_content().encode('utf8').strip()
     print price
 
@@ -255,45 +254,36 @@ def _no5(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@id='history']/a")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
-
-  nodes=doc.xpath("//td[@class='no5_price']")
+  nodes=doc.xpath("//div[@class='pro_text magenta']/span")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
-    print price 
+    print price
 
-  nodes=doc.xpath("//div[@class='pro_intro']/p")
+  nodes=doc.xpath("//div[@class='sp_p_texth']/p")
   for node in nodes:
     if(node.text_content() != ''):
       desc = node.text_content().encode('utf8').strip()
       break;
 
-  nodes=doc.xpath("//div[@id='history']/span[@class='redfont12']")
+  nodes=doc.xpath("//div[@id='pro_text_pname']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//div[@id='top_pro']//tr/td")
-  for node in nodes:
-    #print node.attrib
-    size = node.text_content().encode('utf8').strip()
-    print size
-
-  nodes=doc.xpath("//div[@id='top_pro']//td[@width='100%']/a")
+  nodes=doc.xpath("//div[@class='subpage_title']/span/a")
+  brand = nodes[-1].text_content().encode('utf8').strip()
+  del nodes[-1]
+  print brand
+  del nodes[0]
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12):
-      continue
     if(category == ''):
       category = str
     else:
       category = category + ',' + str
     print category 
 
-  nodes=doc.xpath("//div[@id='middle_pic_show']/a/img")
+  nodes=doc.xpath("//div[@class='pro_pic_big']/a/img")
   try:
     img = nodes[0].attrib['src'].strip()
     print img
@@ -1096,7 +1086,6 @@ if __name__ == '__main__':
       t(v, html)
     except Exception, e:  
       pass
-   # break
 
   linkdb.close()
   fo.write('</items>\n')
