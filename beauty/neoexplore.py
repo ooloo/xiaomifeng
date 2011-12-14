@@ -5,7 +5,7 @@ import bsddb
 
 if(len(sys.argv) != 3):
   #print 'Usage: ' + sys.argv[0] + ' <linkfile> <explore.bdb>'
-  exit(1)
+  sys.exit(1)
 
 file=open(sys.argv[1], 'r')
 linkList = file.readlines()
@@ -23,9 +23,9 @@ if len(linkList) == 0:
   exdb['failcount'] = str(failcount) 
   exdb.close()
   if failcount <= 3:
-    exit(0)
+    sys.exit(0)
   else:
-    exit(1)
+    sys.exit(1)
 
 exdb['failcount'] = str(failcount) 
 
@@ -41,7 +41,6 @@ newNum = len(exdb)
 exdb.close()
 
 if oldNum < newNum:
-  exit(0)
+  sys.exit(0)
 else:
-  exit(1)
-
+  sys.exit(1)

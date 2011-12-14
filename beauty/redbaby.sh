@@ -20,9 +20,9 @@ do
 	page=$(($page+1))
 
 	./neoparse redbaby_product.xml \
-	"http://www.redbaby.com.cn/Product/ProductList_$1_11${page}.htm" > /tmp/$queue
+	"http://www.binggo.com/huazhuang/$1p${page}/" > /tmp/$queue
 
-	grep "link: " /tmp/$queue | grep "/Product/ProductInfo" | awk '{print $2}' > $queue
+	grep "link: " /tmp/$queue | grep -E "/huazhuang/[0-9]+\.html" | awk '{print $2}' > $queue
 
 	python neoexplore.py $queue $explore
 	if [ $? -ne 0 ]
@@ -35,11 +35,11 @@ do
 done
 }
 
-neorun 01_203_3035_80salenum_901_1096
-neorun 01_203_3036_80salenum_901_1096
-neorun 01_203_3037_80salenum_901_1096
-neorun 01_203_3046_80salenum_901_1096
-neorun 01_203_3047_80salenum_901_1096
-neorun 01_203_3039_80salenum_901_1096
-neorun 01_203_3040_80salenum_901_1096
-neorun 01_203_30197_80salenum_901_1096
+neorun a20101
+neorun a20102 
+neorun a20103
+neorun a20104
+neorun a20105
+neorun a20106
+neorun a20107
+neorun a20108
