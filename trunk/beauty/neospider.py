@@ -21,10 +21,10 @@ def httpGet(url, key):
   except Exception, e:
     #print e.__class__
     return False
-  finally:
-    fileLen = str(fp.tell())
-    filesize = ' [' + fileLen + ']'
-    fp.close()
+  #finally:
+  fileLen = str(fp.tell())
+  filesize = ' [' + fileLen + ']'
+  fp.close()
 
   code = c.getinfo(pycurl.HTTP_CODE)
   print 'save to file: ' + filename + filesize
@@ -38,7 +38,7 @@ def httpGet(url, key):
 
 if(len(sys.argv) != 3):
   print 'Usage: ' + sys.argv[0] + ' <linkfile> <savepath>'
-  exit(1)
+  sys.exit(1)
 
 file=open(sys.argv[1], 'r')
 linkList = file.readlines()

@@ -23,7 +23,7 @@ neorun()
 	  ./neoparse ${site}_product.xml \
 	  "http://www.amazon.cn/s/ref=?ie=UTF8&n=$1&page=${page}" > /tmp/$queue
 
-	  grep "link: " /tmp/$queue | grep detailApp | awk '{print $2}' | sed 's/ref=.*?/?/g' |sed 's/&qid=[0-9]\{10\}//g' | sed 's/&sr=.*[^$^&]//g' > $queue
+	  grep "link: " /tmp/$queue | grep "/dp/" | awk '{print $2}' | awk -F'/' '{if($5=="dp") print "http://"$3"/"$5"/"$6}' > $queue
 
 	  python neoexplore.py $queue $explore
 	  if [ $? -ne 0 ]
@@ -36,5 +36,5 @@ neorun()
   done
 }
 
-neorun 852804051
+#neorun 852804051
 neorun 746776051
