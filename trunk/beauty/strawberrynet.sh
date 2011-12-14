@@ -15,10 +15,10 @@ neorun()
 {
 	rm -f $explore
 
-	./neoparse ${site}_product.xml \
+	./neoparse ${site}_brand.xml \
 	"http://cn.strawberrynet.com/$1/" > /tmp/$queue
 
-	grep "link: " /tmp/$queue | awk '{print $2}' > $queue.index
+	grep "link: " /tmp/$queue | grep "/$1/" |awk '{print $2}' > $queue.index
 
 	cat $queue.index | while read link
 	do

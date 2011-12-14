@@ -3,8 +3,8 @@
 <start>
 	<modules>
 		<layer>0</layer>
-		<begin>list-content grid</begin>
-		<end>src="/js/search_bottom.js"</end>
+		<begin>leftContainer_S</begin>
+		<end>footer1</end>
 	</modules>
 </start>
 
