@@ -116,7 +116,7 @@ int get_html(char *htmlfile, char *url, char *src)
   if(htmlfile == NULL)
   {
     assert(MD5((const unsigned char*)url, strlen(url), (unsigned char*)key));
-    sprintf(tmpfile, "%llx.html", key[0]);
+    sprintf(tmpfile, "/tmp/%llx.html", key[0]);
 
     sprintf(src, "wget -U \"Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)\" --timeout=30 -O %s \"%s\"", tmpfile, url);
     if(system(src) != 0)
