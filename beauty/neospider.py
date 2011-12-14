@@ -17,14 +17,15 @@ def httpGet(url, key):
   c.setopt(pycurl.URL, url)
   c.setopt(pycurl.WRITEDATA, fp)
   try:
-    c.perform()
-  except Exception, e:
-    #print e.__class__
-    return False
-  #finally:
-  fileLen = str(fp.tell())
-  filesize = ' [' + fileLen + ']'
-  fp.close()
+    try:
+      c.perform()
+    except Exception, e:
+      #print e.__class__
+      return False
+  finally:
+    fileLen = str(fp.tell())
+    filesize = ' [' + fileLen + ']'
+    fp.close()
 
   code = c.getinfo(pycurl.HTTP_CODE)
   print 'save to file: ' + filename + filesize
