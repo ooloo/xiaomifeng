@@ -16,7 +16,7 @@ fi
 ./yihaodian.sh >> /tmp/run.log &
 ./jumei.sh >> /tmp/run.log &
 ./strawberrynet.sh >> /tmp/run.log &
-#./no5.sh >> /tmp/run.log &
+./no5.sh >> /tmp/run.log &
 #./guopi.sh >> /tmp/run.log &
 #./sasa.sh >> /tmp/run.log &
 #./cntvs.sh >> /tmp/run.log &

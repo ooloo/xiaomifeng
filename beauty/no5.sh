@@ -41,5 +41,4 @@ neorun c2
 neorun c3
 neorun c4
 neorun c5
-neorun c6
 
