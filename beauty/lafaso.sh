@@ -21,7 +21,7 @@ neorun()
 		page=$(($page+1))
 
 		./neoparse ${site}_product.xml \
-		"http://www.lafaso.com/directory/list.html?dire=$1&pageNo=${page}" > /tmp/$queue
+		"http://s.lafaso.com/directory/$1_0_0_0_0_00_0_000_${page}.html" > /tmp/$queue
 
 		grep "link: " /tmp/$queue | grep "/product/" | awk '{print $2}' > $queue
 
@@ -36,11 +36,24 @@ neorun()
 	done
 }
 
-neorun 19261
-neorun 18920
-neorun 19020 
-neorun 19304
-neorun 8300
-neorun 6781
-neorun 19120
+neorun 19462 
+neorun 19305
+neorun 19408
+neorun 19421
+neorun 19429
+neorun 19280
+neorun 19301
+neorun 19300
+neorun 19281
+neorun 19022
+neorun 19021
+neorun 19121
+neorun 19140
+neorun 19141
+neorun 18984
+neorun 18940
+neorun 18921
+neorun 18960
+neorun 18961
+neorun 22060
 
