@@ -1,5 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf8 -*-
+# coding=gb18030
 
 import re
 import urlparse
@@ -7,7 +8,6 @@ import time,StringIO
 import sys, os, re 
 import bsddb
 import lxml.html
-import lxml.etree
 import lxml.html as H
 from _dict2xml import dict2Xml
 
@@ -58,10 +58,10 @@ def _amazon(link, html):
     brand = node.text_content().encode('utf8').strip()
     print brand
 
-  nodes=doc.xpath("//meta[@name='description']")
-  for node in nodes:
-    desc = node.attrib['content'].encode('utf8').strip()
-    print desc
+  #nodes=doc.xpath("//meta[@name='description']")
+  #for node in nodes:
+    #desc = node.attrib['content'].encode('utf8').strip()
+    #print desc
 
   nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
@@ -214,15 +214,8 @@ def _360buy(link, html):
   html = html.decode('gb18030')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//del")
-  for node in nodes:
-    price = node.text_content().encode('utf8').strip()
-    print price
-
   nodes=doc.xpath("//div[@class='crumb']/a")
-  title = nodes[-1].text_content().encode('utf8').strip()
   del nodes[-1]
-  print title
   brand = nodes[-1].text_content().encode('utf8').strip()
   del nodes[-1]
   print brand
@@ -234,10 +227,15 @@ def _360buy(link, html):
     else:
       category += ',' + str
 
-  nodes=doc.xpath("//meta[@name='description']")
+  nodes=doc.xpath("//div[@id='name']/h1")
+  for node in nodes:
+    title = node.text_content().encode('utf8').strip()
+    print title
+	
+  nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
     desc = node.attrib['content'].encode('utf8').strip()
-    #print desc
+    print desc
 
   nodes=doc.xpath("//div[@class='jqzoom']/img")
   try:
@@ -246,6 +244,7 @@ def _360buy(link, html):
   except IndexError:
     pass
 
+  price = "0"
   _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ no5 ----------------
@@ -289,7 +288,7 @@ def _no5(link, html):
     print img
   except IndexError:
     pass
-
+  
   _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ yoyo18 ----------------
@@ -1058,8 +1057,8 @@ if __name__ == '__main__':
   global fo
   ISOTIMEFORMAT='%Y%m%d'
   timestr = time.strftime(ISOTIMEFORMAT, time.localtime())
-  fo = open('/baijia/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
-  fd = open('/deldata/' + sys.argv[2] + '.del', 'w')
+  fo = open('/home3/xml/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
+  fd = open('/home3/xml/' + sys.argv[2] + '.del', 'w')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
@@ -1081,10 +1080,15 @@ if __name__ == '__main__':
       fd.write(v + '\n')
       continue
 
+    #t=eval("_" + sys.argv[2])
+    #t(v, html)
+    #sys.exit(0);
+
     t=eval("_" + sys.argv[2])
     try:
       t(v, html)
     except Exception, e:  
+      print "error!!!"
       pass
 
   linkdb.close()
