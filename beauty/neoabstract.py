@@ -20,6 +20,7 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, d
     return
 
   price = price.replace(',','')
+  piclink = urlparse.urljoin(link, bigimg).replace('/../', '/')
 
   dict = {}
   dict['item'] = {}
@@ -28,13 +29,14 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, d
   dict['item']['brand'] = brand
   dict['item']['price'] = re.search('[0-9.]+', price).group() 
   dict['item']['category'] = category
-  dict['item']['img'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
+  dict['item']['img'] = piclink
   #dict['item']['bigimg'] = urlparse.urljoin(link, bigimg).replace('/../', '/') 
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
   dict['item']['keywords'] = keywords
-  dict['item']['desc'] = desc
+  dict['item']['desc'] = brand + ' ' + title + ' ' + category + ' ' + keywords
   dict['item']['avlid'] = 'true' 
+  fd.write(piclink + '\n')
   fo.write(dict2Xml(dict, "", 1))
 
 #------------------ amazon ----------------
@@ -164,10 +166,10 @@ def _dangdang(link, html):
     title = node.text_content().encode('utf8').strip()
     print title
 
-  nodes=doc.xpath("//meta[@name='description']")
-  for node in nodes:
-    desc = node.attrib['content'].encode('utf8').strip()
-    print desc
+  #nodes=doc.xpath("//meta[@name='description']")
+  #for node in nodes:
+    #desc = node.attrib['content'].encode('utf8').strip()
+    #print desc
 
   nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
@@ -234,8 +236,8 @@ def _360buy(link, html):
 	
   nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
-    desc = node.attrib['content'].encode('utf8').strip()
-    print desc
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords
 
   nodes=doc.xpath("//div[@class='jqzoom']/img")
   try:
@@ -258,16 +260,21 @@ def _no5(link, html):
     price = node.text_content().encode('utf8').strip()
     print price
 
-  nodes=doc.xpath("//div[@class='sp_p_texth']/p")
-  for node in nodes:
-    if(node.text_content() != ''):
-      desc = node.text_content().encode('utf8').strip()
-      break;
+  #nodes=doc.xpath("//div[@class='sp_p_texth']/p")
+  #for node in nodes:
+    #if(node.text_content() != ''):
+      #desc = node.text_content().encode('utf8').strip()
+      #break;
 
   nodes=doc.xpath("//div[@id='pro_text_pname']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
+
+  nodes=doc.xpath("//meta[@name='Keywords']")
+  for node in nodes:
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords 
 
   nodes=doc.xpath("//div[@class='subpage_title']/span/a")
   brand = nodes[-1].text_content().encode('utf8').strip()
@@ -347,25 +354,22 @@ def _yoyo18(link, html):
 #------------------ redbaby ----------------
 def _redbaby(link, html):
   title=brand=price=img=size=category=keywords=desc=''
-  html = html.decode('gb18030').replace('&nbsp;', ' ')
+  html = html.decode('utf8')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@id='location_info02']/span")
+  nodes=doc.xpath("//div[@class='productName productInfoPriceLine']/h1")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//span[@class='weightNumber']")
+  nodes=doc.xpath("//div[@class='productInfoPrice']//span")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='Brand']/a")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip()
-    print brand 
-
-  nodes=doc.xpath("//div[@id='location_info02']/a")
+  nodes=doc.xpath("//div[@class='globalCurrentCrumb']//a")
+  brand = nodes[-1].text_content().encode('utf8').strip()
+  del nodes[-1]
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12):
@@ -376,12 +380,17 @@ def _redbaby(link, html):
       category = category + ',' + str
     print category 
 
-  nodes=doc.xpath("//div[@id='Product_BigImage']/a/img")
+  nodes=doc.xpath("//div[@class='productPic']//img[@width='350']")
   try:
     img = nodes[0].attrib['src']
     print img
   except IndexError:
     pass
+
+  nodes=doc.xpath("//meta[@name='keywords']")
+  for node in nodes:
+    desc = node.attrib['content'].encode('utf8').strip()
+    print desc
 
   bigimg = img.replace('Middle', 'Big')
   _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
@@ -431,37 +440,34 @@ def _lafaso(link, html):
   html = html.decode('utf8').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='fr shopr_boxtopR']/h1")
+  nodes=doc.xpath("//h2[@id='ppname']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//span[@class='fl mr10']")
+  nodes=doc.xpath("//h2[@class='propricebg pos01']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='shopr_boxtopRcont mauto']/ul[1]/li[1]/a")
+  nodes=doc.xpath("//p[@class='probrandbox pt5']//a")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
 
-  nodes=doc.xpath("//div[@id='cont0']/div[@class='clear pa10 lh25']")
+  nodes=doc.xpath("//meta[@name='keywords']")
   for node in nodes:
-    if(node.text_content() != ''):
-      desc = node.text_content().encode('utf8').replace(' ','')
-      break;
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords
 
-  nodes=doc.xpath("//div[@class='fl shopr_boxtopL']//img")
+  nodes=doc.xpath("//div[@class='fl focusBox']//img")
   try:
-    img = nodes[0].attrib['src']
-    print img
-    bigimg = nodes[0].attrib['alt']
+    bigimg = nodes[0].attrib['src']
     print bigimg
   except IndexError:
     pass
 
-  nodes=doc.xpath("//h2[@class='crumbs']/em")
+  nodes=doc.xpath("//div[@class='location']/a")
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
     if(len(str) > 12 or str.find('首页') >= 0):
@@ -526,7 +532,7 @@ def _strawberrynet(link, html):
   html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='div_content19 fontBold']")
+  nodes=doc.xpath("//div[@class='div_content19']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
@@ -536,7 +542,7 @@ def _strawberrynet(link, html):
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='prodDetailPadding']/div/h3")
+  nodes=doc.xpath("//p[@class='div_pageTitle']")
   for node in nodes:
     brand = node.text_content().encode('utf8').strip()
     print brand 
@@ -547,17 +553,17 @@ def _strawberrynet(link, html):
       desc = node.text_content().encode('utf8').strip()
       break;
 
-  nodes=doc.xpath("//div[@class='div_width395 div_centerAlign']/img")
+  nodes=doc.xpath("//div[@class='div_left div_width370']//img")
   try:
-    img = nodes[0].attrib['src']
+    img = nodes[0].attrib['src'].replace('com//', 'com/')
     print img
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='mainPadding fontBold']/h2")
+  nodes=doc.xpath("//p[@class='div_pageSubTitle']")
   for node in nodes:
-    category = node.text_content().replace('-',',').replace(' ', '').encode('utf8').strip()
-    print category 
+    category = node.text_content().encode('utf8').strip()
+    print category
 
   _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
@@ -693,47 +699,45 @@ def _yihaodian(link, html):
   title=brand=price=img=bigimg=size=category=keywords=desc=''
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//span[@id='product_name']")
+  nodes=doc.xpath("//font[@id='productMainName']")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//span[@id='product_sale_price' or @id='product_list_price']")
+  nodes=doc.xpath("//span[@id='product_sale_price' or @id='nonMemberPrice']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//span[@id='product_format']")
+  nodes=doc.xpath("//div[@class='box borderbottom_dotted']")
   for node in nodes:
-    size = node.text_content().encode('utf8').strip()
-    print size 
+    brand = node.text_content().encode('utf8').split()[3].strip()
+  print brand
 
-  nodes=doc.xpath("//div[@class='pt5 pb5 gray'][1]/a[1]")
-  for node in nodes:
-    brand = node.text_content().encode('utf8').strip() 
-  print brand 
-
-  nodes=doc.xpath("//div[@id='picDiv']/img")
+  nodes=doc.xpath("//div[@id='mainPic']/a/img")
   try:
     img = nodes[0].attrib['src']
     print img
-    bigimg = nodes[0].attrib['alt']
-    print bigimg
   except IndexError:
     pass
 
-  nodes=doc.xpath("//div[@class='nav blueT']/a")
+  nodes=doc.xpath("//meta[@name='Keywords']")
+  for node in nodes:
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords
+
+  nodes=doc.xpath("//div[@class='detailnav mt5']//a")
+  del nodes[0]
+  del nodes[-1]
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12 or str.find('一号店') >= 0):
-      continue
     if(category == ''):
       category = str
     else:
       category = category + ',' + str
-    print category
+  print category
 
-  _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
+  _add2xml(link, title, brand, price, category, img, img, size, keywords, desc)
 
 #------------------ meethall ----------------
 def _meethall(link, html):
@@ -1054,11 +1058,11 @@ if __name__ == '__main__':
   if(sys.argv[1][-1] != '/'):
     sys.argv[1] += '/'
 
-  global fo
+  global fo,fd
   ISOTIMEFORMAT='%Y%m%d'
   timestr = time.strftime(ISOTIMEFORMAT, time.localtime())
   fo = open('/home3/xml/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
-  fd = open('/home3/xml/' + sys.argv[2] + '.del', 'w')
+  fd = open('/home3/xml/' + sys.argv[2] + '.piclink', 'w')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
 
@@ -1077,7 +1081,6 @@ if __name__ == '__main__':
       html = f.read()
       f.close()
     else:
-      fd.write(v + '\n')
       continue
 
     #t=eval("_" + sys.argv[2])
