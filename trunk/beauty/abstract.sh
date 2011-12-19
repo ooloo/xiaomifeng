@@ -3,9 +3,9 @@ python2.5 neoabstract.py /data/amazon amazon
 python2.5 neoabstract.py /data/dangdang dangdang
 python2.5 neoabstract.py /data/no5 no5
 python2.5 neoabstract.py /data/redbaby redbaby
-python2.5 neoabstract.py /data/yihaodian yihaodian
 python2.5 neoabstract.py /data/lafaso lafaso
 python2.5 neoabstract.py /data/strawberrynet strawberrynet
+python2.5 neoabstract.py /data/yihaodian yihaodian
 #python2.5 neoabstract.py /data/guopi guopi
 #python2.5 neoabstract.py /data/2688 2688
 #python2.5 neoabstract.py /data/sasa sasa
