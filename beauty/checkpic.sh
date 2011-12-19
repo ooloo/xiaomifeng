@@ -23,12 +23,12 @@ do
 	if [ $? == 0 ]
 	then
 		echo "$key.jpg exist."
-		continue;
+		#continue;
 	fi
 
 	sleep 2
 	wget --timeout=15 -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" \
-	"$link" -O $dir/$1.a.jpg
+	"$link" -O $dir/$1.jpg
 
 	/usr/local/bin/convert $dir/$1.jpg -trim /tmp/$1.a.jpg
 	if [ $? -ne 0 ]
@@ -58,7 +58,7 @@ do
 	#fi
 
 	echo $subdir/$key.jpg
-	#/usr/local/bin/convert -resize 150x150! /tmp/b.jpg $dest/$subdir/image_150x150_$key.jpg
+	/usr/local/bin/convert -resize 150x150! /tmp/b.jpg $dest/$subdir/image_150x150_$key.jpg
 	/usr/local/bin/convert -resize 200x200! /tmp/$1.b.jpg $dest/$subdir/image_200x200_$key.jpg
 	#/usr/local/bin/convert -resize 240x300! /tmp/c.jpg $dest/$subdir/image_240x300_$key.jpg
 done
