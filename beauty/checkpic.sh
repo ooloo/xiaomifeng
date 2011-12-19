@@ -58,7 +58,7 @@ do
 	#fi
 
 	echo $subdir/$key.jpg
-	/usr/local/bin/convert -resize 150x150! /tmp/b.jpg $dest/$subdir/image_150x150_$key.jpg
+	/usr/local/bin/convert -resize 150x150! /tmp/$1.b.jpg $dest/$subdir/image_150x150_$key.jpg
 	/usr/local/bin/convert -resize 200x200! /tmp/$1.b.jpg $dest/$subdir/image_200x200_$key.jpg
 	#/usr/local/bin/convert -resize 240x300! /tmp/c.jpg $dest/$subdir/image_240x300_$key.jpg
 done
