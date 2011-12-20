@@ -36,7 +36,7 @@ do
 		continue
 	fi
 
-	size=`/usr/local/bin/identify /tmp/a.jpg | awk '{print $3}'`
+	size=`/usr/local/bin/identify /tmp/$1.a.jpg | awk '{print $3}'`
 	pos=`expr index $size "x"`
 	len=`expr length $size`
 
