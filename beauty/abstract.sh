@@ -1,3 +1,8 @@
+#!/bin/sh
+
+mkdir -p /home3/xml/history/
+mv /home3/xml/*.* /home3/xml/history/
+
 python2.5 neoabstract.py /data/360buy 360buy
 python2.5 neoabstract.py /data/amazon amazon
 python2.5 neoabstract.py /data/dangdang dangdang
