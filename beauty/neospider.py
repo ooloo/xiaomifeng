@@ -1,7 +1,7 @@
 import pycurl,string
 import hashlib,urlparse
 import time,StringIO
-import sys, os, re 
+import sys, os, re
 import bsddb
 
 def httpGet(url, key):

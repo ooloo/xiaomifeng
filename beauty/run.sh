@@ -1,12 +1,13 @@
 #!/bin/sh
 
-ps -ef | grep "./run.sh" | grep -v "grep" > /tmp/spider.num
-num=`wc -l /tmp/spider.num | awk '{print $1}'`
-if [ $num -gt 1 ]
+/sbin/pidof python
+if [ $? -ne 0 ]
 then
-  echo "found once......."
+  echo "found once, plz stop it."
   exit
 fi
+
+rm /tmp/run.log
 
 ./360buy.sh >> /tmp/run.log &
 ./amazon.sh >> /tmp/run.log &

@@ -34,8 +34,9 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, d
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
   dict['item']['keywords'] = keywords
-  dict['item']['desc'] = brand + ' ' + title + ' ' + category + ' ' + keywords
-  dict['item']['avlid'] = 'true' 
+  dict['item']['desc'] = brand + ' ' + title + ' ' + category + ' ' + keywords + ' ' + sys.argv[2]
+  dict['item']['time'] = spiderTime.split('.')[0]
+  dict['item']['avlid'] = 'true'
   fd.write(piclink + '\n')
   fo.write(dict2Xml(dict, "", 1))
 
@@ -1058,13 +1059,14 @@ if __name__ == '__main__':
   if(sys.argv[1][-1] != '/'):
     sys.argv[1] += '/'
 
-  global fo,fd
+  global fo,fd,spiderTime;
   ISOTIMEFORMAT='%Y%m%d'
   timestr = time.strftime(ISOTIMEFORMAT, time.localtime())
   fo = open('/home3/xml/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
   fd = open('/home3/xml/' + sys.argv[2] + '.piclink', 'w')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
+  timedb = bsddb.btopen(sys.argv[1] + '._time.bdb', 'r')
 
   now = time.time()
   fo.write('<?xml version="1.0" encoding="UTF-8"?>\n<items>\n')
@@ -1082,6 +1084,11 @@ if __name__ == '__main__':
       f.close()
     else:
       continue
+
+    if timedb.has_key(k):
+      spiderTime = timedb[k]
+    else:
+      spiderTime = '1323456789'
 
     #t=eval("_" + sys.argv[2])
     #t(v, html)
