@@ -1,7 +1,7 @@
 #!/bin/sh
 
 /sbin/pidof python
-if [ $? -ne 0 ]
+if [ $? -eq 0 ]
 then
   echo "found once, plz stop it."
   exit
@@ -15,9 +15,9 @@ rm /tmp/run.log
 ./redbaby.sh >> /tmp/run.log &
 ./lafaso.sh >> /tmp/run.log &
 ./yihaodian.sh >> /tmp/run.log &
-./jumei.sh >> /tmp/run.log &
 ./strawberrynet.sh >> /tmp/run.log &
 ./no5.sh >> /tmp/run.log &
+./jumei.sh >> /tmp/run.log &
 #./guopi.sh >> /tmp/run.log &
 #./sasa.sh >> /tmp/run.log &
 #./cntvs.sh >> /tmp/run.log &
