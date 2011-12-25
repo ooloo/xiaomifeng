@@ -3,7 +3,9 @@
 dir=/home2/baijiapic/download/
 dest=/home2/baijiapic/pic/
 
-file=/home3/xml/$1.piclink
+mkdir -p $dir
+cp /home3/xml/$1.piclink $dir/
+file=$dir/$1.piclink
 #wget -N "http://ihot.3322.org/pic_url" -O pic_url
 
 sort -u $file | while read link
@@ -19,16 +21,16 @@ do
 	subdir=$dir1/$dir2
 	mkdir -p $dest/$subdir
 
-	ls $dest/$subdir/*_$key.jpg > /dev/null 2>&1
-	if [ $? == 0 ]
+	if [ -s $dest/$subdir/image_150x150_$key.jpg ]
 	then
-		echo "$key.jpg exist."
-		#continue;
+		echo "$dest/$subdir/image_150x150_$key.jpg exist."
+		continue;
 	fi
 
 	sleep 2
-	wget --timeout=15 -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" \
-	"$link" -O $dir/$1.jpg
+	wget --timeout=10 -U "Mozilla/5.0(Windows; U; Windows NT 5.1; en-US)" \
+	--connect-timeout=5 --no-http-keep-alive --tries=1 "$link" -O $dir/$1.jpg
+	#curl --connect-timeout 5 -m 10 "$link" -o $dir/$1.jpg
 
 	/usr/local/bin/convert $dir/$1.jpg -trim /tmp/$1.a.jpg
 	if [ $? -ne 0 ]
