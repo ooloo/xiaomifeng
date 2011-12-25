@@ -34,7 +34,7 @@ def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, d
   dict['item']['size'] = size
   dict['item']['store'] = sys.argv[2]
   dict['item']['keywords'] = keywords
-  dict['item']['desc'] = brand + ' ' + title + ' ' + category + ' ' + keywords + ' ' + sys.argv[2]
+  dict['item']['desc'] = brand + ' ' + title + ' ' + keywords + ' ' + sys.argv[2]
   dict['item']['time'] = spiderTime.split('.')[0]
   dict['item']['avlid'] = 'true'
   fd.write(piclink + '\n')
