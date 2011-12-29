@@ -14,7 +14,7 @@ from _dict2xml import dict2Xml
 def _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc):
   if brand == '':
     return
-  elif bigimg.find('.') < 0:
+  elif bigimg.split('/')[-1].find('.') <= 0:
     return
   elif title == '':
     return
@@ -396,37 +396,34 @@ def _redbaby(link, html):
   bigimg = img.replace('Middle', 'Big')
   _add2xml(link, title, brand, price, category, img, bigimg, size, keywords, desc)
 
-#------------------ 7shop24 ----------------
-def _7shop24(link, html):
+#------------------ jumei ----------------
+def _jumei(link, html):
   title=brand=price=img=size=category=keywords=desc=''
-  html = html.decode('gb18030').replace('&nbsp;', ' ')
   doc = H.document_fromstring(html)
 
-  nodes=doc.xpath("//div[@class='right_xb']/div[1]")
+  nodes=doc.xpath("//div[@class='location']/b")
   for node in nodes:
     title = node.text_content().encode('utf8').strip()
     print title 
 
-  nodes=doc.xpath("//span[@class='f1 w']")
+  nodes=doc.xpath("//span[@class='big_price']")
   for node in nodes:
     price = node.text_content().encode('utf8').strip()
     print price 
 
-  nodes=doc.xpath("//div[@class='show_sp_tp']/img")
+  nodes=doc.xpath("//div[@class='product_info']/div[@class='pic']/img")
   try:
     img = nodes[0].attrib['src']
     print img
   except IndexError:
     pass
  
-  nodes=doc.xpath("//div[@class='main']/div[1]//span")
-  brand = nodes[-1].text_content().encode('utf8').strip()
-  del nodes[-1]
+  nodes=doc.xpath("//div[@class='location']/a")
+  del nodes[0]
+  brand = nodes[0].text_content().encode('utf8').strip()
   print brand 
   for node in nodes:
     str = node.text_content().encode('utf8').strip()
-    if(len(str) > 12 or str.find('首页') >= 0):
-      continue
     if(category == ''):
       category = str
     else:
@@ -850,6 +847,11 @@ def _jafei(link, html):
       brand = str.split('：')[1].split('-')[0].split('0')[0].strip()
       break
   print brand
+
+  nodes=doc.xpath("//meta[@name='keywords']")
+  for node in nodes:
+    keywords = node.attrib['content'].encode('utf8').strip()
+    print keywords 
 
   nodes=doc.xpath("//div[@class='bjweb_product_img']/img")
   try:

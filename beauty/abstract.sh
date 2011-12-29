@@ -11,11 +11,12 @@ mv /home3/xml/*.xml /home3/xml/history/
 /usr/local/bin/python2.5 neoabstract.py /data/lafaso lafaso
 /usr/local/bin/python2.5 neoabstract.py /data/strawberrynet strawberrynet
 /usr/local/bin/python2.5 neoabstract.py /data/yihaodian yihaodian
+/usr/local/bin/python2.5 neoabstract.py /data/jumei jumei
+/usr/local/bin/python2.5 neoabstract.py /data/jafei jafei
 #/usr/local/bin/python2.5 neoabstract.py /data/guopi guopi
 #/usr/local/bin/python2.5 neoabstract.py /data/2688 2688
 #/usr/local/bin/python2.5 neoabstract.py /data/sasa sasa
 #/usr/local/bin/python2.5 neoabstract.py /data/cntvs cntvs
-#/usr/local/bin/python2.5 neoabstract.py /data/jafei jafei
 #/usr/local/bin/python2.5 neoabstract.py /data/yoyo18 yoyo18
 #/usr/local/bin/python2.5 neoabstract.py /data/d1 d1
 #/usr/local/bin/python2.5 neoabstract.py /data/7shop24 7shop24
