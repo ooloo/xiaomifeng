@@ -72,8 +72,9 @@ for line in linkList:
     update = now - string.atof(timedb[key])
   else:
     update = now
+  print 'update time: ' + str(update)
 
-  if update < 86400.0 * 7:
+  if update < 86400.0 * 3:
     print 'this key no need update: ' + key
     pass
   else:

@@ -1090,7 +1090,7 @@ if __name__ == '__main__':
     if timedb.has_key(k):
       spiderTime = timedb[k]
     else:
-      spiderTime = '1323456789'
+      spiderTime = str(now)
 
     #t=eval("_" + sys.argv[2])
     #t(v, html)
