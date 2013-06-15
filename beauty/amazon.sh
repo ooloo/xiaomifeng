@@ -21,7 +21,8 @@ neorun()
 	  page=$(($page+1))
 
 	  ./neoparse ${site}_product.xml \
-	  "http://www.amazon.cn/s/ref=?ie=UTF8&n=$1&page=${page}" > /tmp/$queue
+	  "http://www.amazon.cn/b/?ie=UTF8&node=746776051" > /tmp/$queue
+	  #"http://www.amazon.cn/s/ref=?ie=UTF8&n=$1&page=${page}" > /tmp/$queue
 
 	  grep "link: " /tmp/$queue | grep "/dp/" | awk '{print $2}' | awk -F'/' '{if($5=="dp") print "http://"$3"/"$5"/"$6}' > $queue
 

@@ -1090,7 +1090,7 @@ if __name__ == '__main__':
     if timedb.has_key(k):
       spiderTime = timedb[k]
     else:
-      spiderTime = str(now)
+      spiderTime = str(now - 86400.0 * 5)
 
     #t=eval("_" + sys.argv[2])
     #t(v, html)
