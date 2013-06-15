@@ -5,14 +5,14 @@ mv /home3/xml/*.xml /home3/xml/history/
 
 /usr/local/bin/python2.5 neoabstract.py /data/360buy 360buy
 /usr/local/bin/python2.5 neoabstract.py /data/amazon amazon
+/usr/local/bin/python2.5 neoabstract.py /data/redbaby suning 
 /usr/local/bin/python2.5 neoabstract.py /data/dangdang dangdang
-/usr/local/bin/python2.5 neoabstract.py /data/no5 no5
-/usr/local/bin/python2.5 neoabstract.py /data/redbaby redbaby
 /usr/local/bin/python2.5 neoabstract.py /data/lafaso lafaso
-/usr/local/bin/python2.5 neoabstract.py /data/strawberrynet strawberrynet
-/usr/local/bin/python2.5 neoabstract.py /data/yihaodian yihaodian
-/usr/local/bin/python2.5 neoabstract.py /data/jumei jumei
-/usr/local/bin/python2.5 neoabstract.py /data/jafei jafei
+#/usr/local/bin/python2.5 neoabstract.py /data/strawberrynet strawberrynet
+#/usr/local/bin/python2.5 neoabstract.py /data/yihaodian yihaodian
+#/usr/local/bin/python2.5 neoabstract.py /data/jumei jumei
+#/usr/local/bin/python2.5 neoabstract.py /data/no5 no5
+#/usr/local/bin/python2.5 neoabstract.py /data/jafei jafei
 #/usr/local/bin/python2.5 neoabstract.py /data/guopi guopi
 #/usr/local/bin/python2.5 neoabstract.py /data/2688 2688
 #/usr/local/bin/python2.5 neoabstract.py /data/sasa sasa

@@ -83,7 +83,7 @@ for line in linkList:
       linkdb.sync()
       timedb[key] = str(now)
       timedb.sync()
-    time.sleep(2)
+    time.sleep(1)
 
 linkdb.close()
 timedb.close()

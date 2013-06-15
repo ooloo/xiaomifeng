@@ -11,14 +11,14 @@ rm /tmp/run.log
 
 ./360buy.sh >> /tmp/run.log &
 ./amazon.sh >> /tmp/run.log &
-./dangdang.sh >> /tmp/run.log &
 ./redbaby.sh >> /tmp/run.log &
+./dangdang.sh >> /tmp/run.log &
 ./lafaso.sh >> /tmp/run.log &
-./yihaodian.sh >> /tmp/run.log &
-./strawberrynet.sh >> /tmp/run.log &
-./no5.sh >> /tmp/run.log &
-./jumei.sh >> /tmp/run.log &
-./jafei.sh >> /tmp/run.log &
+#./yihaodian.sh >> /tmp/run.log &
+#./jumei.sh >> /tmp/run.log &
+#./strawberrynet.sh >> /tmp/run.log &
+#./no5.sh >> /tmp/run.log &
+#./jafei.sh >> /tmp/run.log &
 #./guopi.sh >> /tmp/run.log &
 #./sasa.sh >> /tmp/run.log &
 #./cntvs.sh >> /tmp/run.log &
