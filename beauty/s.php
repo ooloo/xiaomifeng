@@ -117,7 +117,7 @@ A.g {
 	LINE-HEIGHT: 120%; WIDTH: 100%; MARGIN-LEFT: -12pt
 }
 #out {
-	_margin-left: 880px; _zoom: 1
+	_margin-left: 880px; _zoom: 1;
 }
 #in {
 	_margin-left: -880px; _position: relative; _float: left
@@ -444,7 +444,7 @@ href="http://www.xixiaya.com/">登录</A></P>
 <DIV id=head>
 <DIV class=nv><A class=logo
 href="http://www.xixiaya.com/"><IMG border=0 alt=首页 
-src="http://61.135.173.70/brand/250x100_logo.jpg" width=117 height=38></A>
+src="http://www.tuxiu.com/logos/B/Bally_logo2.gif" width=117 height=38></A>
 <DIV class=tab><A 
 href="http://www.xixiaya.com/s.php?q=%E7%BE%8E%E7%99%BD" 
 wdfield="word">美白</A>　<A 
@@ -535,8 +535,9 @@ href="http://www.xixiaya.com/">更多<SPAN>&gt;&gt;</SPAN></A></DIV></DIV>
 		if($child->store == "360buy")
 		{
 			$proId = split('[/\.]', $child->link);
-			$buyimg = "http://jprice.360buyimg.com/price/gp$proId[6]-1-1-1.png";
-			echo "价格：<img onerror=\"javascript:this.src='http://www.360buy.com/images/no1.gif';\" src=\"$buyimg\">";
+			$jdId = array_slice($proId,-2,1);
+			$buyimg = "http://jprice.360buyimg.com/price/gp$jdId[0]-1-1-1.png";
+			echo "$jdId[0] 价格：<img onerror=\"javascript:this.src='http://www.360buy.com/images/no1.gif';\" src=\"$buyimg\">";
 		}
 		else
 		{
@@ -547,7 +548,9 @@ href="http://www.xixiaya.com/">更多<SPAN>&gt;&gt;</SPAN></A></DIV></DIV>
 		echo "商城：".$arr["$child->store"]. "</br>";
 
 		$lookother = "http://www.xixiaya.com/s.php?q=".urlencode($child->title);
+		echo "<div class=\"p-name\">";
 		echo "<a class=\"X\" href=\"$lookother\">同品比较</a>  | ".date("Y-m-d", intval($child->time));
+		echo "</div>";
 		echo "</td>\n";
 
 		if($count % 4 == 3)
@@ -591,7 +594,7 @@ href="http://www.xixiaya.com/">更多<SPAN>&gt;&gt;</SPAN></A></DIV></DIV>
 
 <DIV style="margin-left:450px">
 <p><a href="http://www.xixiaya.com/">加入虞美人</a> | <a href="http://www.xixiaya.com">败家风云榜</a> | <a href="http://www.xixiaya.com">关于虞美人</a> | <a href="http://www.xixiaya.com">About baijia</a></p>
-<p>&copy;2012 xixiaya <a href="http://www.xixiaya.com/">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证xxxxxx号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p>
+<p>&copy;2012 xixiaya <a href="http://www.xixiaya.com/">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p>
 </DIV></BR>
 
 </DIV></DIV></DIV></DIV><IMG style="DISPLAY: none" src="">
