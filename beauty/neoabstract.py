@@ -2,7 +2,7 @@
 # -*- coding: utf8 -*-
 # coding=gb18030
 
-import re
+import re,string
 import urlparse
 import time,StringIO
 import sys, os, re 
@@ -1058,19 +1058,21 @@ def _pclady(link, html):
 
 
 #------------------ main ----------------
-if __name__ == '__main__': 
-  if(len(sys.argv) != 3):
-    print 'Usage: ' + sys.argv[0] + ' <datapath> <site>'
+if __name__ == '__main__':
+  if(len(sys.argv) != 5):
+    print 'Usage: ' + sys.argv[0] + ' <datapath> <site> <xmlpath> <days>'
     exit(1)
   if(sys.argv[1][-1] != '/'):
     sys.argv[1] += '/'
+  if(sys.argv[3][-1] != '/'):
+    sys.argv[3] += '/'
 
   global fo,fd,spiderTime;
   ISOTIMEFORMAT='%Y%m%d'
   timestr = time.strftime(ISOTIMEFORMAT, time.localtime())
   #fo = open('/home3/xml/' + sys.argv[2] + '_' + timestr + '.xml', 'w')
-  fo = open('/home3/xml/' + sys.argv[2] + '.xml', 'w')
-  fd = open('/home3/xml/' + sys.argv[2] + '.piclink', 'w')
+  fo = open(sys.argv[3] + sys.argv[2] + '.xml', 'w')
+  fd = open(sys.argv[3] + sys.argv[2] + '.piclink', 'w')
 
   linkdb = bsddb.btopen(sys.argv[1] + '._link.bdb', 'r')
   timedb = bsddb.btopen(sys.argv[1] + '._time.bdb', 'r')
@@ -1095,7 +1097,10 @@ if __name__ == '__main__':
     if timedb.has_key(k):
       spiderTime = timedb[k]
     else:
-      spiderTime = str(now - 86400.0 * 5)
+      spiderTime = str(now - 86400.0 * 7)
+
+    if (now - string.atof(spiderTime)) > 86400.0 * int(sys.argv[4]):
+        continue
 
     #t=eval("_" + sys.argv[2])
     #t(v, html)
