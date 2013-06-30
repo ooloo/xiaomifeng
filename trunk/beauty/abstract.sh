@@ -3,11 +3,17 @@
 mkdir -p /home3/xml/history/
 mv /home3/xml/*.xml /home3/xml/history/
 
-/usr/local/bin/python2.5 neoabstract.py /data/360buy 360buy
-/usr/local/bin/python2.5 neoabstract.py /data/amazon amazon
-/usr/local/bin/python2.5 neoabstract.py /data/redbaby suning 
-/usr/local/bin/python2.5 neoabstract.py /data/dangdang dangdang
-/usr/local/bin/python2.5 neoabstract.py /data/lafaso lafaso
+/usr/local/bin/python2.5 neoabstract.py /data/360buy 360buy /tmp/ 2
+/usr/local/bin/python2.5 neoabstract.py /data/amazon amazon /tmp/ 2
+/usr/local/bin/python2.5 neoabstract.py /data/redbaby suning /tmp/ 2 
+/usr/local/bin/python2.5 neoabstract.py /data/dangdang dangdang /tmp/ 2
+/usr/local/bin/python2.5 neoabstract.py /data/lafaso lafaso /tmp/ 2
+
+/usr/local/bin/python2.5 neoabstract.py /data/360buy 360buy /home3/xml/ 100
+/usr/local/bin/python2.5 neoabstract.py /data/amazon amazon /home3/xml/ 100
+/usr/local/bin/python2.5 neoabstract.py /data/redbaby suning /home3/xml/ 100 
+/usr/local/bin/python2.5 neoabstract.py /data/dangdang dangdang /home3/xml/ 100
+/usr/local/bin/python2.5 neoabstract.py /data/lafaso lafaso /home3/xml/ 100
 #/usr/local/bin/python2.5 neoabstract.py /data/strawberrynet strawberrynet
 #/usr/local/bin/python2.5 neoabstract.py /data/yihaodian yihaodian
 #/usr/local/bin/python2.5 neoabstract.py /data/jumei jumei
