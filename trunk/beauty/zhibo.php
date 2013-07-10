@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title> Dota2 zhibo</title>
+<title> Dota2直播</title>
 <STYLE>HTML {
 	OVERFLOW-Y: auto
 }
@@ -42,6 +42,9 @@ A {
 A:active {
 	COLOR: #f60
 }
+#lh {
+	MARGIN: 16px 0px 5px; WORD-SPACING: 3px
+}
 #u {
 	TEXT-ALIGN: right; PADDING-BOTTOM: 3px; PADDING-LEFT: 0px; PADDING-RIGHT: 10px; PADDING-TOP: 6px
 }
@@ -58,6 +61,25 @@ A:active {
 	COLOR: #77c
 }
 
+#navBarBG {
+width: 100%;
+height: auto;
+background-image: url("http://www.fengyunzhibo.com/images/v3/nav-bk.png");
+background-repeat: repeat-x;
+position: relative;
+z-index: 10000;
+min-width: 1000px;
+min-height: 55px;
+}
+
+#navBar{
+width: 1000px;
+height: 55px;
+text-align: left;
+margin-right: auto;
+margin-left: auto;
+}
+
 #body {
 width: 1000px;
 height: auto;
@@ -70,10 +92,10 @@ overflow: hidden;
 .highlightit:hover img{ border:1px solid #FFCC99; }
 .highlightit:hover { color: #FFCC99; }
 
-.head1 { float:left; height:230px; width:500px; }
+.head1 { float:left; height:200px; width:1000px; }
 .head2 { border-left:0 none; float:left; height:230px; width:500px; }
 
-.bottom { float:left; height:200px; width:1000px; }
+.bottom { float:left; height:200px; width:1000px; text-align:center; font-size:12px;}
 
 .left {
 width: 780px;
@@ -178,39 +200,55 @@ word-wrap: break-word;
 </head>
 
 <body>
+<div id="navBarBG" style="display: block;">
+<div id="navBar">
+DOTA2 直播 ——  精彩不断
+</div>
+</div>
+
 <DIV id=m>
 <DIV id=fm>
 <DIV class="head1">
-<IMG src="http://image.d7ol.com/uploads/allimg/120512/14986-120512202Z4423.jpg" width=500 height=221> </img>
-</DIV>
-
-<DIV class="head2">
-<IMG src="http://image.d7ol.com/uploads/allimg/120512/14986-120512202Z4423.jpg" width=500 height=221> </img>
+<IMG src="./bg_header.jpg" width=1000 hight=200></img>
 </DIV>
 
 </DIV><br>
 
 <?php
-	function xml2html($file , $site)
+	function xml2html($file)
 	{
 		$content = file_get_contents("$file");
 		$xml = simplexml_load_string($content);
 
-		$leagues = $xml->leagues[0];
-		echo "<div class=\"left\">";
-		echo "<div class=\"item\">$site-热门推荐</div>";
-
-		echo "<div class=\"content\"><ul>";
-		foreach($leagues as $league)
+		$t = "0";
+		$day = "2009-00-00";
+		echo "<div class=\"left\">\n";
+		
+		foreach($xml->match as $match)
 		{
+			if(strtotime("2009-$match->time") < strtotime($day))
+			{	
+				break;
+			}
+			$tt = split(' ', $match->time);
+			if($t !== $tt[0])
+			{
+				if($t !== "0") {echo "</ul></div><br>\n";}
+				echo "<div class=\"item\">$tt[0]</div>\n";
+				echo "<div class=\"content\"><ul>\n";
+				$t = $tt[0];
+				$day = "2009-$match->time";
+			}
 			echo "<li>";
-			echo "$league->name";
-
-			echo "</li>";
+			echo "$match->time &nbsp;&nbsp;&nbsp; $match->title &nbsp;&nbsp;&nbsp;";
+			echo "$match->t1 vs $match->t2 &nbsp;&nbsp;&nbsp;";
+			echo "<a target='_blank' href='http://www.fengyunzhibo.com/'>风云直播</a>&nbsp;&nbsp;";
+			echo "<a target='_blank' href='http://www.yy.com/live/2007'>YY直播</a>";
+			echo "</li>\n";
 		}
-		echo "</ul></div></div>";
+		echo "</ul></div></div>\n";
 	}
-	xml2html("/tmp/GetLeagueListing.xml", "MONDAY");
+	xml2html("/tmp/match.xml");
 
 	$content = file_get_contents("/tmp/GetLeagueListing.xml");
 	$xml = simplexml_load_string($content);
@@ -222,6 +260,8 @@ word-wrap: break-word;
 	echo "<div class=\"info\"><ul>";
 	foreach($leagues as $league)
 	{
+		if(strlen($league->name) > 32) continue;
+
 		echo "<li>";
 		$name = substr($league->name, 11, 22);
 		if(0 === strcmp(substr($league->tournament_url, 0, 7), "http://"))
@@ -236,14 +276,14 @@ word-wrap: break-word;
 
 <BR><BR>
 <DIV class="bottom">
-<p id="lh"><a href="http://www.xixiaya.com/">加入xixiaya</a> | <a href="http://www.xixiaya.com">败家风云榜</a> | <a href="http://www.xixiaya.com">关于xixiaya</a> | <a href="http://www.xixiaya.com">About baijia</a></p><p id="cp">&copy;2013 xixiaya <a href="http://www.xixiaya.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
+<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About baijia</a></p><p id="cp">&copy;2013 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
 
 </DIV>
 
 <script type="text/javascript">
 	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-21342336-2']);
+	_gaq.push(['_setAccount', 'UA-21342336-3']);
 	_gaq.push(['_trackPageview']);
 
 	(function() {
