@@ -202,53 +202,50 @@ word-wrap: break-word;
 <body>
 <div id="navBarBG" style="display: block;">
 <div id="navBar">
-DOTA2 直播 ——  精彩不断
+<font size='6'>DOTA2 联赛 ——  精彩不断<size>
 </div>
 </div>
 
 <DIV id=m>
 <DIV id=fm>
-<DIV class="head1">
-<IMG src="./bg_header.jpg" width=1000 hight=200></img>
 </DIV>
 
-</DIV><br>
-
 <?php
-	function xml2html($file)
-	{
-		$content = file_get_contents("$file");
-		$xml = simplexml_load_string($content);
+    echo "<div class=\"left\">";
 
-		$t = "0";
-		$day = "2009-00-00";
-		echo "<div class=\"left\">\n";
-		
-		foreach($xml->match as $match)
-		{
-			if(strtotime("2009-$match->time") < strtotime($day))
-			{	
-				break;
-			}
-			$tt = split(' ', $match->time);
-			if($t !== $tt[0])
-			{
-				if($t !== "0") {echo "</ul></div><br>\n";}
-				echo "<div class=\"item\">$tt[0]</div>\n";
-				echo "<div class=\"content\"><ul>\n";
-				$t = $tt[0];
-				$day = "2009-$match->time";
-			}
-			echo "<li>";
-			echo "$match->time &nbsp;&nbsp;&nbsp; $match->title &nbsp;&nbsp;&nbsp;";
-			echo "$match->t1 vs $match->t2 &nbsp;&nbsp;&nbsp;";
-			echo "<a target='_blank' href='http://www.fengyunzhibo.com/'>风云直播</a>&nbsp;&nbsp;";
-			echo "<a target='_blank' href='http://www.yy.com/live/2007'>YY直播</a>";
-			echo "</li>\n";
-		}
-		echo "</ul></div></div>\n";
-	}
-	xml2html("/tmp/match.xml");
+    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
+    $xml = simplexml_load_string($content);
+        
+    echo "<div class=\"item\">Living Game</div>\n";
+    echo "<div class=\"content\">\n";
+    foreach($xml->games as $games)
+    {
+        echo "<ul><li>\n";
+        $r = $games->game->radiant_team->team_name;
+        $d = $games->game->dire_team->team_name;
+        $s = $games->game->spectators;
+        $l = $games->game->league_id;
+        echo "$r&nbsp;&nbsp;&nbsp;&nbsp;.VS&nbsp;&nbsp;&nbsp;&nbsp;$d";
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;|| spectators: $s";
+        echo "&nbsp;&nbsp;&nbsp;&nbsp;|| leagueid: $l";
+        echo "</li></ul>\n";
+    }
+    echo "</div>\n";
+
+    $content = file_get_contents("/tmp/GetLeagueListing.xml");
+    $xml = simplexml_load_string($content);
+    $leagues = $xml->leagues[0];	
+
+    foreach($leagues as $league)
+    {
+        echo "<div class=\"item\">$league->name | id:$league->leagueid</div>\n";
+        echo "<div class=\"content\">\n";
+        echo "<ul><li>\n";
+        echo "$league->description  >> ";
+        echo "<a target='_blank' href='$league->tournament_url'>进入官网</a>&nbsp;&nbsp;";
+        echo "</li></ul></div>\n";
+    }
+    echo "</div>\n";
 
 	$content = file_get_contents("/tmp/GetLeagueListing.xml");
 	$xml = simplexml_load_string($content);
@@ -260,10 +257,9 @@ DOTA2 直播 ——  精彩不断
 	echo "<div class=\"info\"><ul>";
 	foreach($leagues as $league)
 	{
-		if(strlen($league->name) > 32) continue;
-
+		if(strlen($league->name) > 25) continue;
 		echo "<li>";
-		$name = substr($league->name, 11, 22);
+		$name = $league->name;
 		if(0 === strcmp(substr($league->tournament_url, 0, 7), "http://"))
 			echo "<a target='_blank' href='$league->tournament_url'>$name</a>";
 		else
