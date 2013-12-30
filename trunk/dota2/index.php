@@ -75,7 +75,7 @@ min-height: 55px;
 #navBar{
 width: 1000px;
 height: 55px;
-text-align: left;
+text-align: center;
 margin-right: auto;
 margin-left: auto;
 }
@@ -202,7 +202,7 @@ word-wrap: break-word;
 <body>
 <div id="navBarBG" style="display: block;">
 <div id="navBar">
-<font size='6'>DOTA2 联赛 ——  精彩不断<size>
+<font color='green' size='6'>DOTA2官方联赛直播</font>
 </div>
 </div>
 
@@ -213,41 +213,60 @@ word-wrap: break-word;
 <?php
     echo "<div class=\"left\">";
 
+    $arr = array();
     $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
     $xml = simplexml_load_string($content);
         
     echo "<div class=\"item\">Living Game</div>\n";
-    echo "<div class=\"content\">\n";
+    echo "<div class=\"content\"><ul>\n";
     foreach($xml->games as $games)
     {
-        echo "<ul><li>\n";
         $r = $games->game->radiant_team->team_name;
         $d = $games->game->dire_team->team_name;
         $s = $games->game->spectators;
         $l = $games->game->league_id;
-        echo "$r&nbsp;&nbsp;&nbsp;&nbsp;.VS&nbsp;&nbsp;&nbsp;&nbsp;$d";
-        echo "&nbsp;&nbsp;&nbsp;&nbsp;|| spectators: $s";
-        echo "&nbsp;&nbsp;&nbsp;&nbsp;|| leagueid: $l";
-        echo "</li></ul>\n";
-    }
-    echo "</div>\n";
 
+        if(!empty($r))
+        {
+            array_push($arr, $l);
+            echo "<li>\n";
+            echo "$r&nbsp;&nbsp;&nbsp;&nbsp;<font color='red'>VS</font>&nbsp;&nbsp;&nbsp;&nbsp;$d";
+            echo "&nbsp;&nbsp; || 观众数: $s";
+            echo "&nbsp;&nbsp; || leagueid: $l";
+            echo "</li>\n";
+        }
+    }
+    if(empty($arr))
+    {
+        echo "<li>No Living Game.</li>";
+    }
+    echo "</ul></div>\n";
+
+    $cnt = count($arr);
     $content = file_get_contents("/tmp/GetLeagueListing.xml");
     $xml = simplexml_load_string($content);
     $leagues = $xml->leagues[0];	
 
     foreach($leagues as $league)
     {
-        echo "<div class=\"item\">$league->name | id:$league->leagueid</div>\n";
+        $l = "$league->leagueid";
+        if(in_array($l, $arr))
+		    $desc = $league->description;
+        elseif($cnt > 0 || rand(0, 100) < 95)
+            continue;
+        else
+		    $desc = $league->description;
+
+        echo "<div class=\"item\">$league->name (id:$league->leagueid)</div>\n";
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
-        echo "$league->description  >> ";
+        echo "$desc  >> ";
         echo "<a target='_blank' href='$league->tournament_url'>进入官网</a>&nbsp;&nbsp;";
         echo "</li></ul></div>\n";
     }
     echo "</div>\n";
 
-	$content = file_get_contents("/tmp/GetLeagueListing.xml");
+	$content = file_get_contents("./EpicLeagueListing.xml");
 	$xml = simplexml_load_string($content);
 
 	$leagues = $xml->leagues[0];
@@ -257,9 +276,15 @@ word-wrap: break-word;
 	echo "<div class=\"info\"><ul>";
 	foreach($leagues as $league)
 	{
-		if(strlen($league->name) > 25) continue;
+        $l = "$league->leagueid";
+        if(in_array($l, $arr))
+		    $name = $league->name;
+        elseif($cnt > 0)
+            continue;
+        else
+		    $name = $league->name;
+
 		echo "<li>";
-		$name = $league->name;
 		if(0 === strcmp(substr($league->tournament_url, 0, 7), "http://"))
 			echo "<a target='_blank' href='$league->tournament_url'>$name</a>";
 		else
@@ -272,7 +297,7 @@ word-wrap: break-word;
 
 <BR><BR>
 <DIV class="bottom">
-<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About baijia</a></p><p id="cp">&copy;2013 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
+<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2013 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
 
 </DIV>
