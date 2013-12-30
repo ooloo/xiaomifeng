@@ -1,0 +1,2 @@
+*/5 * * * * wget -O /tmp/league "https://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/V0001/?language=zh&key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml" ; if (test -s /tmp/league); then mv /tmp/league /tmp/GetLeagueListing.xml; fi
+*/5 * * * * wget -O /tmp/GetLiveLeagueGames.xml "https://api.steampowered.com/IDOTA2Match_570/GetLiveLeagueGames/V0001/?language=zh&key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml"
