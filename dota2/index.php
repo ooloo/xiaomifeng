@@ -222,7 +222,7 @@ word-wrap: break-word;
     }
 
     $arr = array();
-    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml.1");
+    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
     $xml = simplexml_load_string($content);
         
     echo "<div class=\"item\">Living Game</div>\n";
@@ -236,21 +236,39 @@ word-wrap: break-word;
 
         if(!empty($r))
         {
-            echo "<li><table border=0>";
-            echo "<tr>";
             array_push($arr, $l);
-            echo "<td>$r</td><td><font color='red'>VS</font></td><td>$d</td>";
+            echo "<li><table width=600 border=1>";
+            echo "<tr><th>近卫</th><th>天灾</th><th>观众数</th><th>联赛id</th></tr>";
+            echo "<tr>";
+            echo "<td>$r</td><td>$d</td>";
             echo "<td>$s</td>";
             echo "<td>$l</td>";
-            echo "</tr>";
+            echo "</tr></table>";
+            $t0 = array();
+            $t1 = array();
             foreach($game->players->player as $player)
             {
+                if($player->team == "0")
+                {
+                    $hero = $heroes_arr["$player->hero_id"];
+                    array_push($t0, "<td>$hero($player->name)</td>");
+                }
+                elseif($player->team == "1")
+                {
+                    $hero = $heroes_arr["$player->hero_id"];
+                    array_push($t1, "<td>$hero($player->name)</td>");
+                }
+            }
+            echo "<table border=1 width=600>";
+            echo "<tr>";
+            echo "<th>近卫</th><th>天灾</th>";
+            for($i=0; $i<5; $i++)
+            {
                 echo "<tr>";
-                $hero = $heroes_arr["$player->hero_id"];
-                echo "<td>$hero($player->name)</td>";
+                echo "$t0[$i]$t1[$i]";
                 echo "</tr>";
             }
-            array_push($arr, $l);
+            echo "</tr>";
             echo "</table></li>";
         }
     }
@@ -285,41 +303,45 @@ word-wrap: break-word;
 
     $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
     $head = "https://api.steampowered.com/IDOTA2Match_570";
-    $d1 = time() - 86400;
+    $d1 = intval((time()-43200)/100)*100;
 
     if($cnt > 0)
     {
         include "items.php";
         foreach($arr as $id)
         {
-            if (file_exists("/tmp/$id.xml"))
+            if (file_exists("/tmp/$id.xml") && filemtime("/tmp/$id.xml") > time()-1800)
             {
                 $content = file_get_contents("/tmp/$id.xml");
             }
             else
             {
-                $l_url = "$head/GetMatchHistory/$key&league_id=$id&date_min=$d1";
-                $content = file_get_contents($l_url);
-                file_put_contents("/tmp/$id.xml", $content);
+                $l_url = "\"$head/GetMatchHistory/$key&league_id=$id&date_min=$d1\"";
+                file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
+                continue;
             }
             $xml = simplexml_load_string($content);
 
             foreach($xml->matches->match as $match)
             {
-                if (file_exists("/tmp/$match->match_id.xml"))
+                if (file_exists("/tmp/$match->match_id.xml") && filemtime("/tmp/$id.xml") > time()-86400)
                 {
                     $content = file_get_contents("/tmp/$match->match_id.xml");
                 }
                 else
                 {
-                    $m_url = "$head/GetMatchDetails/$key&match_id=$match->match_id";
-                    $content = file_get_contents($m_url);
-                    file_put_contents("/tmp/$match->match_id.xml", $content);
+                    $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
+                    file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
+                    continue;
                 }
                 $xml = simplexml_load_string($content);
 
+                if(empty($xml->radiant_name) || empty($xml->dire_name))
+                    continue;
+
                 $d2 = date('Y-m-d H:i:s', (int)($match->start_time));
-                echo "<div class=\"item\">{$xml->radiant_name} win {$xml->dire_name} $d2</div>\n";
+                echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
+                echo "&nbsp;&nbsp;&nbsp;(id:$xml->leagueid)&nbsp;&nbsp;[$d2]</div>\n";
                 echo "<div class=\"content\">\n";
                 echo "<ul><li>\n";
                 echo "<table border=0>";
@@ -333,7 +355,10 @@ word-wrap: break-word;
                     $t3 = $items_arr["$player->item_3"];
                     $t4 = $items_arr["$player->item_4"];
                     $t5 = $items_arr["$player->item_5"];
-                    echo "<td>$name</td><td>";
+                    if($player->player_slot < 5)
+                        echo "<td>$name(近卫$player->player_slot)</td><td>";
+                    else
+                        echo "<td>$name(天灾$player->player_slot)</td><td>";
                     if(!empty($t0)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png'></img>";
                     if(!empty($t1)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png'></img>";
                     if(!empty($t2)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png'></img>";
@@ -343,7 +368,6 @@ word-wrap: break-word;
                     echo "</td></tr>";
                 }
                 echo "</table></li></ul></div>\n";
-                break;
             }
         }
     }
