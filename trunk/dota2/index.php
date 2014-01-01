@@ -213,27 +213,45 @@ word-wrap: break-word;
 <?php
     echo "<div class=\"left\">";
 
+    $content = file_get_contents("/tmp/heros.xml");
+    $xml = simplexml_load_string($content);
+    $heroes_arr = array();
+    foreach($xml->heroes->hero as $hero)
+    {
+        $heroes_arr["$hero->id"] = $hero->localized_name;
+    }
+
     $arr = array();
-    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
+    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml.1");
     $xml = simplexml_load_string($content);
         
     echo "<div class=\"item\">Living Game</div>\n";
     echo "<div class=\"content\"><ul>\n";
-    foreach($xml->games as $games)
+    foreach($xml->games->game as $game)
     {
-        $r = $games->game->radiant_team->team_name;
-        $d = $games->game->dire_team->team_name;
-        $s = $games->game->spectators;
-        $l = $games->game->league_id;
+        $r = $game->radiant_team->team_name;
+        $d = $game->dire_team->team_name;
+        $s = $game->spectators;
+        $l = $game->league_id;
 
         if(!empty($r))
         {
+            echo "<li><table border=0>";
+            echo "<tr>";
             array_push($arr, $l);
-            echo "<li>\n";
-            echo "$r&nbsp;&nbsp;&nbsp;&nbsp;<font color='red'>VS</font>&nbsp;&nbsp;&nbsp;&nbsp;$d";
-            echo "&nbsp;&nbsp; || 观众数: $s";
-            echo "&nbsp;&nbsp; || leagueid: $l";
-            echo "</li>\n";
+            echo "<td>$r</td><td><font color='red'>VS</font></td><td>$d</td>";
+            echo "<td>$s</td>";
+            echo "<td>$l</td>";
+            echo "</tr>";
+            foreach($game->players->player as $player)
+            {
+                echo "<tr>";
+                $hero = $heroes_arr["$player->hero_id"];
+                echo "<td>$hero($player->name)</td>";
+                echo "</tr>";
+            }
+            array_push($arr, $l);
+            echo "</table></li>";
         }
     }
     if(empty($arr))
@@ -252,7 +270,7 @@ word-wrap: break-word;
         $l = "$league->leagueid";
         if(in_array($l, $arr))
 		    $desc = $league->description;
-        elseif($cnt > 0 || rand(0, 100) < 95)
+        elseif($cnt > 0 || rand(0, 100) < 90)
             continue;
         else
 		    $desc = $league->description;
@@ -264,6 +282,73 @@ word-wrap: break-word;
         echo "<a target='_blank' href='$league->tournament_url'>进入官网</a>&nbsp;&nbsp;";
         echo "</li></ul></div>\n";
     }
+
+    $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
+    $head = "https://api.steampowered.com/IDOTA2Match_570";
+    $d1 = time() - 86400;
+
+    if($cnt > 0)
+    {
+        include "items.php";
+        foreach($arr as $id)
+        {
+            if (file_exists("/tmp/$id.xml"))
+            {
+                $content = file_get_contents("/tmp/$id.xml");
+            }
+            else
+            {
+                $l_url = "$head/GetMatchHistory/$key&league_id=$id&date_min=$d1";
+                $content = file_get_contents($l_url);
+                file_put_contents("/tmp/$id.xml", $content);
+            }
+            $xml = simplexml_load_string($content);
+
+            foreach($xml->matches->match as $match)
+            {
+                if (file_exists("/tmp/$match->match_id.xml"))
+                {
+                    $content = file_get_contents("/tmp/$match->match_id.xml");
+                }
+                else
+                {
+                    $m_url = "$head/GetMatchDetails/$key&match_id=$match->match_id";
+                    $content = file_get_contents($m_url);
+                    file_put_contents("/tmp/$match->match_id.xml", $content);
+                }
+                $xml = simplexml_load_string($content);
+
+                $d2 = date('Y-m-d H:i:s', (int)($match->start_time));
+                echo "<div class=\"item\">{$xml->radiant_name} win {$xml->dire_name} $d2</div>\n";
+                echo "<div class=\"content\">\n";
+                echo "<ul><li>\n";
+                echo "<table border=0>";
+                foreach($xml->players->player as $player)
+                {
+                    echo "<tr>";
+                    $name = $heroes_arr["$player->hero_id"];
+                    $t0 = $items_arr["$player->item_0"];
+                    $t1 = $items_arr["$player->item_1"];
+                    $t2 = $items_arr["$player->item_2"];
+                    $t3 = $items_arr["$player->item_3"];
+                    $t4 = $items_arr["$player->item_4"];
+                    $t5 = $items_arr["$player->item_5"];
+                    echo "<td>$name</td><td>";
+                    if(!empty($t0)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png'></img>";
+                    if(!empty($t1)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png'></img>";
+                    if(!empty($t2)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png'></img>";
+                    if(!empty($t3)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png'></img>";
+                    if(!empty($t4)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png'></img>";
+                    if(!empty($t5)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png'></img>";
+                    echo "</td></tr>";
+                }
+                echo "</table></li></ul></div>\n";
+                break;
+            }
+        }
+    }
+
+    // -------------left end--------------
     echo "</div>\n";
 
 	$content = file_get_contents("./EpicLeagueListing.xml");
@@ -271,7 +356,7 @@ word-wrap: break-word;
 
 	$leagues = $xml->leagues[0];
 	echo "<div class=\"right\">";
-	echo "<div class=\"leaguebox\">联赛官方网站</div>";
+	echo "<div class=\"leaguebox\">热门官方联赛</div>";
 
 	echo "<div class=\"info\"><ul>";
 	foreach($leagues as $league)
@@ -279,8 +364,8 @@ word-wrap: break-word;
         $l = "$league->leagueid";
         if(in_array($l, $arr))
 		    $name = $league->name;
-        elseif($cnt > 0)
-            continue;
+        //elseif($cnt > 0)
+        //  continue;
         else
 		    $name = $league->name;
 
