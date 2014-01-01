@@ -338,13 +338,16 @@ word-wrap: break-word;
 
                 if(empty($xml->radiant_name) || empty($xml->dire_name))
                     continue;
+                if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
+                    continue;
 
                 $d2 = date('Y-m-d H:i:s', (int)($match->start_time));
                 echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
-                echo "&nbsp;&nbsp;&nbsp;(id:$xml->leagueid)&nbsp;&nbsp;[$d2]</div>\n";
+                echo "&nbsp;&nbsp;&nbsp;(l_id:$xml->leagueid,m_id:$match->match_id)&nbsp;&nbsp;[$d2]</div>\n";
                 echo "<div class=\"content\">\n";
                 echo "<ul><li>\n";
-                echo "<table border=0>";
+                echo "<table border=1 width=600>";
+                echo "<tr><th>英雄</th><th>击杀/死亡/助攻</th><th>装备</th></tr>";
                 foreach($xml->players->player as $player)
                 {
                     echo "<tr>";
@@ -356,15 +359,16 @@ word-wrap: break-word;
                     $t4 = $items_arr["$player->item_4"];
                     $t5 = $items_arr["$player->item_5"];
                     if($player->player_slot < 5)
-                        echo "<td>$name(近卫$player->player_slot)</td><td>";
+                        echo "<td><font color=blue size=2>$name(近卫$player->player_slot)</font></td>";
                     else
-                        echo "<td>$name(天灾$player->player_slot)</td><td>";
-                    if(!empty($t0)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png'></img>";
-                    if(!empty($t1)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png'></img>";
-                    if(!empty($t2)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png'></img>";
-                    if(!empty($t3)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png'></img>";
-                    if(!empty($t4)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png'></img>";
-                    if(!empty($t5)) echo "&nbsp;<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png'></img>";
+                        echo "<td><font color=red size=2>$name(天灾$player->player_slot)</font></td>";
+                    echo "<td>$player->kills/$player->deaths/$player->assists</td><td>";
+                    if(!empty($t0)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png' width='60' />";
+                    if(!empty($t1)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png' width='60' />";
+                    if(!empty($t2)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png' width='60' />";
+                    if(!empty($t3)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png' width='60' />";
+                    if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='60' />";
+                    if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='60' />";
                     echo "</td></tr>";
                 }
                 echo "</table></li></ul></div>\n";
@@ -410,18 +414,6 @@ word-wrap: break-word;
 </DIV>
 
 </DIV>
-
-<script type="text/javascript">
-	var _gaq = _gaq || [];
-	_gaq.push(['_setAccount', 'UA-21342336-3']);
-	_gaq.push(['_trackPageview']);
-
-	(function() {
-	 var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-	 ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-	 var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-})();
-</script>
 
 </body>
 </html>
