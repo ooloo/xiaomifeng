@@ -288,7 +288,7 @@ word-wrap: break-word;
         $l = "$league->leagueid";
         if(in_array($l, $arr))
 		    $desc = $league->description;
-        elseif($cnt > 0 || rand(0, 100) < 90)
+        elseif($cnt > 0 || rand(0, 100) < 88)
             continue;
         else
 		    $desc = $league->description;
