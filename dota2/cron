@@ -1,4 +1,4 @@
 * * * * * wget -O /tmp/live "https://api.steampowered.com/IDOTA2Match_570/GetLiveLeagueGames/V0001/?language=zh&key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml" ; if (test -s /tmp/live); then mv /tmp/live /tmp/GetLiveLeagueGames.xml; fi > /dev/null&
 0 * * * * wget -O /tmp/league "https://api.steampowered.com/IDOTA2Match_570/GetLeagueListing/V0001/?language=zh&key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml" ; if (test -s /tmp/league); then mv /tmp/league /tmp/GetLeagueListing.xml; fi > /dev/null&
 0 3 * * * wget -O /tmp/heros.xml "https://api.steampowered.com/IEconDOTA2_570/GetHeroes/v0001/?language=zh&key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml" > /dev/null&
-* * * * * mv /tmp/wget.ready /tmp/url.list; sort -u /tmp/url.list > /tmp/url.sh; sh /tmp/url.sh > /dev/null&
+* * * * * if (test -s /tmp/wget.ready); then mv /tmp/wget.ready /tmp/url.list; sort -u /tmp/url.list > /tmp/url.sh; sh /tmp/url.sh; fi 
