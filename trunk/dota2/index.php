@@ -213,7 +213,7 @@ word-wrap: break-word;
 <?php
     echo "<div class=\"left\">";
 
-    $content = file_get_contents("/tmp/heros.xml");
+    $content = file_get_contents("/tmp/heroes.xml");
     $xml = simplexml_load_string($content);
     $heroes_arr = array();
     foreach($xml->heroes->hero as $hero)
@@ -278,20 +278,23 @@ word-wrap: break-word;
     }
     echo "</ul></div>\n";
 
-    $cnt = count($arr);
     $content = file_get_contents("/tmp/GetLeagueListing.xml");
     $xml = simplexml_load_string($content);
     $leagues = $xml->leagues[0];	
 
+    include "items.php";
+    include "count.php";
+    include "hot.php";
+    include "stat.php";
+    $hot = array_merge($arr, $hot);
+
     foreach($leagues as $league)
     {
         $l = "$league->leagueid";
-        if(in_array($l, $arr))
+        if(in_array($l, $hot))
 		    $desc = $league->description;
-        elseif($cnt > 0 || rand(0, 100) < 88)
-            continue;
         else
-		    $desc = $league->description;
+            continue;
 
         echo "<div class=\"item\">$league->name (id:$league->leagueid)</div>\n";
         echo "<div class=\"content\">\n";
@@ -305,32 +308,72 @@ word-wrap: break-word;
     $head = "https://api.steampowered.com/IDOTA2Match_570";
     $d1 = intval((time()-43200)/100)*100;
 
-    if($cnt > 0)
+    echo "<div class=\"item\">$value</div>\n";
+    echo "<div class=\"content\">\n";
+    echo "<ul><li>\n";
+    echo "<table border=1 width=650>";
+    echo "<tr><th>英雄</th><th>出场次数</th><th>热门装备</th></tr>";
+    foreach($count as $hero => $picknum)
     {
-        include "items.php";
+        if((int)$picknum < 5)
+            break;
+        $show_num = 0;
+        $item_arr = $stat["$hero"];
+        echo "<tr><td>$hero</td><td>$picknum</td><td>";
+        foreach($item_arr as $itemid => $usenum)
+        {
+            if($show_num > 7)
+                break;
+            $t = $items_arr["$itemid"];
+            if(!empty($t) && $t != "tpscroll")
+            {
+                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='60' alt='$usenum'/>";
+                ++$show_num;
+            }
+        }
+        echo "</td></tr>";
+    }
+    echo "</table>";
+    echo "</li></ul></div>\n";
+
+    if(!empty($arr))
+    {
         foreach($arr as $id)
         {
-            if (file_exists("/tmp/$id.xml") && filemtime("/tmp/$id.xml") > time()-1800)
+            //$l_url = "\"$head/GetMatchHistory/$key&league_id=$id&date_min=$d1\"";
+            $l_url = "\"$head/GetMatchHistory/$key&league_id=$id\"";
+            if(file_exists("/tmp/$id.xml"))
             {
                 $content = file_get_contents("/tmp/$id.xml");
+                if(filemtime("/tmp/$id.xml") > time()-1800)
+                {
+                    file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
+                }
             }
             else
             {
-                $l_url = "\"$head/GetMatchHistory/$key&league_id=$id&date_min=$d1\"";
                 file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
                 continue;
             }
             $xml = simplexml_load_string($content);
 
+            $show_num = 0;
             foreach($xml->matches->match as $match)
             {
-                if (file_exists("/tmp/$match->match_id.xml") && filemtime("/tmp/$id.xml") > time()-86400)
+                if(++$show_num >10)
+                    break;
+
+                $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
+                if(file_exists("/tmp/$match->match_id.xml"))
                 {
                     $content = file_get_contents("/tmp/$match->match_id.xml");
+                    if(filemtime("/tmp/$id.xml") > time()-7200)
+                    {
+                        file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
+                    }
                 }
                 else
                 {
-                    $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
                     file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
                     continue;
                 }
@@ -370,6 +413,7 @@ word-wrap: break-word;
                     if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='60' />";
                     if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='60' />";
                     echo "</td></tr>";
+                    //file_put_contents("/tmp/hero.stat", "$xml->leagueid $player->hero_id $match->match_id $t0 $t1 $t2 $t3 $t4\n", FILE_APPEND);
                 }
                 echo "</table></li></ul></div>\n";
             }
@@ -392,8 +436,6 @@ word-wrap: break-word;
         $l = "$league->leagueid";
         if(in_array($l, $arr))
 		    $name = $league->name;
-        //elseif($cnt > 0)
-        //  continue;
         else
 		    $name = $league->name;
 
