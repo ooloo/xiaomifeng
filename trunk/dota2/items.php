@@ -1,5 +1,6 @@
 <?php
 $items_arr = array(
+"0" => "",
 "1" => "blink",
 "2" => "blades_of_attack",
 "3" => "broadsword",
