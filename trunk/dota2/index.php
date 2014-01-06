@@ -286,12 +286,14 @@ word-wrap: break-word;
     include "count.php";
     include "hot.php";
     include "stat.php";
-    $hot = array_merge($arr, $hot);
+    include "cost.php";
 
     foreach($leagues as $league)
     {
         $l = "$league->leagueid";
-        if(in_array($l, $hot))
+        if(in_array($l, $arr))
+		    $desc = $league->description;
+        else if(empty($arr) && in_array($l, $hot))
 		    $desc = $league->description;
         else
             continue;
@@ -308,16 +310,17 @@ word-wrap: break-word;
     $head = "https://api.steampowered.com/IDOTA2Match_570";
     $d1 = intval((time()-43200)/100)*100;
 
-    echo "<div class=\"item\">$value</div>\n";
+    echo "<div class=\"item\">热门联赛英雄排行</div>\n";
     echo "<div class=\"content\">\n";
     echo "<ul><li>\n";
-    echo "<table border=1 width=650>";
-    echo "<tr><th>英雄</th><th>出场次数</th><th>热门装备</th></tr>";
+    echo "<table border=1 width=750>";
+    echo "<tr><th>英雄</th><th>出场</th><th>热门装备</th><th>对应装备次数</th></tr>";
     foreach($count as $hero => $picknum)
     {
-        if((int)$picknum < 5)
+        if((int)$picknum < 10)
             break;
         $show_num = 0;
+        $item_num = "";
         $item_arr = $stat["$hero"];
         echo "<tr><td>$hero</td><td>$picknum</td><td>";
         foreach($item_arr as $itemid => $usenum)
@@ -325,13 +328,18 @@ word-wrap: break-word;
             if($show_num > 7)
                 break;
             $t = $items_arr["$itemid"];
-            if(!empty($t) && $t != "tpscroll")
+            $pr = $cost["$itemid"];
+            if(!empty($t) && !empty($pr) && $pr > 625)
             {
-                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='60' alt='$usenum'/>";
+                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='60'/>";
+                if($item_num == "")
+                    $item_num = "$usenum";
+                else
+                    $item_num = "$item_num/$usenum";
                 ++$show_num;
             }
         }
-        echo "</td></tr>";
+        echo "</td><td>$item_num</td></tr>";
     }
     echo "</table>";
     echo "</li></ul></div>\n";
@@ -367,10 +375,6 @@ word-wrap: break-word;
                 if(file_exists("/tmp/$match->match_id.xml"))
                 {
                     $content = file_get_contents("/tmp/$match->match_id.xml");
-                    if(filemtime("/tmp/$id.xml") > time()-7200)
-                    {
-                        file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
-                    }
                 }
                 else
                 {
@@ -413,7 +417,6 @@ word-wrap: break-word;
                     if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='60' />";
                     if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='60' />";
                     echo "</td></tr>";
-                    //file_put_contents("/tmp/hero.stat", "$xml->leagueid $player->hero_id $match->match_id $t0 $t1 $t2 $t3 $t4\n", FILE_APPEND);
                 }
                 echo "</table></li></ul></div>\n";
             }
