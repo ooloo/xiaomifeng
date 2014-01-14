@@ -278,42 +278,20 @@ word-wrap: break-word;
     }
     echo "</ul></div>\n";
 
-    $content = file_get_contents("/tmp/GetLeagueListing.xml");
-    $xml = simplexml_load_string($content);
-    $leagues = $xml->leagues[0];	
-
     include "items.php";
     include "count.php";
     include "hot.php";
     include "stat.php";
     include "cost.php";
 
-    foreach($leagues as $league)
-    {
-        $l = "$league->leagueid";
-        if(in_array($l, $arr))
-		    $desc = $league->description;
-        else if(empty($arr) && in_array($l, $hot))
-		    $desc = $league->description;
-        else
-            continue;
-
-        echo "<div class=\"item\">$league->name (id:$league->leagueid)</div>\n";
-        echo "<div class=\"content\">\n";
-        echo "<ul><li>\n";
-        echo "$desc  >> ";
-        echo "<a target='_blank' href='$league->tournament_url'>进入官网</a>&nbsp;&nbsp;";
-        echo "</li></ul></div>\n";
-    }
-
     $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
     $head = "https://api.steampowered.com/IDOTA2Match_570";
     $d1 = intval((time()-43200)/100)*100;
 
-    echo "<div class=\"item\">热门联赛英雄排行</div>\n";
+    echo "<div class=\"item\">最近一个月职业联赛热门英雄排行</div>\n";
     echo "<div class=\"content\">\n";
     echo "<ul><li>\n";
-    echo "<table border=1 width=750>";
+    echo "<table border=1 width=680>";
     echo "<tr><th>英雄</th><th>出场</th><th>热门装备</th><th>对应装备次数</th></tr>";
     foreach($count as $hero => $picknum)
     {
@@ -331,7 +309,7 @@ word-wrap: break-word;
             $pr = $cost["$itemid"];
             if(!empty($t) && !empty($pr) && $pr > 625)
             {
-                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='60'/>";
+                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='55'/>";
                 if($item_num == "")
                     $item_num = "$usenum";
                 else
@@ -390,11 +368,11 @@ word-wrap: break-word;
 
                 $d2 = date('Y-m-d H:i:s', (int)($match->start_time));
                 echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
-                echo "&nbsp;&nbsp;&nbsp;(l_id:$xml->leagueid,m_id:$match->match_id)&nbsp;&nbsp;[$d2]</div>\n";
+                echo "&nbsp;&nbsp;&nbsp;(联赛id:$xml->leagueid,比赛id:$match->match_id)&nbsp;&nbsp;[$d2]</div>\n";
                 echo "<div class=\"content\">\n";
                 echo "<ul><li>\n";
-                echo "<table border=1 width=600>";
-                echo "<tr><th>英雄</th><th>击杀/死亡/助攻</th><th>装备</th></tr>";
+                echo "<table border=1 width=680>";
+                echo "<tr><th>英雄</th><th>击杀/死亡/助攻</th><th>装备</th><th>每分钟金钱/经验</th></tr>";
                 foreach($xml->players->player as $player)
                 {
                     echo "<tr>";
@@ -410,13 +388,13 @@ word-wrap: break-word;
                     else
                         echo "<td><font color=red size=2>$name(天灾$player->player_slot)</font></td>";
                     echo "<td>$player->kills/$player->deaths/$player->assists</td><td>";
-                    if(!empty($t0)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png' width='60' />";
-                    if(!empty($t1)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png' width='60' />";
-                    if(!empty($t2)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png' width='60' />";
-                    if(!empty($t3)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png' width='60' />";
-                    if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='60' />";
-                    if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='60' />";
-                    echo "</td></tr>";
+                    if(!empty($t0)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png' width='55' />";
+                    if(!empty($t1)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png' width='55' />";
+                    if(!empty($t2)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png' width='55' />";
+                    if(!empty($t3)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png' width='55' />";
+                    if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='55' />";
+                    if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='55' />";
+                    echo "</td><td>$player->gold_per_min/$player->xp_per_min</td></tr>";
                 }
                 echo "</table></li></ul></div>\n";
             }
@@ -426,28 +404,25 @@ word-wrap: break-word;
     // -------------left end--------------
     echo "</div>\n";
 
-	$content = file_get_contents("./EpicLeagueListing.xml");
+    $content = file_get_contents("/tmp/GetLeagueListing.xml");
 	$xml = simplexml_load_string($content);
-
 	$leagues = $xml->leagues[0];
+
 	echo "<div class=\"right\">";
 	echo "<div class=\"leaguebox\">热门官方联赛</div>";
-
 	echo "<div class=\"info\"><ul>";
+
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if(in_array($l, $arr))
+        if(in_array($l, $hot))
 		    $name = $league->name;
         else
-		    $name = $league->name;
+            continue;
 
 		echo "<li>";
-		if(0 === strcmp(substr($league->tournament_url, 0, 7), "http://"))
-			echo "<a target='_blank' href='$league->tournament_url'>$name</a>";
-		else
-			echo "<a target='_blank' href='http://$league->tournament_url'>$name</a>";
-
+		echo "<p><font color='green'>联赛id:$l</font></p>\n";
+        echo "<a target='_blank' href='$league->tournament_url' title='$league->description'>$name</a>\n";
 		echo "</li>";
 	}
 	echo "</ul></div></div>";
