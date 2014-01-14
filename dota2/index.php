@@ -237,8 +237,9 @@ word-wrap: break-word;
         if(!empty($r))
         {
             array_push($arr, $l);
-            echo "<li><table width=600 border=1>";
-            echo "<tr><th>近卫</th><th>天灾</th><th>观众数</th><th>联赛id</th></tr>";
+            echo "<li><table width=680 border=1>";
+            echo "<tr><th width=30%><font color=blue>近卫</font></th><th width=30%><font color=blue>天灾</font></th>";
+            echo "<th width=20%><font color=purple>观众数</font></th><th width=20%><font color=purple>联赛id</font></th></tr>";
             echo "<tr>";
             echo "<td>$r</td><td>$d</td>";
             echo "<td>$s</td>";
@@ -259,9 +260,9 @@ word-wrap: break-word;
                     array_push($t1, "<td>$hero($player->name)</td>");
                 }
             }
-            echo "<table border=1 width=600>";
+            echo "<table border=1 width=680>";
             echo "<tr>";
-            echo "<th>近卫</th><th>天灾</th>";
+            echo "<th width=50%>近卫</th><th width=50%>天灾</th>";
             for($i=0; $i<5; $i++)
             {
                 echo "<tr>";
