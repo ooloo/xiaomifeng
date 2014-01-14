@@ -238,7 +238,7 @@ word-wrap: break-word;
         {
             array_push($arr, $l);
             echo "<li><table width=680 border=1>";
-            echo "<tr><th width=30%><font color=blue>近卫</font></th><th width=30%><font color=blue>天灾</font></th>";
+            echo "<tr><th width=30%><font color=blue>近卫</font></th><th width=30%><font color=red>天灾</font></th>";
             echo "<th width=20%><font color=purple>观众数</font></th><th width=20%><font color=purple>联赛id</font></th></tr>";
             echo "<tr>";
             echo "<td>$r</td><td>$d</td>";
