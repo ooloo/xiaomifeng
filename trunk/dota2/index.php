@@ -296,7 +296,7 @@ word-wrap: break-word;
     echo "<tr><th>英雄</th><th>出场</th><th>热门装备</th><th>对应装备次数</th></tr>";
     foreach($count as $hero => $picknum)
     {
-        if((int)$picknum < 10)
+        if((int)$picknum < 20)
             break;
         $show_num = 0;
         $item_num = "";
@@ -308,7 +308,7 @@ word-wrap: break-word;
                 break;
             $t = $items_arr["$itemid"];
             $pr = $cost["$itemid"];
-            if(!empty($t) && !empty($pr) && $pr > 625)
+            if(!empty($t) && !empty($pr) && $pr > 600)
             {
                 echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='55'/>";
                 if($item_num == "")
@@ -322,6 +322,40 @@ word-wrap: break-word;
     }
     echo "</table>";
     echo "</li></ul></div>\n";
+
+    function show_match($matchXmlContent)
+    {
+        $xml = simplexml_load_string($matchXmlContent);
+
+        if(empty($xml->radiant_name) || empty($xml->dire_name))
+            return;
+        if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
+            return;
+
+        $d2 = date('Y-m-d H:i:s', (int)($xml->start_time));
+        echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
+        echo "&nbsp;&nbsp;&nbsp;(联赛id:$xml->leagueid,比赛id:$xml->match_id)&nbsp;&nbsp;[$d2]</div>\n";
+        echo "<div class=\"content\">\n";
+        echo "<ul><li>\n";
+        echo "<table border=1 width=680>";
+        echo "<tr><th width=10%>队伍</th><th width=25%>英雄(账号id)</th><th width=15%>击杀/死亡/助攻</th>";
+        echo "<th width=10%>等级</th><th width=20%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
+        foreach($xml->players->player as $player)
+        {
+            echo "<tr>";
+            $name = $heroes_arr["$player->hero_id"];
+            if($player->player_slot < 5)
+                echo "<td><font color=blue size=2>近卫</font></td>";
+            else
+                echo "<td><font color=red size=2>天灾</font></td>";
+            echo "<td>$name($player->account_id)</td>";
+            echo "<td>$player->kills/$player->deaths/$player->assists</td>";
+            echo "<td>$player->level</td>";
+            echo "<td>$player->gold_spent</td>";
+            echo "<td>$player->gold_per_min/$player->xp_per_min</td></tr>";
+        }
+        echo "</table></li></ul></div>\n";
+    }
 
     if(!empty($arr))
     {
@@ -347,7 +381,7 @@ word-wrap: break-word;
             $show_num = 0;
             foreach($xml->matches->match as $match)
             {
-                if(++$show_num >10)
+                if(++$show_num > 5)
                     break;
 
                 $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
@@ -360,45 +394,22 @@ word-wrap: break-word;
                     file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
                     continue;
                 }
-                $xml = simplexml_load_string($content);
-
-                if(empty($xml->radiant_name) || empty($xml->dire_name))
-                    continue;
-                if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
-                    continue;
-
-                $d2 = date('Y-m-d H:i:s', (int)($match->start_time));
-                echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
-                echo "&nbsp;&nbsp;&nbsp;(联赛id:$xml->leagueid,比赛id:$match->match_id)&nbsp;&nbsp;[$d2]</div>\n";
-                echo "<div class=\"content\">\n";
-                echo "<ul><li>\n";
-                echo "<table border=1 width=680>";
-                echo "<tr><th>英雄</th><th>击杀/死亡/助攻</th><th>装备</th><th>每分钟金钱/经验</th></tr>";
-                foreach($xml->players->player as $player)
-                {
-                    echo "<tr>";
-                    $name = $heroes_arr["$player->hero_id"];
-                    $t0 = $items_arr["$player->item_0"];
-                    $t1 = $items_arr["$player->item_1"];
-                    $t2 = $items_arr["$player->item_2"];
-                    $t3 = $items_arr["$player->item_3"];
-                    $t4 = $items_arr["$player->item_4"];
-                    $t5 = $items_arr["$player->item_5"];
-                    if($player->player_slot < 5)
-                        echo "<td><font color=blue size=2>$name(近卫$player->player_slot)</font></td>";
-                    else
-                        echo "<td><font color=red size=2>$name(天灾$player->player_slot)</font></td>";
-                    echo "<td>$player->kills/$player->deaths/$player->assists</td><td>";
-                    if(!empty($t0)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t0}_lg.png' width='55' />";
-                    if(!empty($t1)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t1}_lg.png' width='55' />";
-                    if(!empty($t2)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t2}_lg.png' width='55' />";
-                    if(!empty($t3)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t3}_lg.png' width='55' />";
-                    if(!empty($t4)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t4}_lg.png' width='55' />";
-                    if(!empty($t5)) echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t5}_lg.png' width='55' />";
-                    echo "</td><td>$player->gold_per_min/$player->xp_per_min</td></tr>";
-                }
-                echo "</table></li></ul></div>\n";
+                show_match($content);
             }
+        }
+    }
+    else
+    {
+        $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
+        $show_num = 0;
+        foreach($file as $line)
+        {
+            if(++$show_num > 5)
+                break;
+
+            $filename = str_replace("\n", "", $line);
+            $content = file_get_contents("/tmp/$filename");
+            show_match($content);
         }
     }
 
@@ -416,7 +427,7 @@ word-wrap: break-word;
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if(in_array($l, $hot))
+        if(in_array($l, $hot) || in_array($l, $arr))
 		    $name = $league->name;
         else
             continue;
