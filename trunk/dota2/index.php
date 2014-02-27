@@ -293,7 +293,7 @@ word-wrap: break-word;
     echo "<div class=\"content\">\n";
     echo "<ul><li>\n";
     echo "<table border=1 width=680>";
-    echo "<tr><th>英雄</th><th>出场</th><th>热门装备</th><th>对应装备次数</th></tr>";
+    echo "<tr><th width=20%>英雄</th><th width=10%>出场</th><th width=50%>热门装备</th><th width=20%>对应装备次数</th></tr>";
     foreach($count as $hero => $picknum)
     {
         if((int)$picknum < 20)
@@ -304,13 +304,14 @@ word-wrap: break-word;
         echo "<tr><td>$hero</td><td>$picknum</td><td>";
         foreach($item_arr as $itemid => $usenum)
         {
-            if($show_num > 7)
+            if($show_num > 4)
                 break;
             $t = $items_arr["$itemid"];
             $pr = $cost["$itemid"];
-            if(!empty($t) && !empty($pr) && $pr > 600)
+            if(!empty($t) && !empty($pr) && $pr > 875)
             {
-                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' width='55'/>";
+                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' ";
+                echo "width='45'style='margin-right:2px'/>";
                 if($item_num == "")
                     $item_num = "$usenum";
                 else
@@ -325,6 +326,7 @@ word-wrap: break-word;
 
     function show_match($matchXmlContent)
     {
+        global $heroes_arr;
         $xml = simplexml_load_string($matchXmlContent);
 
         if(empty($xml->radiant_name) || empty($xml->dire_name))
