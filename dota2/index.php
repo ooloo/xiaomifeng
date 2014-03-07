@@ -215,6 +215,7 @@ word-wrap: break-word;
 
     $content = file_get_contents("/tmp/heroes.xml");
     $xml = simplexml_load_string($content);
+    $show_lastmatch_num = 0;
     $heroes_arr = array();
     foreach($xml->heroes->hero as $hero)
     {
@@ -234,14 +235,26 @@ word-wrap: break-word;
         $s = $game->spectators;
         $l = $game->league_id;
 
+        $dbh = dba_open("/tmp/living.db", "c", "db4");
+        $starttime = dba_fetch("$game->lobby_id", $dbh);
+        if(empty($starttime))
+        {
+            $starttime = time();
+            dba_replace($game->lobby_id, $starttime, $dbh);
+        }
+        dba_close($dbh);
+        $d0 = date('Y-m-d H:i:s', (int)($starttime));
+
         if(!empty($r))
         {
             array_push($arr, $l);
             echo "<li><table width=680 border=1>";
-            echo "<tr><th width=30%><font color=blue>近卫</font></th><th width=30%><font color=red>天灾</font></th>";
-            echo "<th width=20%><font color=purple>观众数</font></th><th width=20%><font color=purple>联赛id</font></th></tr>";
+            echo "<tr><th width=25%><font color=blue>近卫</font></th><th width=25%><font color=red>天灾</font></th>";
+            echo "<th width=30%><font color=purple>开始时间</font></th>";
+            echo "<th width=10%><font color=purple>观众数</font></th><th width=10%><font color=purple>联赛id</font></th></tr>";
             echo "<tr>";
             echo "<td>$r</td><td>$d</td>";
+            echo "<td>$d0</td>";
             echo "<td>$s</td>";
             echo "<td>$l</td>";
             echo "</tr></table>";
@@ -327,6 +340,7 @@ word-wrap: break-word;
     function show_match($matchXmlContent)
     {
         global $heroes_arr;
+        global $show_lastmatch_num;
         $xml = simplexml_load_string($matchXmlContent);
 
         if(empty($xml->radiant_name) || empty($xml->dire_name))
@@ -340,8 +354,9 @@ word-wrap: break-word;
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
         echo "<table border=1 width=680>";
-        echo "<tr><th width=10%>队伍</th><th width=25%>英雄(账号id)</th><th width=15%>击杀/死亡/助攻</th>";
+        echo "<tr><th width=10%>队伍</th><th width=25%>英雄</th><th width=15%>击杀/死亡/助攻</th>";
         echo "<th width=10%>等级</th><th width=20%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
+        $dbh = dba_open("/tmp/account.db", "r", "db4");
         foreach($xml->players->player as $player)
         {
             echo "<tr>";
@@ -350,69 +365,27 @@ word-wrap: break-word;
                 echo "<td><font color=blue size=2>近卫</font></td>";
             else
                 echo "<td><font color=red size=2>天灾</font></td>";
-            echo "<td>$name($player->account_id)</td>";
+            $account_name = dba_fetch("$player->account_id", $dbh);
+            echo "<td>$name($account_name)</td>";
             echo "<td>$player->kills/$player->deaths/$player->assists</td>";
             echo "<td>$player->level</td>";
             echo "<td>$player->gold_spent</td>";
             echo "<td>$player->gold_per_min/$player->xp_per_min</td></tr>";
         }
+        dba_close($dbh);
         echo "</table></li></ul></div>\n";
+        $show_lastmatch_num++;
     }
 
-    if(!empty($arr))
+    $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
+    foreach($file as $line)
     {
-        foreach($arr as $id)
-        {
-            //$l_url = "\"$head/GetMatchHistory/$key&league_id=$id&date_min=$d1\"";
-            $l_url = "\"$head/GetMatchHistory/$key&league_id=$id\"";
-            if(file_exists("/tmp/$id.xml"))
-            {
-                $content = file_get_contents("/tmp/$id.xml");
-                if(filemtime("/tmp/$id.xml") > time()-1800)
-                {
-                    file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
-                }
-            }
-            else
-            {
-                file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
-                continue;
-            }
-            $xml = simplexml_load_string($content);
+        if($show_lastmatch_num >= 5)
+            break;
 
-            $show_num = 0;
-            foreach($xml->matches->match as $match)
-            {
-                if(++$show_num > 5)
-                    break;
-
-                $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
-                if(file_exists("/tmp/$match->match_id.xml"))
-                {
-                    $content = file_get_contents("/tmp/$match->match_id.xml");
-                }
-                else
-                {
-                    file_put_contents("/tmp/wget.ready", "wget -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
-                    continue;
-                }
-                show_match($content);
-            }
-        }
-    }
-    else
-    {
-        $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
-        $show_num = 0;
-        foreach($file as $line)
-        {
-            if(++$show_num > 5)
-                break;
-
-            $filename = str_replace("\n", "", $line);
-            $content = file_get_contents("/tmp/$filename");
-            show_match($content);
-        }
+        $filename = str_replace("\n", "", $line);
+        $content = file_get_contents("/tmp/$filename");
+        show_match($content);
     }
 
     // -------------left end--------------
