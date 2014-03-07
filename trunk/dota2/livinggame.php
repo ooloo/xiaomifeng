@@ -14,6 +14,7 @@ foreach($xml->games->game as $game)
     }
     dba_close($dbh);
 }
+array_push($arr, "189");
 
 $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
 $head = "https://api.steampowered.com/IDOTA2Match_570";
@@ -27,7 +28,6 @@ if(!empty($arr))
         {
             $st = filemtime("/tmp/$id.xml");
             $ct = time()-1800;
-            $content = file_get_contents("/tmp/$id.xml");
             if($ct > $st)
             {
                 file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
@@ -38,6 +38,7 @@ if(!empty($arr))
             file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
             continue;
         }
+        $content = file_get_contents("/tmp/$id.xml");
         $xml = simplexml_load_string($content);
 
         $show_num = 0;
