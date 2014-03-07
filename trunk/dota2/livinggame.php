@@ -15,8 +15,6 @@ foreach($xml->games->game as $game)
     dba_close($dbh);
 }
 
-print_r($arr);
-
 $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
 $head = "https://api.steampowered.com/IDOTA2Match_570";
 
@@ -27,8 +25,10 @@ if(!empty($arr))
         $l_url = "\"$head/GetMatchHistory/$key&league_id=$id\"";
         if(file_exists("/tmp/$id.xml"))
         {
+            $st = filemtime("/tmp/$id.xml");
+            $ct = time()-1800;
             $content = file_get_contents("/tmp/$id.xml");
-            if(filemtime("/tmp/$id.xml") > time()-1800)
+            if($ct > $st)
             {
                 file_put_contents("/tmp/wget.ready", "wget -O /tmp/$id.xml $l_url\n", FILE_APPEND);
             }
