@@ -66,7 +66,7 @@ fwrite($handle, '<?php'.chr(10).'$count='.var_export ($count,true).';'.chr(10).'
 fclose($handle);
 
 $handle = fopen("./hot.php", "w+");
-fwrite($handle, '<?php'.chr(10).'$hot='.var_export (array_unique($hot),true).';'.chr(10).'?>');
+fwrite($handle, '<?php'.chr(10).'$hot='.var_export (array_count_values($hot),true).';'.chr(10).'?>');
 fclose($handle);
 
 ?>

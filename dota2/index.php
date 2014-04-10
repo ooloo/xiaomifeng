@@ -223,11 +223,10 @@ word-wrap: break-word;
     }
 
     $arr = array();
+    $haslive = 0;
     $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
     $xml = simplexml_load_string($content);
         
-    echo "<div class=\"item\">Living Game</div>\n";
-    echo "<div class=\"content\"><ul>\n";
     foreach($xml->games->game as $game)
     {
         $r = $game->radiant_team->team_name;
@@ -247,6 +246,12 @@ word-wrap: break-word;
 
         if(!empty($r))
         {
+            if(empty($arr))
+            {
+                echo "<div class=\"item\">Living Game</div>\n";
+                echo "<div class=\"content\"><ul>\n";
+                $haslive = 1;
+            }
             array_push($arr, $l);
             echo "<li><table width=680 border=1>";
             echo "<tr><th width=25%><font color=blue>近卫</font></th><th width=25%><font color=red>天灾</font></th>";
@@ -286,11 +291,10 @@ word-wrap: break-word;
             echo "</table></li>";
         }
     }
-    if(empty($arr))
+    if($haslive == 1)
     {
-        echo "<li>No Living Game.</li>";
+        echo "</ul></div>\n";
     }
-    echo "</ul></div>\n";
 
     include "items.php";
     include "count.php";
@@ -298,44 +302,45 @@ word-wrap: break-word;
     include "stat.php";
     include "cost.php";
 
-    $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
-    $head = "https://api.steampowered.com/IDOTA2Match_570";
-    $d1 = intval((time()-43200)/100)*100;
-
-    echo "<div class=\"item\">最近一个月职业联赛热门英雄排行</div>\n";
-    echo "<div class=\"content\">\n";
-    echo "<ul><li>\n";
-    echo "<table border=1 width=680>";
-    echo "<tr><th width=20%>英雄</th><th width=10%>出场</th><th width=50%>热门装备</th><th width=20%>对应装备次数</th></tr>";
-    foreach($count as $hero => $picknum)
+    if($haslive == 0)
     {
-        if((int)$picknum < 20)
-            break;
-        $show_num = 0;
-        $item_num = "";
-        $item_arr = $stat["$hero"];
-        echo "<tr><td>$hero</td><td>$picknum</td><td>";
-        foreach($item_arr as $itemid => $usenum)
+        echo "<div class=\"item\">最近一个月职业联赛热门英雄排行</div>\n";
+        echo "<div class=\"content\">\n";
+        echo "<ul><li>\n";
+        echo "<table border=1 width=680>";
+        echo "<tr><th width=20%>英雄</th><th width=10%>出场</th><th width=50%>热门装备</th><th width=20%>对应装备次数</th></tr>";
+
+        $show_hero_num = 0;
+        foreach($count as $hero => $picknum)
         {
-            if($show_num > 4)
+            if($show_hero_num++ >= 15)
                 break;
-            $t = $items_arr["$itemid"];
-            $pr = $cost["$itemid"];
-            if(!empty($t) && !empty($pr) && $pr > 875)
+            $show_num = 0;
+            $item_num = "";
+            $item_arr = $stat["$hero"];
+            echo "<tr><td>$hero</td><td>$picknum</td><td>";
+            foreach($item_arr as $itemid => $usenum)
             {
-                echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' ";
-                echo "width='45'style='margin-right:2px'/>";
-                if($item_num == "")
-                    $item_num = "$usenum";
-                else
-                    $item_num = "$item_num/$usenum";
-                ++$show_num;
+                if($show_num > 4)
+                    break;
+                $t = $items_arr["$itemid"];
+                $pr = $cost["$itemid"];
+                if(!empty($t) && !empty($pr) && $pr > 875)
+                {
+                    echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' ";
+                    echo "width='45'style='margin-right:2px'/>";
+                    if($item_num == "")
+                        $item_num = "$usenum";
+                    else
+                        $item_num = "$item_num/$usenum";
+                    $show_num++;
+                }
             }
+            echo "</td><td>$item_num</td></tr>";
         }
-        echo "</td><td>$item_num</td></tr>";
+        echo "</table>";
+        echo "</li></ul></div>\n";
     }
-    echo "</table>";
-    echo "</li></ul></div>\n";
 
     function show_match($matchXmlContent)
     {
@@ -354,19 +359,18 @@ word-wrap: break-word;
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
         echo "<table border=1 width=680>";
-        echo "<tr><th width=10%>英雄</th><th width=25%>选手</th><th width=15%>击杀/死亡/助攻</th>";
-        echo "<th width=10%>等级</th><th width=20%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
+        echo "<tr><th width=40%>英雄</th><th width=15%>击杀/死亡/助攻</th>";
+        echo "<th width=10%>等级</th><th width=15%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
         $dbh = dba_open("/tmp/account.db", "r", "db4");
         foreach($xml->players->player as $player)
         {
             echo "<tr>";
             $name = $heroes_arr["$player->hero_id"];
-            if($player->player_slot < 5)
-                echo "<td><font color=blue size=2>$name</font></td>";
-            else
-                echo "<td><font color=red size=2>$name</font></td>";
             $account_name = dba_fetch("$player->account_id", $dbh);
-            echo "<td>$account_name</td>";
+            if($player->player_slot < 5)
+                echo "<td><font color=green size=2>$name($account_name)</font></td>";
+            else
+                echo "<td><font color=red size=2>$name($account_name)</font></td>";
             echo "<td>$player->kills/$player->deaths/$player->assists</td>";
             echo "<td>$player->level</td>";
             echo "<td>$player->gold_spent</td>";
@@ -380,7 +384,7 @@ word-wrap: break-word;
     $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
     foreach($file as $line)
     {
-        if($show_lastmatch_num >= 5)
+        if($show_lastmatch_num >= 8)
             break;
 
         $filename = str_replace("\n", "", $line);
@@ -402,7 +406,7 @@ word-wrap: break-word;
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if(in_array($l, $hot) || in_array($l, $arr))
+        if($hot["$l"] > 5 || in_array($l, $arr))
 		    $name = $league->name;
         else
             continue;
