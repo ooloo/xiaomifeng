@@ -354,7 +354,7 @@ word-wrap: break-word;
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
         echo "<table border=1 width=680>";
-        echo "<tr><th width=10%>队伍</th><th width=25%>英雄</th><th width=15%>击杀/死亡/助攻</th>";
+        echo "<tr><th width=10%>英雄</th><th width=25%>选手</th><th width=15%>击杀/死亡/助攻</th>";
         echo "<th width=10%>等级</th><th width=20%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
         $dbh = dba_open("/tmp/account.db", "r", "db4");
         foreach($xml->players->player as $player)
@@ -362,11 +362,11 @@ word-wrap: break-word;
             echo "<tr>";
             $name = $heroes_arr["$player->hero_id"];
             if($player->player_slot < 5)
-                echo "<td><font color=blue size=2>近卫</font></td>";
+                echo "<td><font color=blue size=2>$name</font></td>";
             else
-                echo "<td><font color=red size=2>天灾</font></td>";
+                echo "<td><font color=red size=2>$name</font></td>";
             $account_name = dba_fetch("$player->account_id", $dbh);
-            echo "<td>$name($account_name)</td>";
+            echo "<td>$account_name</td>";
             echo "<td>$player->kills/$player->deaths/$player->assists</td>";
             echo "<td>$player->level</td>";
             echo "<td>$player->gold_spent</td>";
