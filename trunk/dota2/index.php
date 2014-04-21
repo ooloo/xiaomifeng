@@ -145,7 +145,6 @@ font-family:Arial,"宋体";
 }
 
 .right {
-background: #eef3f3;
 float: right;
 overflow: hidden;
 width: 190px;
@@ -211,6 +210,7 @@ word-wrap: break-word;
 </DIV>
 
 <?php
+    include "team.php";
     echo "<div class=\"left\">";
 
     $content = file_get_contents("/tmp/heroes.xml");
@@ -244,7 +244,9 @@ word-wrap: break-word;
         dba_close($dbh);
         $d0 = date('Y-m-d H:i:s', (int)($starttime));
 
-        if(!empty($r))
+        $rt = $game->radiant_team->team_id;
+        $dt = $game->dire_team->team_id;
+        if(in_array("$rt", $team) || in_array("$dt", $team))
         {
             if(empty($arr))
             {
@@ -344,11 +346,12 @@ word-wrap: break-word;
 
     function show_match($matchXmlContent)
     {
+        global $team;
         global $heroes_arr;
         global $show_lastmatch_num;
         $xml = simplexml_load_string($matchXmlContent);
 
-        if(empty($xml->radiant_name) || empty($xml->dire_name))
+        if(!in_array($xml->radiant_team_id, $team) && !in_array($xml->dire_team_id, $team))
             return;
         if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
             return;
@@ -400,13 +403,22 @@ word-wrap: break-word;
 	$leagues = $xml->leagues[0];
 
 	echo "<div class=\"right\">";
+	echo "<div class=\"leaguebox\">热门菠菜</div>";
+	echo "<div class=\"info\"><ul>";
+    echo "<li><a target='_blank' href='http://bet.sgamer.com/game/4'>sgamer竞猜中心</a></li>";
+    echo "<li><a target='_blank' href='http://www.dota2lounge.com/'>d2l菠菜中心</a></li>";
+    echo "<li><a target='_blank' href='http://www.dota2sp.com/gmatchs'>dota2sp竞猜中心</a></li>";
+    echo "<li><a target='_blank' href='http://bet.replays.net/'>replays竞猜中心</a></li>";
+    echo "<li><a target='_blank' href='http://moba.uuu9.com/myz_jcsg-game.html'>moba菠菜中心</a></li>";
+	echo "</ul></div>";
+
 	echo "<div class=\"leaguebox\">热门官方联赛</div>";
 	echo "<div class=\"info\"><ul>";
 
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if($hot["$l"] > 5 || in_array($l, $arr))
+        if($hot["$l"] > 20 || in_array($l, $arr))
 		    $name = $league->name;
         else
             continue;
@@ -423,8 +435,16 @@ word-wrap: break-word;
 <DIV class="bottom">
 <p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2013 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
-
 </DIV>
+
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+ (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+ })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-21342336-3', 'dota2zhibo.com');
+ga('send', 'pageview');
+</script>
 
 </body>
 </html>
