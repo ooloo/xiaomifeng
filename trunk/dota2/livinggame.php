@@ -29,12 +29,12 @@ if(!empty($arr))
             $ct = time()-1800;
             if($ct > $st)
             {
-                file_put_contents("/tmp/wget.ready", "wget -t3 --timeout=30 -O /tmp/$id.xml $l_url\n", FILE_APPEND);
+                file_put_contents("/tmp/wget.ready", "wget -t3 -T30 -O /tmp/$id.xml $l_url\n", FILE_APPEND);
             }
         }
         else
         {
-            file_put_contents("/tmp/wget.ready", "wget -t3 --timeout=30 -O /tmp/$id.xml $l_url\n", FILE_APPEND);
+            file_put_contents("/tmp/wget.ready", "wget -t3 -T30 -O /tmp/$id.xml $l_url\n", FILE_APPEND);
             continue;
         }
         $content = file_get_contents("/tmp/$id.xml");
@@ -49,7 +49,7 @@ if(!empty($arr))
             $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
             if(!file_exists("/tmp/$match->match_id.xml"))
             {
-                file_put_contents("/tmp/wget.ready", "wget -t3 --timeout=30 -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
+                file_put_contents("/tmp/wget.ready", "wget -t3 -T30 -O /tmp/$match->match_id.xml $m_url\n", FILE_APPEND);
             }
         }
     }
