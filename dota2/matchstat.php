@@ -10,6 +10,9 @@ foreach($xml->heroes->hero as $hero)
 $stat = array();
 $count = array();
 $hot = array();
+$team = array();
+$seed = array("5", "7", "15", "39", "46", "111474", "726228", "1333179");
+
 $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
 foreach($file as $line)
 {
@@ -22,6 +25,11 @@ foreach($file as $line)
         continue;
     if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
         continue;
+
+    if(in_array("$xml->radiant_team_id", $seed) || in_array("$xml->dire_team_id", $seed))
+    {
+        array_push($team,"$xml->radiant_team_id","$xml->dire_team_id");
+    }
 
     array_push($hot, "$xml->leagueid");
     foreach($xml->players->player as $player)
@@ -56,6 +64,7 @@ foreach($file as $line)
 }
 //print_r($stat);
 arsort($count);
+array_unique($team);
 
 $handle = fopen("./stat.php", "w+");
 fwrite($handle, '<?php'.chr(10).'$stat='.var_export ($stat,true).';'.chr(10).'?>');
@@ -67,6 +76,10 @@ fclose($handle);
 
 $handle = fopen("./hot.php", "w+");
 fwrite($handle, '<?php'.chr(10).'$hot='.var_export (array_count_values($hot),true).';'.chr(10).'?>');
+fclose($handle);
+
+$handle = fopen("./team.php", "w+");
+fwrite($handle, '<?php'.chr(10).'$team='.var_export ($team,true).';'.chr(10).'?>');
 fclose($handle);
 
 ?>
