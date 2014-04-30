@@ -199,6 +199,7 @@ word-wrap: break-word;
 </head>
 
 <body>
+<?php include_once("analyticstracking.php") ?>
 <div id="navBarBG" style="display: block;">
 <div id="navBar">
 <font color='green' size='6'>DOTA2官方联赛直播</font>
@@ -211,6 +212,13 @@ word-wrap: break-word;
 
 <?php
     include "team.php";
+    include "items.php";
+    include "count.php";
+    include "lea.php";
+    include "hot.php";
+    include "stat.php";
+    include "cost.php";
+
     echo "<div class=\"left\">";
 
     $content = file_get_contents("/tmp/heroes.xml");
@@ -233,6 +241,7 @@ word-wrap: break-word;
         $d = $game->dire_team->team_name;
         $s = $game->spectators;
         $l = $game->league_id;
+        $ln = $lea["$l"];
 
         $dbh = dba_open("/tmp/living.db", "c", "db4");
         $starttime = dba_fetch("$game->lobby_id", $dbh);
@@ -246,7 +255,7 @@ word-wrap: break-word;
 
         $rt = $game->radiant_team->team_id;
         $dt = $game->dire_team->team_id;
-        if(in_array("$rt", $team) || in_array("$dt", $team))
+        if(!empty($rt) && !empty($dt))
         {
             if(empty($arr))
             {
@@ -256,11 +265,11 @@ word-wrap: break-word;
             }
             array_push($arr, $l);
             echo "<li><table width=680 border=1>";
-            echo "<tr><th width=25%><font color=blue>近卫</font></th><th width=25%><font color=red>天灾</font></th>";
+            echo "<tr><th width=50%><font color=purple>官方联赛</font></th>";
             echo "<th width=30%><font color=purple>开始时间</font></th>";
             echo "<th width=10%><font color=purple>观众数</font></th><th width=10%><font color=purple>联赛id</font></th></tr>";
             echo "<tr>";
-            echo "<td>$r</td><td>$d</td>";
+            echo "<td>$ln</td>";
             echo "<td>$d0</td>";
             echo "<td>$s</td>";
             echo "<td>$l</td>";
@@ -282,7 +291,7 @@ word-wrap: break-word;
             }
             echo "<table border=1 width=680>";
             echo "<tr>";
-            echo "<th width=50%>近卫</th><th width=50%>天灾</th>";
+            echo "<tr><th width=50%><font color=blue>$r</font></th><th width=50%><font color=red>$d</font></th>";
             for($i=0; $i<5; $i++)
             {
                 echo "<tr>";
@@ -298,15 +307,9 @@ word-wrap: break-word;
         echo "</ul></div>\n";
     }
 
-    include "items.php";
-    include "count.php";
-    include "hot.php";
-    include "stat.php";
-    include "cost.php";
-
     if($haslive == 0)
     {
-        echo "<div class=\"item\">最近一个月职业联赛热门英雄排行</div>\n";
+        echo "<div class=\"item\">最近一周职业联赛热门英雄排行</div>\n";
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
         echo "<table border=1 width=680>";
@@ -315,7 +318,7 @@ word-wrap: break-word;
         $show_hero_num = 0;
         foreach($count as $hero => $picknum)
         {
-            if($show_hero_num++ >= 15)
+            if($show_hero_num++ >= 10)
                 break;
             $show_num = 0;
             $item_num = "";
@@ -346,6 +349,7 @@ word-wrap: break-word;
 
     function show_match($matchXmlContent)
     {
+        global $lea;
         global $team;
         global $heroes_arr;
         global $show_lastmatch_num;
@@ -356,14 +360,20 @@ word-wrap: break-word;
         if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
             return;
 
+        if(empty($xml->radiant_name) || empty($xml->dire_name))
+            return;
+
+        $ln = $lea["$xml->leagueid"];
         $d2 = date('Y-m-d H:i:s', (int)($xml->start_time));
         echo "<div class=\"item\">{$xml->radiant_name} <font color=red>$xml->radiant_win</font> {$xml->dire_name}";
         echo "&nbsp;&nbsp;&nbsp;(联赛id:$xml->leagueid,比赛id:$xml->match_id)&nbsp;&nbsp;[$d2]</div>\n";
         echo "<div class=\"content\">\n";
         echo "<ul><li>\n";
         echo "<table border=1 width=680>";
-        echo "<tr><th width=40%>英雄</th><th width=15%>击杀/死亡/助攻</th>";
-        echo "<th width=10%>等级</th><th width=15%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
+        echo "<tr><th width=50%><font color=green>$ln</font></th>";
+        echo "<th width=10%>等级</th>";
+        echo "<th width=15%>击杀/死亡/助攻</th>";
+        echo "<th width=10%>花费金钱</th><th width=15%>每分钟金钱/经验</th></tr>";
         $dbh = dba_open("/tmp/account.db", "r", "db4");
         foreach($xml->players->player as $player)
         {
@@ -371,11 +381,11 @@ word-wrap: break-word;
             $name = $heroes_arr["$player->hero_id"];
             $account_name = dba_fetch("$player->account_id", $dbh);
             if($player->player_slot < 5)
-                echo "<td><font color=green size=2>$name($account_name)</font></td>";
+                echo "<td>$name<font color=blue size=2>($account_name)</font></td>";
             else
-                echo "<td><font color=red size=2>$name($account_name)</font></td>";
-            echo "<td>$player->kills/$player->deaths/$player->assists</td>";
+                echo "<td>$name<font color=red size=2>($account_name)</font></td>";
             echo "<td>$player->level</td>";
+            echo "<td>$player->kills/$player->deaths/$player->assists</td>";
             echo "<td>$player->gold_spent</td>";
             echo "<td>$player->gold_per_min/$player->xp_per_min</td></tr>";
         }
@@ -436,15 +446,6 @@ word-wrap: break-word;
 <p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2013 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
 </DIV>
-
-<script>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
- (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
- m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
- })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-ga('create', 'UA-21342336-3', 'dota2zhibo.com');
-ga('send', 'pageview');
-</script>
 
 </body>
 </html>

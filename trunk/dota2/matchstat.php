@@ -9,9 +9,10 @@ foreach($xml->heroes->hero as $hero)
 }
 $stat = array();
 $count = array();
+$lea = array();
 $hot = array();
 $team = array();
-$seed = array("5", "7", "15", "39", "46", "111474", "726228", "1333179");
+$seed = array("5","7","15","20","36","46","111474","726228","999689","1333179","1375614");
 
 $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
 foreach($file as $line)
@@ -62,9 +63,22 @@ foreach($file as $line)
         arsort($stat["$name"]);
     }
 }
+
+$content = file_get_contents("/tmp/GetLeagueListing.xml");
+$xml = simplexml_load_string($content);
+$leagues = $xml->leagues[0];
+
+foreach($leagues as $league)
+{
+    $l = "$league->leagueid";
+    $name = "$league->name";
+    $lea["$l"] =  "$name";
+}
+
 //print_r($stat);
+//ksort($lea);
 arsort($count);
-array_unique($team);
+$team = array_unique($team);
 
 $handle = fopen("./stat.php", "w+");
 fwrite($handle, '<?php'.chr(10).'$stat='.var_export ($stat,true).';'.chr(10).'?>');
@@ -80,6 +94,10 @@ fclose($handle);
 
 $handle = fopen("./team.php", "w+");
 fwrite($handle, '<?php'.chr(10).'$team='.var_export ($team,true).';'.chr(10).'?>');
+fclose($handle);
+
+$handle = fopen("./lea.php", "w+");
+fwrite($handle, '<?php'.chr(10).'$lea='.var_export ($lea,true).';'.chr(10).'?>');
 fclose($handle);
 
 ?>
