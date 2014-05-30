@@ -11,9 +11,28 @@ $stat = array();
 $count = array();
 $lea = array();
 $hot = array();
-$team = array();
 $seed = array("5","7","15","20","36","46","111474","726228","999689","1333179","1375614");
 
+$team = array(
+        "20" => "TongFu|",
+        "36" => "Natus Vincere",
+        "2163" => "Team Liquid",
+        "39" => "Evil Geniuses",
+        "15" => "LGD-GAMING",
+        "999689" => "Titan",
+        "726228" => "Vici_ Gaming",
+        "5" => "Invictus Gaming",
+        "1333179" => "Cloud nine dota2",
+        "1375614" => "Newbee_",
+        "40" => "Virtus.Pro",
+        "26" => "mousesports",
+        "7" => "DK",
+        "111474" => "Alliance",
+        "1312775" => "CIS-Game",
+        "350190" => "Fnatic.",
+        "46" => "Team Empire",
+        "1075534" => "Orange Esports Dota",
+        );
 $file = file("/tmp/matches_filelist") or exit("Unable to open file!");
 foreach($file as $line)
 {
@@ -26,11 +45,6 @@ foreach($file as $line)
         continue;
     if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
         continue;
-
-    if(in_array("$xml->radiant_team_id", $seed) || in_array("$xml->dire_team_id", $seed))
-    {
-        array_push($team,"$xml->radiant_team_id","$xml->dire_team_id");
-    }
 
     array_push($hot, "$xml->leagueid");
     foreach($xml->players->player as $player)
@@ -78,7 +92,6 @@ foreach($leagues as $league)
 //print_r($stat);
 //ksort($lea);
 arsort($count);
-$team = array_unique($team);
 
 $handle = fopen("./stat.php", "w+");
 fwrite($handle, '<?php'.chr(10).'$stat='.var_export ($stat,true).';'.chr(10).'?>');

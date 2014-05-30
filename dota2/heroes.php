@@ -26,8 +26,8 @@ height: auto;
 padding-right: 10px;
 }
 
-.container { width: 1030px;}
 .bottom { float:left; height:200px; width:1000px; text-align:center; font-size:12px;}
+.container { width: 1030px;}
 
 </STYLE>
 </head>
@@ -59,48 +59,62 @@ padding-right: 10px;
 </div>
 
 <DIV id=m>
-<DIV id=fm>
-</DIV>
 
 <?php
+    include "team.php";
+    include "items.php";
+    include "count.php";
     include "lea.php";
     include "hot.php";
+    include "stat.php";
+    include "cost.php";
 
     echo "<br><BR><BR><div class=\"left\">";
 
-    $json = file_get_contents("/tmp/schedule.json");
-    $array = json_decode($json, true); 
-    $lastday = "";
-	foreach($array[0]['list'] as $arr)
+    $content = file_get_contents("/tmp/heroes.xml");
+    $xml = simplexml_load_string($content);
+    $show_lastmatch_num = 0;
+    $heroes_arr = array();
+    foreach($xml->heroes->hero as $hero)
     {
-        $title = $arr['title'];
-        $aside = $arr['aside'];
-        $bside = $arr['bside'];
-        $bo = $arr['bonum'];
-        $result = $arr['pointresult'];
-        $endtime = $arr['gameendtime'];
+        $heroes_arr["$hero->id"] = $hero->localized_name;
+    }
 
-        $day = split(' ',$endtime);
-        $day = $day[0];
-        if($result == "-") $result = "VS.";
+    echo "<div class=\"panel panel-primary\">";
+    echo "<div class=\"panel-heading\">最近一周职业联赛热门英雄TOP15</div>\n";
+    echo "<ul class=\"list-group\">\n";
+    echo "<li class=\"list-group-item\">\n";
+    echo "<table class=\"table\">";
+    echo "<tr><th width=20%>英雄</th><th width=10%>出场</th><th width=50%>热门装备</th><th width=20%>对应装备次数</th></tr>";
 
-        if($day != $lastday)
+    $show_hero_num = 0;
+    foreach($count as $hero => $picknum)
+    {
+        if($show_hero_num++ >= 15)
+            break;
+        $show_num = 0;
+        $item_num = "";
+        $item_arr = $stat["$hero"];
+        echo "<tr><td>$hero</td><td>$picknum</td><td>";
+        foreach($item_arr as $itemid => $usenum)
         {
-            if($lastday != "")
+            if($show_num > 4)
+                break;
+            $t = $items_arr["$itemid"];
+            $pr = $cost["$itemid"];
+            if(!empty($t) && !empty($pr) && $pr > 875)
             {
-                echo "</table>";
-                echo "</li></ul></div>\n";
-
+                //echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' ";
+                echo "<img src='http://cdn.dota2.com/apps/dota2/images/items/{$t}_lg.png' ";
+                echo "width='45'style='margin-right:2px'/>";
+                if($item_num == "")
+                    $item_num = "$usenum";
+                else
+                    $item_num = "$item_num/$usenum";
+                $show_num++;
             }
-            echo "<div class=\"panel panel-primary\">";
-            echo "<div class=\"panel-heading\">$day</div>\n";
-            echo "<ul class=\"list-group\">\n";
-            echo "<li class=\"list-group-item\">\n";
-            echo "<table class=\"table\">";
-            $lastday = $day;
         }
-        echo "<tr><td width=20%>$endtime</td><td width=30%>$title</td><td width=10%>BO$bo</td>";
-        echo "<td width=40%>$aside <font color=green><b>$result</b></font> $bside</td></tr>";
+        echo "</td><td>$item_num</td></tr>";
     }
     echo "</table>";
     echo "</li></ul></div>\n";
