@@ -46,7 +46,12 @@ foreach($file as $line)
     if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
         continue;
 
-    array_push($hot, "$xml->leagueid");
+    if(array_key_exists("$xml->radiant_team_id", $team)
+            || array_key_exists("$xml->dire_team_id", $team))
+    {
+        array_push($hot, "$xml->leagueid");
+    }
+
     foreach($xml->players->player as $player)
     {
         $name = $heroes_arr["$player->hero_id"];

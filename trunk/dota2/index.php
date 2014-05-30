@@ -63,7 +63,6 @@ padding-right: 10px;
 </DIV>
 
 <?php
-    include "lea.php";
     include "hot.php";
 
     echo "<br><BR><BR><div class=\"left\">";
@@ -130,7 +129,7 @@ padding-right: 10px;
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if($hot["$l"] > 10)
+        if($hot["$l"] >= 1)
 		    $name = $league->name;
         else
             continue;

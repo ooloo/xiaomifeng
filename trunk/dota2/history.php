@@ -48,9 +48,9 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li class="active"><a href="http://115.29.150.73/">Home</a></li>
+<li><a href="http://115.29.150.73/">Home</a></li>
 <li><a href="http://115.29.150.73/living.php">Live</a></li>
-<li><a href="http://115.29.150.73/history.php">History</a></li>
+<li class="active"><a href="http://115.29.150.73/history.php">History</a></li>
 <li><a href="http://115.29.150.73/heroes.php">Heroes</a></li>
 <li><a href="http://115.29.150.73/about.php">About</a></li>
 </ul>
@@ -63,11 +63,8 @@ padding-right: 10px;
 <?php
     include "team.php";
     include "items.php";
-    include "count.php";
     include "lea.php";
     include "hot.php";
-    include "stat.php";
-    include "cost.php";
 
     echo "<br><BR><BR><div class=\"left\">";
 
@@ -165,7 +162,7 @@ padding-right: 10px;
 	foreach($leagues as $league)
 	{
         $l = "$league->leagueid";
-        if($hot["$l"] > 10)
+        if($hot["$l"] >= 1)
 		    $name = $league->name;
         else
             continue;
