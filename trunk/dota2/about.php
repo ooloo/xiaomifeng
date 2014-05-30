@@ -26,8 +26,8 @@ height: auto;
 padding-right: 10px;
 }
 
-.container { width: 1030px;}
 .bottom { float:left; height:200px; width:1000px; text-align:center; font-size:12px;}
+.container { width: 1030px;}
 
 </STYLE>
 </head>
@@ -59,51 +59,37 @@ padding-right: 10px;
 </div>
 
 <DIV id=m>
-<DIV id=fm>
-</DIV>
 
 <?php
+    include "team.php";
+    include "items.php";
+    include "count.php";
     include "lea.php";
     include "hot.php";
+    include "stat.php";
+    include "cost.php";
 
     echo "<br><BR><BR><div class=\"left\">";
 
-    $json = file_get_contents("/tmp/schedule.json");
-    $array = json_decode($json, true); 
-    $lastday = "";
-	foreach($array[0]['list'] as $arr)
-    {
-        $title = $arr['title'];
-        $aside = $arr['aside'];
-        $bside = $arr['bside'];
-        $bo = $arr['bonum'];
-        $result = $arr['pointresult'];
-        $endtime = $arr['gameendtime'];
-
-        $day = split(' ',$endtime);
-        $day = $day[0];
-        if($result == "-") $result = "VS.";
-
-        if($day != $lastday)
-        {
-            if($lastday != "")
-            {
-                echo "</table>";
-                echo "</li></ul></div>\n";
-
-            }
-            echo "<div class=\"panel panel-primary\">";
-            echo "<div class=\"panel-heading\">$day</div>\n";
-            echo "<ul class=\"list-group\">\n";
-            echo "<li class=\"list-group-item\">\n";
-            echo "<table class=\"table\">";
-            $lastday = $day;
-        }
-        echo "<tr><td width=20%>$endtime</td><td width=30%>$title</td><td width=10%>BO$bo</td>";
-        echo "<td width=40%>$aside <font color=green><b>$result</b></font> $bside</td></tr>";
-    }
-    echo "</table>";
-    echo "</li></ul></div>\n";
+    echo "<div class=\"panel panel-primary\">";
+    echo "<div class=\"panel-heading\">About us</div>";
+    echo "<div class=\"panel-body\">
+    <h4>Copyright</h4>
+    &copy; 2014 Valve Corporation. All rights reserved. Valve, the Valve logo, Half-Life, the Half-Life logo, the Lambda logo, Steam, the Steam logo, Team Fortress, the Team Fortress logo, Opposing Force, Day of Defeat, the Day of Defeat logo, Counter-Strike, the Counter-Strike logo, Source, the Source logo, Counter-Strike: Condition Zero, Portal, the Portal logo, Dota, the Dota 2 logo, and Defense of the Ancients are trademarks and/or registered trademarks of Valve Corporation. All other trademarks are property of their respective owners.<br>
+    <br>
+    <h4>Valve Video Policy</h4>
+    <a href=http://www.valvesoftware.com/videopolicy.html>Click here for information</a>.<br>
+    <br>
+    <h4>Third Party Legal Notices</h4>
+    Steam and other Valve products distributed via Steam use certain third party materials that require notifications about their license terms.  You can find a list of these notifications in the file called ThirdPartyLegalNotices.doc distributed with the Steam client and/or a particular Valve product.  Where license terms require Valve to make source code available for redistribution, the code may be found <a href=http://developer.valvesoftware.com/wiki/Valve_Open_Source>here</a>.<br>
+    <br>
+    <h4>Claims of Copyright Infringement</h4>
+    Valve respects the intellectual property rights of others, and we ask that everyone using our internet sites and services do the same. Anyone who believes that their work has been reproduced in one of our internet sites or services in a way that constitutes copyright infringement may notify Valve via <a href=https://steamcommunity.com/dmca/create/>this page</a>.<br>
+    <br>
+    More information about U.S. copyright law can be found at the United States Copyright Office <a href=http://lcweb.loc.gov/copyright/>http://lcweb.loc.gov/copyright/</a><br>
+    <br>
+    <br />
+    </div></div>";
 
     // -------------left end--------------
     echo "</div>\n";

@@ -26,8 +26,8 @@ height: auto;
 padding-right: 10px;
 }
 
-.container { width: 1030px;}
 .bottom { float:left; height:200px; width:1000px; text-align:center; font-size:12px;}
+.container { width: 1030px;}
 
 </STYLE>
 </head>
@@ -63,47 +63,101 @@ padding-right: 10px;
 </DIV>
 
 <?php
+    include "team.php";
+    include "items.php";
+    include "count.php";
     include "lea.php";
     include "hot.php";
+    include "stat.php";
+    include "cost.php";
 
     echo "<br><BR><BR><div class=\"left\">";
 
-    $json = file_get_contents("/tmp/schedule.json");
-    $array = json_decode($json, true); 
-    $lastday = "";
-	foreach($array[0]['list'] as $arr)
+    $content = file_get_contents("/tmp/heroes.xml");
+    $xml = simplexml_load_string($content);
+    $show_lastmatch_num = 0;
+    $heroes_arr = array();
+    foreach($xml->heroes->hero as $hero)
     {
-        $title = $arr['title'];
-        $aside = $arr['aside'];
-        $bside = $arr['bside'];
-        $bo = $arr['bonum'];
-        $result = $arr['pointresult'];
-        $endtime = $arr['gameendtime'];
-
-        $day = split(' ',$endtime);
-        $day = $day[0];
-        if($result == "-") $result = "VS.";
-
-        if($day != $lastday)
-        {
-            if($lastday != "")
-            {
-                echo "</table>";
-                echo "</li></ul></div>\n";
-
-            }
-            echo "<div class=\"panel panel-primary\">";
-            echo "<div class=\"panel-heading\">$day</div>\n";
-            echo "<ul class=\"list-group\">\n";
-            echo "<li class=\"list-group-item\">\n";
-            echo "<table class=\"table\">";
-            $lastday = $day;
-        }
-        echo "<tr><td width=20%>$endtime</td><td width=30%>$title</td><td width=10%>BO$bo</td>";
-        echo "<td width=40%>$aside <font color=green><b>$result</b></font> $bside</td></tr>";
+        $heroes_arr["$hero->id"] = $hero->localized_name;
     }
-    echo "</table>";
-    echo "</li></ul></div>\n";
+
+    $arr = array();
+    $haslive = 0;
+    $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
+    $xml = simplexml_load_string($content);
+        
+    foreach($xml->games->game as $game)
+    {
+        $r = $game->radiant_team->team_name;
+        $d = $game->dire_team->team_name;
+        $s = $game->spectators;
+        $l = $game->league_id;
+        $ln = $lea["$l"];
+
+        $dbh = dba_open("/tmp/living.db", "c", "db4");
+        $starttime = dba_fetch("$game->lobby_id", $dbh);
+        if(empty($starttime))
+        {
+            $starttime = time();
+            dba_replace($game->lobby_id, $starttime, $dbh);
+        }
+        dba_close($dbh);
+        $d0 = date('Y-m-d H:i:s', (int)($starttime));
+
+        if($s >= 100)
+        {
+            if(empty($arr))
+            {
+                $haslive = 1;
+            }
+            array_push($arr, $l);
+            echo "<div class=\"panel panel-primary\">\n";
+            echo "<div class=\"panel-heading\">Living Game</div>\n";
+            echo "<div class=\"panel-body\">";
+            echo "<font color=green><b>$ln</b></font> &nbsp;开始时间:[$d0] &nbsp;观众数:$s &nbsp;联赛id:$l";
+            echo "</div>";
+            echo "<ul class=\"list-group\">\n";
+            echo "<li class=\"list-group-item\">";
+            $t0 = array();
+            $t1 = array();
+            foreach($game->players->player as $player)
+            {
+                if($player->team == "0")
+                {
+                    $hero = $heroes_arr["$player->hero_id"];
+                    array_push($t0, "<td>$hero($player->name)</td>");
+                }
+                elseif($player->team == "1")
+                {
+                    $hero = $heroes_arr["$player->hero_id"];
+                    array_push($t1, "<td>$hero($player->name)</td>");
+                }
+            }
+            echo "<table class=\"table\">";
+            echo "<tr>";
+            echo "<tr><th width=50%><font color=blue>$r</font></th><th width=50%><font color=red>$d</font></th>";
+            for($i=0; $i<5; $i++)
+            {
+                echo "<tr>";
+                echo "$t0[$i]$t1[$i]";
+                echo "</tr>";
+            }
+            echo "</tr>";
+            echo "</table></li>";
+            echo "</ul></div>\n";
+        }
+    }
+
+    if($haslive == 0)
+    {
+        echo "<div class=\"panel panel-primary\">";
+        echo "<div class=\"panel-heading\">Living Game</div>\n";
+        echo "<div class=\"panel-body\">";
+        echo "现在没有官方联赛的比赛, 请注意比赛预告,谢谢!<br>";
+        echo "</div>";
+        echo "</div>\n";
+    }
 
     // -------------left end--------------
     echo "</div>\n";
