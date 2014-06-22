@@ -2,6 +2,13 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+
+<!--[if lt IE 9]>
+<script src="https://oss.maxcdn.com/libs/html5shiv/3.6.2/html5shiv.js"></script>
+<script src="js/respond.src.js"></script>
+<![endif]-->
+
 <meta charset="utf-8">
 <link rel="stylesheet" href="http://cdn.bootcss.com/twitter-bootstrap/3.0.3/css/bootstrap.min.css">
 
@@ -9,7 +16,7 @@
 
 <STYLE>
 #m {
-	MARGIN: 0px auto; WIDTH: 1000px
+	MARGIN: 0px auto; WIDTH: 1020px
 }
 .left {
 width: 778px;
@@ -21,7 +28,7 @@ float: left;
 .right {
 float: right;
 overflow: hidden;
-width: 198px;
+width: 218px;
 height: auto;
 padding-right: 10px;
 }
@@ -48,11 +55,11 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li><a href="http://115.29.150.73/">Home</a></li>
-<li class="active"><a href="http://115.29.150.73/living.php">Live</a></li>
-<li><a href="http://115.29.150.73/history.php">History</a></li>
-<li><a href="http://115.29.150.73/heroes.php">Heroes</a></li>
-<li><a href="http://115.29.150.73/about.php">About</a></li>
+<li><a href="http://dota2zhibo.com/">Home</a></li>
+<li class="active"><a href="http://dota2zhibo.com/living.php">Live</a></li>
+<li><a href="http://dota2zhibo.com/history.php">History</a></li>
+<li><a href="http://dota2zhibo.com/heroes.php">Heroes</a></li>
+<li><a href="http://dota2zhibo.com/about.php">About</a></li>
 </ul>
 </div><!--/.nav-collapse -->
 </div>
@@ -107,7 +114,7 @@ padding-right: 10px;
                 $haslive = 1;
             }
             array_push($arr, $l);
-            echo "<div class=\"panel panel-primary\">\n";
+            echo "<div class=\"panel panel-info\">\n";
             echo "<div class=\"panel-heading\">Living Game</div>\n";
             echo "<div class=\"panel-body\">";
             echo "<font color=green><b>$ln</b></font> &nbsp;开始时间:[$d0] &nbsp;观众数:$s &nbsp;联赛id:$l";
@@ -146,7 +153,7 @@ padding-right: 10px;
 
     if($haslive == 0)
     {
-        echo "<div class=\"panel panel-primary\">";
+        echo "<div class=\"panel panel-info\">";
         echo "<div class=\"panel-heading\">Living Game</div>\n";
         echo "<div class=\"panel-body\">";
         echo "现在没有正在进行的官方比赛, 请注意比赛预告, 谢谢!<br>";
@@ -162,7 +169,7 @@ padding-right: 10px;
 	$leagues = $xml->leagues[0];
 
     echo "<div class=\"right\">";
-    echo "<div class=\"panel panel-primary\">";
+    echo "<div class=\"panel panel-danger\">";
     echo "<div class=\"panel-heading\">热门菠菜</div>\n";
     echo "<ul class=\"list-group\">\n";
     echo "<li class=\"list-group-item\"><a target='_blank' href='http://bet.sgamer.com/game/4'>sgamer竞猜中心</a></li>";
@@ -172,7 +179,7 @@ padding-right: 10px;
     echo "<li class=\"list-group-item\"><a target='_blank' href='http://moba.uuu9.com/myz_jcsg-game.html'>moba菠菜中心</a></li>";
 	echo "</ul></div>";
 
-    echo "<div class=\"panel panel-primary\">";
+    echo "<div class=\"panel panel-success\">";
     echo "<div class=\"panel-heading\">热门官方联赛</div>\n";
     echo "<ul class=\"list-group\">\n";
 
@@ -195,7 +202,7 @@ padding-right: 10px;
 
 <BR><BR>
 <DIV class="bottom">
-<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2014 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP证960173号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
+<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2014 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP备14027394号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
 </DIV>
 
