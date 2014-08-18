@@ -87,12 +87,13 @@ padding-right: 10px;
     function show_match($matchXmlContent)
     {
         global $lea;
+        global $hot;
         global $team;
         global $heroes_arr;
         global $show_lastmatch_num;
         $xml = simplexml_load_string($matchXmlContent);
 
-        if(!array_key_exists("$xml->radiant_team_id", $team) && !array_key_exists("$xml->dire_team_id", $team))
+        if(!array_key_exists("$xml->leagueid", $hot))
             return;
 
         if($xml->first_blood_time == "0" || empty($xml->first_blood_time))
@@ -120,11 +121,16 @@ padding-right: 10px;
         echo "<th width=20%>击杀/死亡/助攻</th>";
         echo "<th width=15%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
         $dbh = dba_open("/tmp/account.db", "r", "db4");
+        $odbh = dba_open("/tmp/official_account.db", "r", "db4");
         foreach($xml->players->player as $player)
         {
             echo "<tr>";
             $name = $heroes_arr["$player->hero_id"];
-            $account_name = dba_fetch("$player->account_id", $dbh);
+            $account_name = dba_fetch("$player->account_id", $odbh);
+            if($account_name == "")
+            {
+                $account_name = dba_fetch("$player->account_id", $dbh);
+            }
             if($player->player_slot < 5)
                 echo "<td>$name<font color=blue size=2>($account_name)</font></td>";
             else
@@ -134,6 +140,7 @@ padding-right: 10px;
             echo "<td>$player->gold_spent</td>";
             echo "<td>$player->gold_per_min/$player->xp_per_min</td></tr>";
         }
+        dba_close($odbh);
         dba_close($dbh);
         echo "</table></li></ul></div>\n";
         $show_lastmatch_num++;

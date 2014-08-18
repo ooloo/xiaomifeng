@@ -1,18 +1,23 @@
 <?php
+include "hot.php";
+
 $content = file_get_contents("/tmp/GetLiveLeagueGames.xml");
+if(empty($content)) exit;
+
+$arr = $hot;
+
 $xml = simplexml_load_string($content);
 
-$arr = array();
 foreach($xml->games->game as $game)
 {
     $l = $game->league_id;
-    array_push($arr, $l);
-    $dbh = dba_open("/tmp/account.db", "c", "db4");
+    $arr["$l"] = 1;
     foreach($game->players->player as $player)
     {
-        dba_replace($player->account_id, $player->name, $dbh);
+        $dbh = dba_open("/tmp/account.db", "c", "db4");
+        dba_replace("$player->account_id", "$player->name", $dbh);
+        dba_close($dbh);
     }
-    dba_close($dbh);
 }
 
 $key = "V001/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
@@ -20,13 +25,13 @@ $head = "https://api.steampowered.com/IDOTA2Match_570";
 
 if(!empty($arr))
 {
-    foreach($arr as $id)
+    foreach($arr as $id => $num)
     {
         $l_url = "\"$head/GetMatchHistory/$key&league_id=$id\"";
         if(file_exists("/tmp/$id.xml"))
         {
             $st = filemtime("/tmp/$id.xml");
-            $ct = time()-1800;
+            $ct = time() - 600;
             if($ct > $st)
             {
                 file_put_contents("/tmp/wget.ready", "wget -t3 -T30 -O /tmp/$id.xml $l_url\n", FILE_APPEND);
@@ -43,7 +48,7 @@ if(!empty($arr))
         $show_num = 0;
         foreach($xml->matches->match as $match)
         {
-            if(++$show_num >= 5)
+            if(++$show_num >= 10)
                 break;
 
             $m_url = "\"$head/GetMatchDetails/$key&match_id=$match->match_id\"";
