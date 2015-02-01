@@ -55,7 +55,7 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li><a href="http://dota2zhibo.com/">Home</a></li>
+<li><a href="http://dota2zhibo.com/home.php">Home</a></li>
 <li><a href="http://dota2zhibo.com/living.php">Live</a></li>
 <li><a href="http://dota2zhibo.com/history.php">History</a></li>
 <li class="active"><a href="http://dota2zhibo.com/heroes.php">Heroes</a></li>
@@ -77,7 +77,7 @@ padding-right: 10px;
     echo "<br><BR><BR><div class=\"left\">";
 
     echo "<div class=\"panel panel-info\">";
-    echo "<div class=\"panel-heading\">最近一周职业联赛热门英雄TOP15</div>\n";
+    echo "<div class=\"panel-heading\">最近一周职业联赛热门英雄TOP20</div>\n";
     echo "<ul class=\"list-group\">\n";
     echo "<li class=\"list-group-item\">\n";
     echo "<table class=\"table\">";
@@ -86,7 +86,7 @@ padding-right: 10px;
     $show_hero_num = 0;
     foreach($count as $hero => $picknum)
     {
-        if($show_hero_num++ >= 15)
+        if($show_hero_num++ >= 20)
             break;
         $show_num = 0;
         $item_num = "";
@@ -123,6 +123,17 @@ padding-right: 10px;
 	$leagues = $xml->leagues[0];
 
     echo "<div class=\"right\">";
+
+    echo "<div class=\"panel panel-primary\">";
+    echo "<div class=\"panel-heading\">比赛直播</div>\n";
+    echo "<ul class=\"list-group\">\n";
+    echo "<li class=\"list-group-item\"><a target='_blank' href='http://www.douyutv.com/directory/game/DOTA2'>斗鱼tv</a></li>";
+    echo "<li class=\"list-group-item\"><a target='_blank' href='http://www.huomaotv.com/live_list?gid=23'>火猫tv</a></li>";
+    echo "<li class=\"list-group-item\"><a target='_blank' href='http://www.huya.com/g/dota2'>虎牙直播</a></li>";
+    echo "<li class=\"list-group-item\"><a target='_blank' href='http://www.zhanqi.tv/games/dota2'>战棋tv</a></li>";
+    echo "<li class=\"list-group-item\"><a target='_blank' href='http://www.fengyunzhibo.com/p/games/dota2'>风云直播</a></li>";
+	echo "</ul></div>";
+
     echo "<div class=\"panel panel-danger\">";
     echo "<div class=\"panel-heading\">热门菠菜</div>\n";
     echo "<ul class=\"list-group\">\n";
