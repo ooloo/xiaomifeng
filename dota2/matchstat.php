@@ -24,9 +24,6 @@ $hot=array (
 
 $seed = array("5","7","15","20","36","46","111474","726228","999689","1333179","1375614");
 
-$key = "v1/?key=B1426000A46BD10C3FE0EAB36501A9E3&format=xml&language=zh";
-$head = "https://api.steampowered.com/IDOTA2Fantasy_570/GetPlayerOfficialInfo";
-
 $team = array(
         "20" => "TongFu|",
         "36" => "Natus Vincere",
@@ -68,13 +65,6 @@ foreach($file as $line)
 
     foreach($xml->players->player as $player)
     {
-        if(array_key_exists("$xml->radiant_team_id", $team)
-                || array_key_exists("$xml->dire_team_id", $team)
-                || in_array("$xml->leagueid", $hot))
-        {
-            $playerInfo = "$head/$key&AccountID=$player->account_id";
-            file_put_contents("/tmp/PlayerOfficialInfo", "$player->account_id\t$playerInfo\n" ,FILE_APPEND);
-        }
         $name = $heroes_arr["$player->hero_id"];
         if(!isset($stat["$name"]))
             $stat["$name"] = array();
