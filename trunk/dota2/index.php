@@ -55,7 +55,7 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li class="active"><a href="http://dota2zhibo.com/home.php">Home</a></li>
+<li class="active"><a href="http://dota2zhibo.com/index.php">Home</a></li>
 <li><a href="http://dota2zhibo.com/living.php">Live</a></li>
 <li><a href="http://dota2zhibo.com/history.php">History</a></li>
 <li><a href="http://dota2zhibo.com/heroes.php">Heroes</a></li>
@@ -90,6 +90,10 @@ padding-right: 10px;
 
         $day = split(' ',$endtime);
         $day = $day[0];
+
+        $curTime = time() - 86400*7;
+        if(strtotime($day) <= $curTime) continue;
+
         $weekarray=array("日","一","二","三","四","五","六");
         $week = "星期".$weekarray[date('w',strtotime($day))]; 
 
