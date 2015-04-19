@@ -55,7 +55,7 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li><a href="http://dota2zhibo.com/home.php">Home</a></li>
+<li><a href="http://dota2zhibo.com/index.php">Home</a></li>
 <li><a href="http://dota2zhibo.com/living.php">Live</a></li>
 <li><a href="http://dota2zhibo.com/history.php">History</a></li>
 <li class="active"><a href="http://dota2zhibo.com/heroes.php">Heroes</a></li>
@@ -68,11 +68,11 @@ padding-right: 10px;
 <DIV id=m>
 
 <?php
-    include "items.php";
     include "count.php";
     include "stat.php";
     include "hot.php";
-    include "cost.php";
+    include "items_img.php";
+    include "items_cost.php";
 
     echo "<br><BR><BR><div class=\"left\">";
 
@@ -81,7 +81,8 @@ padding-right: 10px;
     echo "<ul class=\"list-group\">\n";
     echo "<li class=\"list-group-item\">\n";
     echo "<table class=\"table\">";
-    echo "<tr><th width=20%>英雄</th><th width=10%>出场</th><th width=50%>热门装备</th><th width=20%>对应装备次数</th></tr>";
+    //echo "<tr><th width=20%>英雄</th><th width=20%>出场</th><th width=60%>热门装备</th><th width=20%>对应装备次数</th></tr>";
+    echo "<tr><th width=20%>英雄</th><th width=20%>出场次数</th><th width=50%>一周热门装备</th></tr>";
 
     $show_hero_num = 0;
     foreach($count as $hero => $picknum)
@@ -94,15 +95,15 @@ padding-right: 10px;
         echo "<tr><td>$hero</td><td>$picknum</td><td>";
         foreach($item_arr as $itemid => $usenum)
         {
-            if($show_num > 4)
+            if($show_num >= 6)
                 break;
-            $t = $items_arr["$itemid"];
-            $pr = $cost["$itemid"];
-            if(!empty($t) && !empty($pr) && $pr > 875)
+            $img = $items_img["$itemid"];
+            $pr = $items_cost["$itemid"];
+            if(!empty($img) && !empty($pr) && $pr > 875)
             {
                 //echo "<img src='http://media.steampowered.com/apps/dota2/images/items/{$t}_lg.png' ";
-                echo "<img src='http://cdn.dota2.com/apps/dota2/images/items/{$t}_lg.png' ";
-                echo "width='45'style='margin-right:2px'/>";
+                echo "<img src='http://cdn.dota2.com/apps/dota2/images/items/{$img}' ";
+                echo "width='45'style='margin-right:2px'/> \n";
                 if($item_num == "")
                     $item_num = "$usenum";
                 else
@@ -110,7 +111,8 @@ padding-right: 10px;
                 $show_num++;
             }
         }
-        echo "</td><td>$item_num</td></tr>";
+        //echo "</td><td>$item_num</td></tr>";
+        echo "</td></tr>";
     }
     echo "</table>";
     echo "</li></ul></div>\n";

@@ -55,7 +55,7 @@ padding-right: 10px;
 </div>
 <div class="collapse navbar-collapse">
 <ul class="nav navbar-nav">
-<li><a href="http://dota2zhibo.com/home.php">Home</a></li>
+<li><a href="http://dota2zhibo.com/index.php">Home</a></li>
 <li class="active"><a href="http://dota2zhibo.com/living.php">Live</a></li>
 <li><a href="http://dota2zhibo.com/history.php">History</a></li>
 <li><a href="http://dota2zhibo.com/heroes.php">Heroes</a></li>
