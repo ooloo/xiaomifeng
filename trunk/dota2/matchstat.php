@@ -1,8 +1,7 @@
 <?php
-include "items.php";
 $content = file_get_contents("/tmp/heroes.xml");
 $xml = simplexml_load_string($content);
-$heroes_arr = array();
+$heroes_arr = array("0" => "NULL");
 foreach($xml->heroes->hero as $hero)
 {
     $heroes_arr["$hero->id"] = $hero->localized_name;
@@ -10,17 +9,7 @@ foreach($xml->heroes->hero as $hero)
 $stat = array();
 $count = array();
 $lea = array();
-//$hot = array();
-$hot=array (
-  1229,
-  1034,
-  1542,
-  1248,
-  1244,
-  1068,
-  1135,
-  1301,
-);
+$hot = array();
 
 $seed = array("5","7","15","20","36","46","111474","726228","999689","1333179","1375614");
 
