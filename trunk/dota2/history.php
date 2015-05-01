@@ -115,10 +115,10 @@ padding-right: 10px;
         echo "<ul class=\"list-group\">\n";
         echo "<li class=\"list-group-item\">\n";
         echo "<table class=\"table\">";
-        echo "<tr><th width=35%><font color=green>$ln</font></th>";
-        echo "<th width=10%>等级</th>";
+        echo "<tr><th width=40%><font color=green>$ln</font></th>";
+        echo "<th width=20%>英雄</th>";
         echo "<th width=20%>击杀/死亡/助攻</th>";
-        echo "<th width=15%>花费金钱</th><th width=20%>每分钟金钱/经验</th></tr>";
+        echo "<th width=20%>每分钟金钱/经验</th></tr>";
         $dbh = dba_open("/tmp/account.db", "r", "db4");
         $odbh = dba_open("/tmp/official_account.db", "r", "db4");
         foreach($xml->players->player as $player)
@@ -131,12 +131,12 @@ padding-right: 10px;
                 $account_name = dba_fetch("$player->account_id", $dbh);
             }
             if($player->player_slot < 5)
-                echo "<td>$name<font color=blue size=2>($account_name)</font></td>";
+                echo "<td><font color=blue size=2>$account_name</font></td>";
             else
-                echo "<td>$name<font color=red size=2>($account_name)</font></td>";
-            echo "<td>$player->level</td>";
+                echo "<td><font color=red size=2>$account_name</font></td>";
+            echo "<td>$name($player->level)</td>";
             echo "<td>$player->kills/$player->deaths/$player->assists</td>";
-            echo "<td>$player->gold_spent</td>";
+            //echo "<td>$player->gold_spent</td>";
             echo "<td>$player->gold_per_min/$player->xp_per_min</td></tr>";
         }
         dba_close($odbh);
@@ -208,7 +208,7 @@ padding-right: 10px;
 
 <BR><BR>
 <DIV class="bottom">
-<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2014 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用搜索前必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP备14027394号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
+<p id="lh"><a href="http://www.dota2zhibo.com/">加入dota2zhibo</a> | <a href="http://www.dota2zhibo.com">dota2风云榜</a> | <a href="http://www.dota2zhibo.com">关于dota2zhibo</a> | <a href="http://www.dota2zhibo.com">About dota2zhibo</a></p><p id="cp">&copy;2015 dota2zhibo.com <a href="http://www.dota2zhibo.com">使用条款必读</a> <a href="http://www.miibeian.gov.cn" target="_blank">京ICP备14027394号</a> <img src="http://gimg.baidu.com/img/gs.gif"></p><br>
 </DIV>
 </DIV>
 
