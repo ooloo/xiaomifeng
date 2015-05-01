@@ -107,58 +107,55 @@ padding-right: 10px;
         dba_close($dbh);
         $d0 = date('Y-m-d H:i:s', (int)($starttime));
 
-        if($s >= 5)
+        if(empty($arr))
         {
-            if(empty($arr))
-            {
-                $haslive = 1;
-            }
-            array_push($arr, $l);
-            echo "<div class=\"panel panel-info\">\n";
-            echo "<div class=\"panel-heading\">\n";
-            echo "<font color=green><b>$ln</b></font> &nbsp;开始时间:[$d0] &nbsp;观众数:$s &nbsp;联赛id:$l";
-            echo "</div>";
-            echo "<ul class=\"list-group\">\n";
-            echo "<li class=\"list-group-item\">";
-            $t0 = array();
-            $t1 = array();
-            $odbh = dba_open("/tmp/official_account.db", "r", "db4");
-            foreach($game->players->player as $player)
-            {
-                if($player->team != "0" && $player->team != "1")
-                {
-                    continue;
-                }
-                $account_name = dba_fetch("$player->account_id", $odbh);
-                if($account_name == "")
-                {
-                    $account_name = $player->name;
-                }
-                if($player->team == "0")
-                {
-                    $hero = $heroes_arr["$player->hero_id"];
-                    array_push($t0, "<td>$hero($account_name)</td>");
-                }
-                elseif($player->team == "1")
-                {
-                    $hero = $heroes_arr["$player->hero_id"];
-                    array_push($t1, "<td>$hero($account_name)</td>");
-                }
-            }
-            dba_close($odbh);
-            echo "<table class=\"table\">";
-            echo "<tr>";
-            echo "<tr><th width=50%><font color=blue>$r</font></th><th width=50%><font color=red>$d</font></th>";
-            for($i=0; $i<5; $i++)
-            {
-                echo "<tr>";
-                echo "$t0[$i]$t1[$i]";
-                echo "</tr>";
-            }
-            echo "</tr>";
-            echo "</table></li>";
-            echo "</ul></div>\n";
+            $haslive = 1;
         }
+        array_push($arr, $l);
+        echo "<div class=\"panel panel-info\">\n";
+        echo "<div class=\"panel-heading\">\n";
+        echo "<font color=green><b>$ln</b></font> &nbsp;开始时间:[$d0] &nbsp;观众数:$s &nbsp;联赛id:$l";
+        echo "</div>";
+        echo "<ul class=\"list-group\">\n";
+        echo "<li class=\"list-group-item\">";
+        $t0 = array();
+        $t1 = array();
+        $odbh = dba_open("/tmp/official_account.db", "r", "db4");
+        foreach($game->players->player as $player)
+        {
+            if($player->team != "0" && $player->team != "1")
+            {
+                continue;
+            }
+            $account_name = dba_fetch("$player->account_id", $odbh);
+            if($account_name == "")
+            {
+                $account_name = $player->name;
+            }
+            if($player->team == "0")
+            {
+                $hero = $heroes_arr["$player->hero_id"];
+                array_push($t0, "<td>$hero($account_name)</td>");
+            }
+            elseif($player->team == "1")
+            {
+                $hero = $heroes_arr["$player->hero_id"];
+                array_push($t1, "<td>$hero($account_name)</td>");
+            }
+        }
+        dba_close($odbh);
+        echo "<table class=\"table\">";
+        echo "<tr>";
+        echo "<tr><th width=50%><font color=blue>$r</font></th><th width=50%><font color=red>$d</font></th>";
+        for($i=0; $i<5; $i++)
+        {
+            echo "<tr>";
+            echo "$t0[$i]$t1[$i]";
+            echo "</tr>";
+        }
+        echo "</tr>";
+        echo "</table></li>";
+        echo "</ul></div>\n";
     }
 
     if($haslive == 0)
