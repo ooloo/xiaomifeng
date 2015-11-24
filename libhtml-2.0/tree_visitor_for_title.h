@@ -13,24 +13,24 @@
 /**class tree_visit_for_title
  *@brief visit for title
  **/
-class tree_visitor_for_title
-{
+class tree_visitor_for_title {
 
- private:
-    html_tree *tree;
+  private:
+    html_tree * tree;
 
- public:
+  public:
     /**constructor 
      *@brief initial the tree pointer
      *@param pTree: already parsed dom tree pointer
      **/
-    tree_visitor_for_title(html_tree *pTree){ tree = pTree; }
+    tree_visitor_for_title(html_tree * pTree) {
+        tree = pTree;
+  } public:
+    static int pre_visit(html_tag_t * html_tag, void *result,
+                         int min_font);
+    static int post_visit(html_tag_t * html_tag, void *result);
 
- public:
-    static int pre_visit(html_tag_t *html_tag, void *result, int min_font );
-    static int post_visit(html_tag_t *html_tag, void *result);
-
- public:
+  public:
     /**@brief extract title for the tree
      *@param title: set title into this space. memory must be allocate outside this function
      *@param size: size of title

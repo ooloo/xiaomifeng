@@ -8,14 +8,14 @@
 
 
 
-static const char *FindCharInStr( const char* pText, int iTextLen, int  wch)
+static const char *FindCharInStr(const char *pText, int iTextLen, int wch)
 {
-    const char * pRes = NULL;
+    const char *pRes = NULL;
 
-    const char * p = pText;
+    const char *p = pText;
     for (int i = 0; i < iTextLen; i++)
     {
-        if (*p == wch) 
+        if (*p == wch)
         {
             pRes = p;
             break;
@@ -28,10 +28,10 @@ static const char *FindCharInStr( const char* pText, int iTextLen, int  wch)
 
 
 
-int UnescapePattern(const char* pText, int iTextLen)
+int UnescapePattern(const char *pText, int iTextLen)
 {
 
-	return ' ';
+    return ' ';
 
 
 }
@@ -39,99 +39,95 @@ int UnescapePattern(const char* pText, int iTextLen)
 
 
 
-void UnescapeEntitiesForString(const char* pText, int iTextLen, char *buffer, int buffer_len_max)
+void UnescapeEntitiesForString(const char *pText, int iTextLen,
+                               char *buffer, int buffer_len_max)
 {
 
     int iCurPos = 0;
-    int buffer_wr_pos=0;
+    int buffer_wr_pos = 0;
 
 
-    while (iCurPos < iTextLen && buffer_wr_pos < buffer_len_max-1)
+    while (iCurPos < iTextLen && buffer_wr_pos < buffer_len_max - 1)
     {
 
-	    int iNext;
+        int iNext;
 
-        if (pText[iCurPos] != '&') // not begin with '&'
+        if (pText[iCurPos] != '&')      // not begin with '&'
         {
             // find next '&'
-            const char* p = FindCharInStr(pText + iCurPos, 
-                                        iTextLen - iCurPos, 
-                                        '&');
+            const char *p = FindCharInStr(pText + iCurPos,
+                                          iTextLen - iCurPos,
+                                          '&');
 
 
-            if (p == NULL) // if not found
+            if (p == NULL)      // if not found
             {
                 // copy the left string
                 //strDes.append(pText + iCurPos, iTextLen - iCurPos);
-		iNext = iTextLen;
-            }
-            else    // found '&'
+                iNext = iTextLen;
+            } else              // found '&'
             {
                 // copy the content between here and '&',
                 // and move to '&'
-                iNext = (int)(p - pText);
-          //      strDes.append(pText + iCurPos, iNext - iCurPos);
+                iNext = (int) (p - pText);
+                //      strDes.append(pText + iCurPos, iNext - iCurPos);
             }
 
 
 
-        }
-        else // begin with '&'
+        } else                  // begin with '&'
         {
             // try to find ';'
-            const char * q = FindCharInStr(pText+iCurPos, iTextLen-iCurPos, ';');
+            const char *q =
+                FindCharInStr(pText + iCurPos, iTextLen - iCurPos, ';');
 
-            if (q == NULL) // if not found
+            if (q == NULL)      // if not found
             {
                 // copy the left string
                 //strDes.append(pText+iCurPos, iTextLen-iCurPos);
                 //iCurPos = iTextLen;
-		iNext = iTextLen;
-            }
-            else   // found &...; pattern
+                iNext = iTextLen;
+            } else              // found &...; pattern
             {
-                int iEnd = (int)(q - pText);
-                char  wch = (char)  UnescapePattern(pText+iCurPos, iEnd-iCurPos+1);
+                int iEnd = (int) (q - pText);
+                char wch = (char) UnescapePattern(pText + iCurPos,
+                                                  iEnd - iCurPos + 1);
                 if (wch != '\0')
                 {
                     // succeeded, add it
-		    buffer[buffer_wr_pos] = wch;
-                    iCurPos = iEnd+1;
-		    buffer_wr_pos += 1;
-                }
-                else
+                    buffer[buffer_wr_pos] = wch;
+                    iCurPos = iEnd + 1;
+                    buffer_wr_pos += 1;
+                } else
                 {
                     // failed, copy &, move next
                     buffer[buffer_wr_pos] = pText[iCurPos];
                     iCurPos++;
-		    buffer_wr_pos += 1;
+                    buffer_wr_pos += 1;
                 }
 
-		continue; // process entity , goto next.
+                continue;       // process entity , goto next.
 
             }
 
 
         }
 
-	    int len = iNext - iCurPos;
+        int len = iNext - iCurPos;
 
-		if ( buffer_wr_pos + len > buffer_len_max -1 )
-			len = buffer_len_max -buffer_wr_pos -1;
+        if (buffer_wr_pos + len > buffer_len_max - 1)
+            len = buffer_len_max - buffer_wr_pos - 1;
 
-		/* move may overlap memory area. */
-		memmove(buffer + buffer_wr_pos , pText + iCurPos, len );
+        /* move may overlap memory area. */
+        memmove(buffer + buffer_wr_pos, pText + iCurPos, len);
 
-                iCurPos = iNext;
-		buffer_wr_pos += len;
+        iCurPos = iNext;
+        buffer_wr_pos += len;
 
 
 
     }
 
-	 buffer[buffer_wr_pos] = '\0';
+    buffer[buffer_wr_pos] = '\0';
 
 }
-
-
-

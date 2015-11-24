@@ -14,28 +14,28 @@
 /**class tree_visit for content
  *@brief visit for content
  **/
-class tree_visitor_for_content
-{
+class tree_visitor_for_content {
 
- private:
-    html_tree *tree;
+  private:
+    html_tree * tree;
 
- public:
+  public:
     /**constructor 
      *@brief initial the tree pointer
      *@param pTree: already parsed dom tree pointer
      **/
-    tree_visitor_for_content(html_tree *pTree){ tree = pTree; }
+    tree_visitor_for_content(html_tree * pTree) {
+        tree = pTree;
+  } public:
+    static int pre_visit(html_tag_t * html_tag, void *result,
+                         int min_font);
+    static int post_visit(html_tag_t * html_tag, void *result);
 
- public:
-    static int pre_visit(html_tag_t *html_tag, void *result, int min_font);
-    static int post_visit(html_tag_t *html_tag, void *result);
-
- public:
+  public:
     /**@brief extract content for the tree
      *@param content: set content into this space. memory must be allocate outside this function
      *@param num: size of content
-     **/  
+     **/
     int extract_content(unsigned int *filter_len, char *content, int size);
 
 };

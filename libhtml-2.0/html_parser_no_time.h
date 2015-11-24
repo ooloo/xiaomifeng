@@ -13,59 +13,63 @@
 #define   max_links_num  8*1024
 
 
-class html_parser 
-{
+class html_parser {
 
-public:
+  public:
 
-	char *page_;
-	char *title_;
-	char *content_;
-	link_t *links_;
-	int  links_num_;
-	unsigned int filter_len_;
+    char *page_;
+    char *title_;
+    char *content_;
+    link_t *links_;
+    int links_num_;
+    unsigned int filter_len_;
 
-	/*
-	   0: index page.
-	   1: content page.
-	   -1: have not get it.
-        */
-	int page_type;
+    /*
+       0: index page.
+       1: content page.
+       -1: have not get it.
+     */
+    int page_type;
 
-	html_parser() { 
-		page_ = NULL; title_ = NULL; content_ = NULL;
-		links_ = NULL; links_num_ = 0; tree_ = NULL; filter_len_ = 0;
-	};
+     html_parser() {
+        page_ = NULL;
+        title_ = NULL;
+        content_ = NULL;
+        links_ = NULL;
+        links_num_ = 0;
+        tree_ = NULL;
+        filter_len_ = 0;
+    };
 
-	~html_parser();
+    ~html_parser();
 
-	/* init 
-		return -1 if failed.
-	*/
-	int parse_init();
+    /* init 
+       return -1 if failed.
+     */
+    int parse_init();
 
 
-	int parse(const char *url, const char *page, int len);
+    int parse(const char *url, const char *page, int len);
 
-        int parse_links(const char *url, const char *page, int len);
+    int parse_links(const char *url, const char *page, int len);
 
-	/*
-		prepare for a new parsing.
-	*/
-	void parse_reset();
-private:
+    /*
+       prepare for a new parsing.
+     */
+    void parse_reset();
+  private:
 
-	html_tree *tree_;
+    html_tree * tree_;
 
-	void parse_destroy();
+    void parse_destroy();
 
-	RECODE_OUTER outer_;
-	char *buffer_conv_;
-	size_t buffer_conv_len_;
+    RECODE_OUTER outer_;
+    char *buffer_conv_;
+    size_t buffer_conv_len_;
 
-	void encode_conv();
+    void encode_conv();
 };
 
 
 
-#endif  /* __HTML_PARSER_H__ */ 
+#endif                          /* __HTML_PARSER_H__ */

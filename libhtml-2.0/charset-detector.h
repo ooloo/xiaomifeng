@@ -8,14 +8,14 @@ extern "C" {
 /**
  * 编码识别函数库句柄类型定义
  */
-typedef void* DETECTOR_HANDLE;
+    typedef void *DETECTOR_HANDLE;
 
 /**
  * 初始化编码识别器
  * 
  * @return 编码识别器句柄
  */
-DETECTOR_HANDLE init_charset_detector();
+    DETECTOR_HANDLE init_charset_detector();
 
 /**
  * 分析一个文本缓冲区的编码
@@ -38,25 +38,24 @@ DETECTOR_HANDLE init_charset_detector();
  *         UTF-16LE
  *         NULL——表示分析不出来
  */
-const char* detect_buffer_charset(DETECTOR_HANDLE handle, char *inBuffer, int len);
+    const char *detect_buffer_charset(DETECTOR_HANDLE handle,
+                                      char *inBuffer, int len);
 
 /**
  * 重置编码分析器状态，此后可以开始下一轮分析
  * 
  * @param handle 编码识别器句柄
  */
-void reset_charset_detector(DETECTOR_HANDLE handle);
+    void reset_charset_detector(DETECTOR_HANDLE handle);
 
 /**
  * 释放并退出编码识别器
  * 
  * @param handle 编码识别器句柄
  */
-void release_charset_detector(DETECTOR_HANDLE handle);
+    void release_charset_detector(DETECTOR_HANDLE handle);
 
 #ifdef __cplusplus
 }
 #endif
-
-#endif	// CHARSETDETECTOR_H
-
+#endif                          // CHARSETDETECTOR_H
