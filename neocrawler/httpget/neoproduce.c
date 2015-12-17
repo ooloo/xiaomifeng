@@ -119,8 +119,6 @@ void save_html(char *filepath, URLNODE_T *urlNode, char *url, char *html)
 	}
 #ifdef BBS
 	else if(saveFile.fileLen > 4*1024*1024 || time(NULL) - saveTime > 60)
-#elif HOO
-	else if(0)
 #else
 	else if(saveFile.fileLen > 4*1024*1024 || time(NULL) - saveTime > 1800)
 #endif
@@ -150,13 +148,6 @@ void save_html(char *filepath, URLNODE_T *urlNode, char *url, char *html)
 	assert(fwrite(dest, destLen, 1, saveFile.fp) == 1);
 
 	saveFile.fileLen += sizeof(html_entry) + urlNode->urlLen + destLen;
-#ifdef HOO
-	fclose(saveFile.fp);
-	saveFile.fp = NULL;
-	snprintf(cmd, 256, "rename html one %s/html.*", filepath);
-	system(cmd);
-#endif
-
 	free(dest);
 }
 

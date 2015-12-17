@@ -1,14 +1,14 @@
 INC = -I../../../libhtml-2.0/
-LIB = ../../../libhtml-2.0/htmlparser.a ../../../libhtml-2.0/libcharsetdetector.a
+LIB = ../../../libhtml-2.0/htmlparser.a
 
-CPPFLAGS := $(CPPFLAGS) -g -Wall $(INC)
+CPPFLAGS := $(CPPFLAGS) -g -fPIC -Wall $(INC)
 
 OBJS = web_parse.o
 LIBO = ./libparse.so
 
 $(LIBO): $(OBJS)
 	rm -f $@
-	g++ $(CPPFLAGS) -shared -Wl,-soname,$@ -o $@ $? $(INC) $(LIB)
+	g++ -shared -Wl -o $@ $? $(INC) $(LIB)
 	rm -f *.o
 	cp ./libparse.so ../../../libhtml-2.0/
 

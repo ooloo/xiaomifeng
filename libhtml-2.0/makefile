@@ -4,7 +4,7 @@ INCLUDE = -I./ \
 LIB = -L./ \
 
 
-CPPFLAGS = -g -Wall $(INCLUDE) $(LIB)
+CPPFLAGS = -g -Wall -fPIC $(INCLUDE) $(LIB)
 
 CC = g++
 
@@ -17,7 +17,7 @@ $(objects): %.o: %.cpp
 	$(CC) -c  $(CPPFLAGS) $< -o $@
 
 htmlparser.a:$(objects)
-	ar -r htmlparser.a  $(objects) librecode.a libcharsetdetector.a
+	ar -r htmlparser.a  $(objects)
 
 clean:
 	rm *.o -f
