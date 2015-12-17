@@ -12,7 +12,7 @@
 #include "dict.h"
 #include "dict_private.h"
 
-void *(*_dict_malloc)(unsigned) = malloc;
+void *(*_dict_malloc)(unsigned) = (void*)malloc;
 void (*_dict_free)(void *) = free;
 
 void
