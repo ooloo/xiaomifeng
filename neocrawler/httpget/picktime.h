@@ -26,8 +26,6 @@ extern int time2day(int t);
  *		page - 网页正文
  *		crawtime - 抓取时间
  */
-extern int get_pub_time(char *page,int crawTime);
+extern int get_pub_time(char *page, int crawTime);
 
 #endif
-
-

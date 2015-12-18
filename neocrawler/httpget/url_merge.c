@@ -6,76 +6,78 @@
 
 int http_3xx_merge(const char *redirect, char *url, int maxLen)
 {
-	char *p, *pp, *ppp;
-	char tmpurl[maxLen];
+    char *p, *pp, *ppp;
+    char tmpurl[maxLen];
 
-	assert(url && redirect);
-	
-	//	http://开头的url不需要处理，直接返回
-	if (!strncasecmp(redirect, "http://", 7) || !strncasecmp(redirect, "https://", 8))
-	{
-		return 0;
-	}
-	
-	strcpy(tmpurl, url);
+    assert(url && redirect);
 
-	//	"/fight/cs/"
-	if (!strncasecmp(redirect, "/", 1))
-	{
-		if ((p = strchr(tmpurl + 7, '/')) != NULL)
-		{
-			*p = 0;
-		}	
-		snprintf(url, maxLen, "%s/%s", tmpurl, redirect);
-	}
-	//  "./chn/index.htm"
-	else if (!strncasecmp(redirect, "./", 2))
-	{
-		pp = tmpurl + 7;	
-		while ((p = strchr(pp + 1, '/')) != NULL)
-		{
-			pp = p;
-		}
-		if(*pp == '/')
-		{
-			*pp = 0;
-		}
-		snprintf(url, maxLen, "%s/%s", tmpurl, redirect + 1);
-	}
-	//  "../chn/index.htm"
-	else if (!strncasecmp(redirect, "../", 3))
-	{
-		pp = ppp = tmpurl + 7;	
-		while ((p = strchr(pp + 1, '/')) != NULL)
-		{
-			ppp = pp; pp = p;
-		}
-		if(*pp == '/')
-		{
-			*pp = 0;
-		}
-		if(*ppp == '/')
-		{
-			*ppp = 0;
-		}
-		snprintf(url, maxLen, "%s/%s", tmpurl, redirect + 2);
-	}
-	//	others
-	else
-	{
-		pp = tmpurl + 7;	
-		while ((p = strchr(pp + 1, '/')) != NULL)
-		{
-			pp = p;
-		}
-		if(*pp == '/')
-		{
-			*pp = 0;
-		}
-		snprintf(url, maxLen, "%s/%s", tmpurl, redirect);
-	}
+    //      http://开头的url不需要处理，直接返回
+    if (!strncasecmp(redirect, "http://", 7)
+        || !strncasecmp(redirect, "https://", 8))
+    {
+        return 0;
+    }
 
-	return 0;
+    strcpy(tmpurl, url);
+
+    //      "/fight/cs/"
+    if (!strncasecmp(redirect, "/", 1))
+    {
+        if ((p = strchr(tmpurl + 7, '/')) != NULL)
+        {
+            *p = 0;
+        }
+        snprintf(url, maxLen, "%s/%s", tmpurl, redirect);
+    }
+    //  "./chn/index.htm"
+    else if (!strncasecmp(redirect, "./", 2))
+    {
+        pp = tmpurl + 7;
+        while ((p = strchr(pp + 1, '/')) != NULL)
+        {
+            pp = p;
+        }
+        if (*pp == '/')
+        {
+            *pp = 0;
+        }
+        snprintf(url, maxLen, "%s/%s", tmpurl, redirect + 1);
+    }
+    //  "../chn/index.htm"
+    else if (!strncasecmp(redirect, "../", 3))
+    {
+        pp = ppp = tmpurl + 7;
+        while ((p = strchr(pp + 1, '/')) != NULL)
+        {
+            ppp = pp;
+            pp = p;
+        }
+        if (*pp == '/')
+        {
+            *pp = 0;
+        }
+        if (*ppp == '/')
+        {
+            *ppp = 0;
+        }
+        snprintf(url, maxLen, "%s/%s", tmpurl, redirect + 2);
+    }
+    //      others
+    else
+    {
+        pp = tmpurl + 7;
+        while ((p = strchr(pp + 1, '/')) != NULL)
+        {
+            pp = p;
+        }
+        if (*pp == '/')
+        {
+            *pp = 0;
+        }
+        snprintf(url, maxLen, "%s/%s", tmpurl, redirect);
+    }
+
+    return 0;
 }
 
 

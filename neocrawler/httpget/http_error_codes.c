@@ -18,20 +18,19 @@
 
 
 /* Note that '%d' cannot be escaped at this time */
-const char *http_errlist[] =
-{
-	"Success",										/* HF_SUCCESS		*/
-	"Internal Error. What the hell?!",				/* HF_METAERROR		*/
-	"Got NULL url",									/* HF_NULLURL		*/
-	"Timed out, no metadata for %d seconds",		/* HF_HEADTIMEOUT 	*/
-	"Timed out, no data for %d seconds",			/* HF_DATATIMEOUT	*/
-	"Couldn't find return code in HTTP response",	/* HF_FRETURNCODE	*/
-	"Couldn't convert return code in HTTP response",/* HF_CRETURNCODE	*/
-	"Request returned a status code of %d",			/* HF_STATUSCODE	*/
-	"Couldn't convert Content-Length to integer",	/* HF_CONTENTLEN	*/
-	"Network error (description unavailable)",		/* HF_HERROR		*/
-	"Status code of %d but no Location: field",		/* HF_CANTREDIRECT  */
-	"Followed the maximum number of redirects (%d)" /* HF_MAXREDIRECTS  */
+const char *http_errlist[] = {
+    "Success",                  /* HF_SUCCESS           */
+    "Internal Error. What the hell?!",  /* HF_METAERROR         */
+    "Got NULL url",             /* HF_NULLURL           */
+    "Timed out, no metadata for %d seconds",    /* HF_HEADTIMEOUT       */
+    "Timed out, no data for %d seconds",        /* HF_DATATIMEOUT       */
+    "Couldn't find return code in HTTP response",       /* HF_FRETURNCODE       */
+    "Couldn't convert return code in HTTP response",    /* HF_CRETURNCODE       */
+    "Request returned a status code of %d",     /* HF_STATUSCODE        */
+    "Couldn't convert Content-Length to integer",       /* HF_CONTENTLEN        */
+    "Network error (description unavailable)",  /* HF_HERROR            */
+    "Status code of %d but no Location: field", /* HF_CANTREDIRECT  */
+    "Followed the maximum number of redirects (%d)"     /* HF_MAXREDIRECTS  */
 };
 
 /* Used to copy in messages from http_errlist[] and replace %d's with

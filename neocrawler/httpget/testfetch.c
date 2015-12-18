@@ -11,24 +11,24 @@
  */
 
 #include <stdio.h>
-#include <http_fetcher.h>		/* Must include this to use HTTP Fetcher */
+#include <http_fetcher.h>       /* Must include this to use HTTP Fetcher */
 
 int main(int argc, char *argv[])
-{	
-	int r,ret;
-	short statuscode;
-	char *fileBuf;						/* Pointer to downloaded data */
+{
+    int r, ret;
+    short statuscode;
+    char *fileBuf;              /* Pointer to downloaded data */
 
-	ret = http_fetch(argv[1], &fileBuf, &statuscode);	/* Downloads page */
-	if(ret == -1)						/* All HTTP Fetcher functions return */
-		http_perror("http_fetch");		/*	-1 on error. */
-	else
-	{
-		printf("Page successfully downloaded(%d). (%s)\n", ret, argv[1]);
-		printf("%s\n", fileBuf);
-		printf("-----------------%d-----------------\n", ret);
-		free(fileBuf);
-	}
+    ret = http_fetch(argv[1], &fileBuf, &statuscode);   /* Downloads page */
+    if (ret == -1)              /* All HTTP Fetcher functions return */
+        http_perror("http_fetch");      /*      -1 on error. */
+    else
+    {
+        printf("Page successfully downloaded(%d). (%s)\n", ret, argv[1]);
+        printf("%s\n", fileBuf);
+        printf("-----------------%d-----------------\n", ret);
+        free(fileBuf);
+    }
 
-	return 0;
+    return 0;
 }

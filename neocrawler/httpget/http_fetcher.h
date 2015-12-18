@@ -25,12 +25,12 @@
 #define PORT_NUMBER 			80
 #define HTTP_VERSION 			"HTTP/1.0"
 #define DEFAULT_USER_AGENT		"Mozilla/4.0 (compatible; MSIE 6.0; Windows NT)"
-#define DEFAULT_READ_TIMEOUT	15	/* Seconds to wait before giving up when no data is arriving */
-	 
+#define DEFAULT_READ_TIMEOUT	15      /* Seconds to wait before giving up when no data is arriving */
+
 #define REQUEST_BUF_SIZE 		1024
-#define HEADER_BUF_SIZE			2048	
-#define DEFAULT_PAGE_BUF_SIZE 	(1024 * 512)	/* 512K should hold most things */
-#define DEFAULT_REDIRECTS       3				/* Number of HTTP redirects to follow */
+#define HEADER_BUF_SIZE			2048
+#define DEFAULT_PAGE_BUF_SIZE 	(1024 * 512)    /* 512K should hold most things */
+#define DEFAULT_REDIRECTS       3       /* Number of HTTP redirects to follow */
 #define MAX_HTML_LEN			(1024 * 512)
 
 
@@ -48,82 +48,82 @@ extern int http_errno;
  */
 
 
-	/*
-	 * Download the page, registering a hit. If you pass it a NULL for fileBuf,
-	 *	'url' will be requested but will not remain in memory (useful for
-	 *	simply registering a hit).  Otherwise necessary space will be allocated
-	 *	and will be pointed to by fileBuf.  Note that a NULL byte is added to
-     *  the data, so the actual buffer will be the file size + 1.
-	 * Returns:
-	 *	# of bytes downloaded, or
-	 *	-1 on error
-	 */
+        /*
+         * Download the page, registering a hit. If you pass it a NULL for fileBuf,
+         *      'url' will be requested but will not remain in memory (useful for
+         *      simply registering a hit).  Otherwise necessary space will be allocated
+         *      and will be pointed to by fileBuf.  Note that a NULL byte is added to
+         *  the data, so the actual buffer will be the file size + 1.
+         * Returns:
+         *      # of bytes downloaded, or
+         *      -1 on error
+         */
 int http_fetch(const char *url, char **fileBuf, short *statusCode);
 
-	/*
-	 * Changes the User Agent (shown to the web server with each request)
-	 *	Send it NULL to avoid telling the server a User Agent
-	 *	By default, the User Agent is sent (The default one unless changed)
-	 * Returns:
-	 *	0 on success, or
-	 *	-1 on error (previous value for agent remains unchanged)
-	 */
+        /*
+         * Changes the User Agent (shown to the web server with each request)
+         *      Send it NULL to avoid telling the server a User Agent
+         *      By default, the User Agent is sent (The default one unless changed)
+         * Returns:
+         *      0 on success, or
+         *      -1 on error (previous value for agent remains unchanged)
+         */
 int http_setUserAgent(const char *newAgent);
 
-	/*
-	 * Changes the Referer (shown to the web server with each request)
-	 *	Send it NULL to avoid thelling the server a Referer
-	 *	By default, no Referer is sent
-	 * Returns:
-	 *	0 on success, or
-	 *	-1 on error
-	 */
+        /*
+         * Changes the Referer (shown to the web server with each request)
+         *      Send it NULL to avoid thelling the server a Referer
+         *      By default, no Referer is sent
+         * Returns:
+         *      0 on success, or
+         *      -1 on error
+         */
 int http_setReferer(const char *newReferer);
 
-	/*
-	 * Changes the maximum amount of time that HTTP Fetcher will wait on
-	 *	data.  If this many seconds elapses without more data from the
-	 *	server, http_fetch will return with an error.
-	 * If you pass a value less than 0, reads will not time out, potentially
-	 *	waiting forever (or until data shows up, whichever comes first)
-	 */
+        /*
+         * Changes the maximum amount of time that HTTP Fetcher will wait on
+         *      data.  If this many seconds elapses without more data from the
+         *      server, http_fetch will return with an error.
+         * If you pass a value less than 0, reads will not time out, potentially
+         *      waiting forever (or until data shows up, whichever comes first)
+         */
 void http_setTimeout(int seconds);
 
-	/*
-	 * Changes the number of HTTP redirects HTTP Fetcher will automatically
-	 *	follow.  If a request returns a status code of 3XX and contains
-	 *	a "Location:" field, the library will transparently follow up to
-	 *	the specified number of redirects.  With this implementation
-	 *	(which is just a stopgap, really) the caller won't be aware of any
-	 *	redirection and will assume the returned document came from the original
-	 *	URL.
-	 * To disable redirects, pass a 0.  To follow unlimited redirects (probably
-	 *  unwise), pass a negative value.  The default is to follow 3 redirects.
-	 */
+        /*
+         * Changes the number of HTTP redirects HTTP Fetcher will automatically
+         *      follow.  If a request returns a status code of 3XX and contains
+         *      a "Location:" field, the library will transparently follow up to
+         *      the specified number of redirects.  With this implementation
+         *      (which is just a stopgap, really) the caller won't be aware of any
+         *      redirection and will assume the returned document came from the original
+         *      URL.
+         * To disable redirects, pass a 0.  To follow unlimited redirects (probably
+         *  unwise), pass a negative value.  The default is to follow 3 redirects.
+         */
 void http_setRedirects(int redirects);
 
-	/*
-	 * Takes a url and puts the filename portion of it into 'filename'.
-	 * Returns:
-	 *	0 on success, or
-	 *	1 when url contains no end filename (i.e., "www.foo.com/")
-	 *		and **filename should not be assumed to point to anything), or
-	 *	-1 on error
-	 */
+        /*
+         * Takes a url and puts the filename portion of it into 'filename'.
+         * Returns:
+         *      0 on success, or
+         *      1 when url contains no end filename (i.e., "www.foo.com/")
+         *              and **filename should not be assumed to point to anything), or
+         *      -1 on error
+         */
 int http_parseFilename(const char *url, char **filename);
 
-	/*
-	 * Works like perror.  If an HTTP Fetcher function ever returns an
-	 *	error (-1), this will print a descriptive message to standard output
-	 */
+        /*
+         * Works like perror.  If an HTTP Fetcher function ever returns an
+         *      error (-1), this will print a descriptive message to standard output
+         */
 void http_perror(const char *string);
 
-	/*
-	 * Returns a pointer to the current error description message.  The
-	 *	message pointed to is only good until the next call to http_strerror(),
-	 *	so if you need to hold on to the message for a while you should make
-	 *	a copy of it.
-	 */
+        /*
+         * Returns a pointer to the current error description message.  The
+         *      message pointed to is only good until the next call to http_strerror(),
+         *      so if you need to hold on to the message for a while you should make
+         *      a copy of it.
+         */
 const char *http_strerror();
 
 
@@ -132,30 +132,30 @@ const char *http_strerror();
 /**** The following functions are used INTERNALLY by http_fetcher *************/
 /******************************************************************************/
 
-	/*
-	 * Reads the metadata of an HTTP response.  On success returns the number
-	 * Returns:
-	 *	# of bytes read on success, or
-	 *	-1 on error
-	 */
+        /*
+         * Reads the metadata of an HTTP response.  On success returns the number
+         * Returns:
+         *      # of bytes read on success, or
+         *      -1 on error
+         */
 int _http_read_header(int sock, char *headerPtr);
 
-	/*
-	 * Opens a TCP socket and returns the descriptor
-	 * Returns:
-	 *	socket descriptor, or
-	 *	-1 on error
-	 */
+        /*
+         * Opens a TCP socket and returns the descriptor
+         * Returns:
+         *      socket descriptor, or
+         *      -1 on error
+         */
 int makeSocket(const char *host);
 
-	/*
-	 * Determines if the given NULL-terminated buffer is large enough to
-	 *	concatenate the given number of characters.  If not, it attempts to
-	 *	grow the buffer to fit.
-	 * Returns:
-	 *	0 on success, or
-	 *	-1 on error (original buffer is unchanged).
-	 */
+        /*
+         * Determines if the given NULL-terminated buffer is large enough to
+         *      concatenate the given number of characters.  If not, it attempts to
+         *      grow the buffer to fit.
+         * Returns:
+         *      0 on success, or
+         *      -1 on error (original buffer is unchanged).
+         */
 int _checkBufSize(char **buf, int *bufsize, int more);
 
 #endif

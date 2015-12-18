@@ -23,7 +23,7 @@ extern char *SDNSquery;
  *	即将addr内数据全部删除
  *---------------------------------------------*/
 
-void sdns_mysql_ipnote_init(MYSQL *mysql);
+void sdns_mysql_ipnote_init(MYSQL * mysql);
 
 
 /*-----------------------------------------------
@@ -33,13 +33,13 @@ void sdns_mysql_ipnote_init(MYSQL *mysql);
  *	     0	success
  *---------------------------------------------*/
 
-int sdns_mysql_ipnote_query(MYSQL *mysql,char *ipdomain,char *domain);
+int sdns_mysql_ipnote_query(MYSQL * mysql, char *ipdomain, char *domain);
 
 /*-----------------------------------------------
  * insert one snds cache NODE into mysql 
  *---------------------------------------------*/
 
-int sdns_mysql_insert(MYSQL *mysql,NODE *lnode,int mode,int ifdel);
+int sdns_mysql_insert(MYSQL * mysql, NODE * lnode, int mode, int ifdel);
 
 
 /*-----------------------------------------------
@@ -50,7 +50,8 @@ int sdns_mysql_insert(MYSQL *mysql,NODE *lnode,int mode,int ifdel);
  *			 1 : update
  *---------------------------------------------*/
 
-int sdns_robot_write(MYSQL *mysql,char *domain,int BlkNum,ROBOT *robotBlk,char *query);
+int sdns_robot_write(MYSQL * mysql, char *domain, int BlkNum,
+                     ROBOT * robotBlk, char *query);
 
 
 /*-----------------------------------------------
@@ -58,15 +59,15 @@ int sdns_robot_write(MYSQL *mysql,char *domain,int BlkNum,ROBOT *robotBlk,char *
  * 	用于发现垃圾domain
  *---------------------------------------------*/
 
-int sdns_mysql_ipnote_create(MYSQL *mysql);
+int sdns_mysql_ipnote_create(MYSQL * mysql);
 
-int sdns_mysql_ipnote_check(MYSQL *mysql,char *ipdomain);
+int sdns_mysql_ipnote_check(MYSQL * mysql, char *ipdomain);
 
 /*-----------------------------------------------
  * load mysql robot into memory
  *---------------------------------------------*/
 
-int sdns_robot_load(MYSQL *mysql);
+int sdns_robot_load(MYSQL * mysql);
 
 
 /*-----------------------------------------------
