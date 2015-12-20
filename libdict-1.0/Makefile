@@ -26,11 +26,8 @@ all : $(A_LIB) $(S_LIB)
 $(A_LIB) : $(OBJ)
 	$(AR) $(ARFLAGS) $(A_LIB) $(OBJ)
 
-#$(S_LIB) : $(OBJ)
-#	$(CC) -shared -o $(S_LIB) $(OBJ)
-
 $(S_LIB) : $(OBJ)
-	ld -b -s -o $(S_LIB) $(OBJ)
+	$(CC) -shared -o $(S_LIB) $(OBJ)
 
 .c.o:
 	$(CC) $(CFLAGS) -c $(<)
@@ -54,15 +51,10 @@ install : $(A_LIB) $(S_LIB)
 	bsdinst -c  -m 0755 $(S_LIB) $(LIBDIR)
 
 
-
-
 uninstall :
 	-rm -rf $(INCDIR)
 	-rm -f $(LIBDIR)/$(A_LIB)
 	-rm -f $(LIBDIR)/$(S_LIB)
-
-#test : test.c $(S_LIB) $(A_LIB)
-#	$(CC) $(CFLAGS) -o $(@) $(<) -L. -ldict
 
 test : test.c $(S_LIB) $(A_LIB)
 	$(CC) $(CFLAGS)  test.c -o test -L. -ldict
