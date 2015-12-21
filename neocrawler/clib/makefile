@@ -2,7 +2,7 @@
 INC = -I./
 LIB = -L./ -lhoobase
 
-OBJS = Hoofs.o Hootcp.o rbdict.o hashtable.o
+OBJS = Hoofs.o Hootcp.o rbdict.o hashtable.o linkregex.o
 LIBO = ./libhoobase.so
 LIBS = ./libhoobase.a
 
