@@ -4,13 +4,13 @@ LIB = ../../../libhtml-2.0/htmlparser.a
 CPPFLAGS := $(CPPFLAGS) -g -fPIC -Wall $(INC)
 
 OBJS = web_parse.o
-LIBO = ./libparse.so
+LIBO = ./libhtmlparse.so
 
 $(LIBO): $(OBJS)
 	rm -f $@
 	g++ -shared -Wl -o $@ $? $(INC) $(LIB)
 	rm -f *.o
-	cp ./libparse.so ../../../libhtml-2.0/
+	cp ./libhtmlparse.so /usr/lib/
 
 all :  clean $(LIBO)
 
