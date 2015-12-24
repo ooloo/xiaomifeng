@@ -93,7 +93,6 @@ int http_3xx_merge(const char *redirect, char *url, int maxLen)
  * 		resultUrl: nju/nju.htm 
  *----------------------------------------*/
 
-/*
 int html_script_redirect(const char *url, const char *content, int contentLen, char *resultUrl)
 {
 	int flag,len,jsFlag;
@@ -239,5 +238,4 @@ int html_script_redirect(const char *url, const char *content, int contentLen, c
 
 	return 0;
 }
-*/
 //--------------------------END-----------------------------

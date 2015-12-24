@@ -6,6 +6,7 @@
 #include "centerCache.h"
 #include "hashtable.h"
 #include "listpage.h"
+#include "linkregex.h"
 
 #define MAX_HTML_LEN	(512*1024)
 #define HASH_SLOT_NUM	5000011
@@ -34,10 +35,10 @@ typedef struct {
 
 typedef struct {
     int urlType;
-    int bbsMysqlId;
+    int bbsMysqlId; // seed bbs url, need sequence number
 } CHANNEL;
 
-enum { ZONGHE = 0, LUNTAN = 1, NEWS = 2, OTHER = 3 } domainType;
+enum { ZONGHE = 0, BBS = 1, NEWS = 2 } domainType;
 
 int saveTime = 0;
 unsigned tmpNo = 0;
@@ -193,47 +194,6 @@ int link_search(TDict * dict, char *keyStr, CHANNEL ** chan)
     return ret;
 }
 
-void link_init()
-{
-    FILE *fp;
-    char *t, src[MAX_URL_LEN], path[MAX_URL_LEN];
-
-    assert(link_dict = hashtable_init(HASH_SLOT_NUM));
-
-    fp = fopen("produce.conf", "r");
-    assert(fp);
-
-    while (fgets(src, MAX_URL_LEN, fp))
-    {
-        sscanf(src, "%s", path);
-        if (!strcasestr(path, "://"))
-            continue;
-
-        link_insert(link_dict, path, NULL);
-
-        // path
-        if (strchr(path + 7, '/') == NULL)
-        {
-            strcat(path, "/");
-        }
-        t = path;
-        while (*t)
-        {
-            if (isupper(*t))
-                *t += 32;
-            t++;
-        }
-        t = strrchr(path, '/');
-        assert(t);
-
-        *(t + 1) = 0;
-
-        link_insert(link_dict, path, NULL);
-    }
-
-    fclose(fp);
-}
-
 int news_url_filter(char *url)
 {
     char *p, *t;
@@ -266,7 +226,7 @@ int news_url_filter(char *url)
 }
 
 // return -1: need filter
-int link_filter(char *url, int utype)
+int news_filter(char *url)
 {
     int depth = 0, dyn = 0;;
     char *p, *pp, *t, *tt;
@@ -464,10 +424,6 @@ int html_produce()
                 if (urlNode->statusCode >= 400
                     && urlNode->statusCode < 600)
                     urlNode->urlStat = DELETE;
-
-                pthread_mutex_lock(&file_mutex);
-                save_html("./savefile", urlNode, url, html);
-                pthread_mutex_unlock(&file_mutex);
             }
             urlNode->urlStat = UPDATE;
             node_send(urlNode, url);
@@ -510,44 +466,11 @@ int html_produce()
                     }
                 }
                 break;
-            case LUNTAN:
+            case BBS:
                 {
                     if (urlNode->urlType == MANUAL)
                     {
                         pthread_mutex_lock(&html_mutex);
-
-                        // ------------ button page -------------
-#ifndef BBS
-                        /*      mylinkExtract_produce(url, html, urlNode->htmlLen, links);
-
-                           listNum = 0;
-                           char *u1,*u2;
-                           u1 = strrchr(url + 7, '/');
-
-                           for(i=0; u1!=NULL && i<links->linkNum && listNum <= 5; i++)
-                           {
-                           link_entities(links->links[i]);
-                           if((u2 = strrchr(links->links[i] + 7, '/')) == NULL)
-                           continue;
-                           if(u2[1] == 0
-                           || strlen(links->links[i]) < strlen(url)
-                           || strncasecmp(links->links[i], url, u1 - url) != 0)
-                           continue;
-
-                           if(((char*)strstr(links->links[i], url) != NULL && strcasestr(u2, "page="))
-                           || get_web_page_similarity((const char*)u1, strlen(u1),
-                           (const char*)u2, strlen(u2)) > 90)
-                           {
-                           if(i > listNum)
-                           strcpy(links->links[listNum], links->links[i]);
-
-                           pageLinksType[listNum] = MANUAL;
-                           listNum++;
-                           }
-                           }
-                           links->linkNum = listNum; */
-#endif
-                        // ------------ button page -------------
 
                         snprintf(cmd, MAX_URL_LEN, "./bbs/%d/",
                                  urlNode->bbsMysqlId);
@@ -584,11 +507,7 @@ int html_produce()
                                 {
                                     if (strlen(resultURL) >= MAX_URL_LEN)
                                         continue;
-#ifdef BBS
-                                    if (time(NULL) - bbstime > 86400
-                                        && bbstime > 0)
-                                        continue;
-#endif
+
                                     if (bbstime <= 0)
                                     {
                                         linkPickTime[links->linkNum] =
@@ -688,12 +607,20 @@ int html_produce()
             pthread_mutex_lock(&hash_mutex);
             if (domainType == ZONGHE)
             {
-                if (link_filter(links->links[i], p_chan.urlType) == -1)
+                int x,y;
+                x = link_regex(links->links[i], INDEX_MODE);
+                y = link_regex(links->links[i], NORMAL_MODE);
+
+                if (y == 0)
+                    pageLinksType[i] = NORMAL;
+                else if (x == 0)
+                    pageLinksType[i] = INDEX;
+                else
                 {
                     pthread_mutex_unlock(&hash_mutex);
                     continue;
                 }
-            } else if (domainType == LUNTAN)
+            } else if (domainType == BBS)
             {
                 char *p;
                 p = (char *) strcasestr(links->links[i], "&cachetime=");
@@ -705,32 +632,24 @@ int html_produce()
             } else if (domainType == NEWS)
             {
                 // soufun.com
-                //if(strstr(links->links[i], "soufun.com") != NULL
-                //              && (strstr(links->links[i], "rent/searchmore") != NULL 
-                //                      || strstr(links->links[i], "newsecond/searchmore")) != NULL)
-                //{
-                //      pageLinksType[i] = MANUAL;
-                //}
+                if(strstr(links->links[i], "soufun.com") != NULL
+                        && (strstr(links->links[i], "rent/searchmore") != NULL 
+                            || strstr(links->links[i], "newsecond/searchmore")) != NULL)
+                {
+                    pageLinksType[i] = INDEX;
+                }
                 if (strstr(links->links[i], "bjfang.com") != NULL
                     && (strchr(links->links[i], '?') != NULL
                         || strchr(links->links[i], '&') != NULL))
                 {
                     pthread_mutex_unlock(&hash_mutex);
                     continue;
-                } else if (link_filter(links->links[i], p_chan.urlType) ==
+                } else if (news_filter(links->links[i]) ==
                            -1)
                 {
                     pthread_mutex_unlock(&hash_mutex);
                     continue;
                 }
-                // -- 2008.10.20 --
-                //if(insite_check(url, links->links[i]) <= 0
-                //   || news_url_filter(links->links[i]) == -1)
-                //{
-                //      pthread_mutex_unlock(&hash_mutex);
-                //      continue;
-                //}
-                // -- 2008.10.20 --
             }
 
             if (link_search(link_dict, links->links[i], NULL) == 1)
@@ -745,7 +664,6 @@ int html_produce()
                 } else
                 {
                     hashtable_free(link_dict);
-                    link_init();
                 }
             }
             pthread_mutex_unlock(&hash_mutex);
@@ -773,27 +691,25 @@ int main(int argc, char *argv[])
 
     if (argc != 3)
     {
-        printf("%s baseport luntan|zonghe|news|other\n", argv[0]);
+        printf("%s baseport luntan|zzz|news\n", argv[0]);
         exit(1);
     }
 
     mylinkExtract_init();
 
     if (strcasecmp(argv[2], "luntan") == 0)
-        domainType = LUNTAN;
-    else if (strcasecmp(argv[2], "zonghe") == 0)
+        domainType = BBS;
+    else if (strcasecmp(argv[2], "zzz") == 0)
         domainType = ZONGHE;
     else if (strcasecmp(argv[2], "news") == 0)
         domainType = NEWS;
-    else if (strcasecmp(argv[2], "other") == 0)
-        domainType = OTHER;
     else
     {
-        printf("%s baseport luntan|zonghe|news|other\n", argv[0]);
+        printf("%s baseport luntan|zzz|news\n", argv[0]);
         exit(1);
     }
 
-    link_init();
+    load_conf_file("./produce.conf");
     printf("neo init success\n");
 
     //ret=link_filter("http://wow.tgbus.com/class/shaman", 0);

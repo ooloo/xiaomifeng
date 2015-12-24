@@ -1,4 +1,4 @@
-TARGET = neocenter neoradar neoseed debug check bbscenter hoocenter
+TARGET = neocenter neoradar neoseed debug check
 
 INC = -I../clib/
 LIB = -L../clib/ -lhoobase -lpthread -lssl -lcrypto -ldb
@@ -10,9 +10,6 @@ all :   clean $(TARGET)
 
 neocenter	:   centerMain.c centerSelector.c centerCache.c centerbdb.c 
 	gcc -g $? -pthread -o $@ $(INC) $(LIB)
-
-bbscenter	:   centerMain.c centerSelector.c centerCache.c centerbdb.c 
-	gcc -g $? -pthread -o $@ $(INC) $(LIB) -DBBS
 
 neoradar	:   neoradar.c centerbdb.c 
 	gcc -g $? -pthread -o $@ $(INC) $(LIB) -DRADAR

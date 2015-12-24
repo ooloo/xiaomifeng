@@ -322,7 +322,7 @@ int main(int argc, char **argv)
 {
     int ret;
     FILE *fp;
-    pthread_t cacheid, updateid, logid, dumpid;
+    pthread_t cacheid, updateid, fetchid, logid, dumpid;
 
     if (argc < 3 || argc > 4)
     {
@@ -360,11 +360,17 @@ int main(int argc, char **argv)
         exit(1);
     }
 
-    ret =
-        pthread_create(&updateid, NULL, (void *) select_update_thr, NULL);
+    ret = pthread_create(&updateid, NULL, (void *) select_update_thr, NULL);
     if (ret != 0)
     {
         printf("create select_update_thr thr error.\n");
+        exit(1);
+    }
+
+    ret = pthread_create(&fetchid, NULL, (void *) fetch_url_thr, NULL);
+    if (ret != 0)
+    {
+        printf("create fetch_url_thr thr error.\n");
         exit(1);
     }
 

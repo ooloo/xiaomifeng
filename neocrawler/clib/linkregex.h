@@ -8,10 +8,12 @@
 #include <sys/types.h>
 #include <regex.h>
 
+#define NORMAL_MODE 0
+#define INDEX_MODE 1
 
 void load_conf_file(const char *filename);
 
-int link_regex(char *url);
+int link_regex(char *url, int flag);
 
 void reload_conf_file();
 

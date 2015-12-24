@@ -76,7 +76,6 @@ int visit(const void *key, void *dat, void *args)
             urlKey = (KEY_T *) rb_itor_key(itor);
             if (urlNode != NULL && urlKey != NULL)
             {
-#ifdef BBS
                 // 10 mins - 30 mins
                 if (urlNode->urlType == MANUAL)
                 {
@@ -88,13 +87,7 @@ int visit(const void *key, void *dat, void *args)
                         urlNode->urlRank = MAX_RANK - 30;
                     }
                 }
-#else
-                // 24 hours - 250 hours
-                if (urlNode->urlRank > MAX_RANK - 24)
-                {
-                    urlNode->urlRank = MAX_RANK - 24;
-                }
-#endif
+
                 if (urlNode->updateTime <= 0)
                 {
                     ((DOMAINNODE_T *) dat)->insertCount++;
@@ -102,7 +95,6 @@ int visit(const void *key, void *dat, void *args)
                     urlNode->sendNum++;
                     break;
                 }
-#ifdef BBS
                 else if ((time(NULL) - urlNode->updateTime >
                           (MAX_RANK - urlNode->urlRank) * 60
                           && urlNode->urlType == MANUAL)
@@ -110,11 +102,6 @@ int visit(const void *key, void *dat, void *args)
                              (MAX_RANK - urlNode->urlRank) * 120000
                              && urlNode->urlType == INDEX)
                          && urlNode->urlRank >= MIN_RANK)
-#else
-                else if (time(NULL) - urlNode->updateTime >
-                         (MAX_RANK - urlNode->urlRank) * 7200
-                         && urlNode->urlRank >= MIN_RANK)
-#endif
                 {
                     ((DOMAINNODE_T *) dat)->updateCount++;
                     urlNode->updateTime = time(NULL);
@@ -228,6 +215,35 @@ int select_update_thr()
         rb_dict_walk(g_domainRBdict, visit, "UPDATE");
         usleep(500000);
     }
+
+    return 0;
+}
+
+int fetch_url_thr()
+{
+    char url[MAX_URL_LEN];
+    FILE *fetchfp = NULL;
+    URLNODE_T urlNode;
+
+    rename("./xx_no_fetch_url", "./xx_fetchin_url");
+
+    fetchfp = fopen("./xx_fetchin_url", "r");
+    assert(fetchfp);
+
+    while(fgets(url, MAX_URL_LEN, fetchfp) != NULL)
+    {
+        int len = strlen(url);
+        url[len-1] = '\0';
+
+        bzero(&urlNode, sizeof(URLNODE_T));
+        urlNode.urlType = NORMAL;
+
+        node_send(&urlNode, url);
+    }
+
+    fclose(fetchfp);
+
+    unlink("./xx_fetchin_url");
 
     return 0;
 }

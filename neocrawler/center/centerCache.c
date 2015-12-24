@@ -70,15 +70,18 @@ int get_domain(char *url, char *domain, int maxLen)
     return 0;
 }
 
-char *url_trim(char *url)
+void *url_trim(char *url)
 {
     if (strlen(url) < MAX_URL_LEN - 2 && !strchr(url + 8, '/'))
         strcat(url, "/");
 
-    if (strcasestr(url, "://"))
-        return url;
-    else
-        return NULL;
+    if (!strncasecmp(url, "http://", 7))
+    {
+        char tmpUrl[MAX_URL_LEN];
+        strcpy(tmpUrl, url);
+        strcpy(url, "http://");
+        strcat(url, tmpUrl);
+    }
 }
 
 int key_cmp(const void *key1, const void *key2)
@@ -118,10 +121,6 @@ URLNODE_T *__cache_url(TRbDict * dict, KEY_T * domainKey, char *str,
     void *tmp = NULL;
     FILE *dumpfp = NULL;
     URLNODE_T *tmpNode;
-
-    str = url_trim(str);
-    if (str == NULL)
-        return NULL;
 
     strLen = strlen(str);
 
@@ -212,6 +211,7 @@ int NEO_cache_domain(TRbDict * dict, char *str, URLNODE_T * urlNode)
         __cache_init(domainNode);
     }
 
+    url_trim(str);
     __cache_url(domainNode->urlDict, NULL, str, urlNode);
 
     return 0;
@@ -271,6 +271,7 @@ int NEO_cache_url(TRbDict * dict, char *str, URLNODE_T * node)
     char domain[MAX_URL_LEN];
     struct hostent *he = NULL;
     FILE *dumpfp = NULL;
+    FILE *fetchfp = NULL;
     DOMAINNODE_T *tmp = NULL;
 
     //-------------- rank ------------------
@@ -281,15 +282,13 @@ int NEO_cache_url(TRbDict * dict, char *str, URLNODE_T * node)
 
     if (node->urlRank == 0)
     {
-        if (node->urlType == MANUAL)
-            node->urlRank = MAX_RANK - 24;
-        else if (node->urlType == INDEX)
-            node->urlRank = MAX_RANK - 48;
+        if (node->urlType == MANUAL || node->urlType == INDEX)
+            node->urlRank = MAX_RANK - 16;
         else
             node->urlRank = MIN_RANK * 4;
     } else
     {
-        if (node->urlOther >= 3 && node->urlRank < MAX_RANK - 16)
+        if (node->urlOther >= 3 && node->urlRank < MAX_RANK - 1)
             node->urlRank++;
         else if (node->urlStat == UNCHANGE)
             node->urlRank--;
@@ -298,20 +297,25 @@ int NEO_cache_url(TRbDict * dict, char *str, URLNODE_T * node)
     }
     //-------------- rank ------------------
 
+    //-------------- pre deal---------------
+    if (node->urlType == NORMAL)
+    {
+        fetchfp = fopen("./xx_no_fetch_url", "a+");
+        assert(fetchfp);
+
+        fprintf(fetchfp, "%s/n", str);
+        fclose(fetchfp);
+    }
+
     if (get_domain(str, domain, MAX_URL_LEN) == -1)
         return -1;
+    //-------------- pre deal---------------
 
     assert(MD5(domain, strlen(domain), (unsigned char *) signs));
     assert(MD5(str, strlen(str), (unsigned char *) urlid));
 
     if (rb_dict_search(dict, signs, (void **) &tmp) != 0)
     {
-        //#ifndef BBS
-        //              he = gethostbyname(domain);
-        //              if(he == NULL)
-        //                      return -1;
-        //#endif
-
         // insert domain & url to cahae
         printf("warning new domain: %s\n", str);
         NEO_cache_domain(g_domainRBdict, str, node);

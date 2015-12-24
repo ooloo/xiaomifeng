@@ -8,7 +8,7 @@ regex_t *normal_preg = NULL;
 
 void load_conf_file(const char *filename)
 {
-    int isIndex=0;
+    int ret, isIndex;
     char line[128],url[128];
     FILE *fp;
 
@@ -25,6 +25,7 @@ void load_conf_file(const char *filename)
     assert(normal_pattern);
     bzero(normal_pattern, MAX_REGEX_LEN);
 
+    isIndex = 0;
     while(fgets(line,128,fp) != NULL)
     {
         if(line[0] == '#' || line[0] == '\n' || line[0] == '\0')
@@ -53,29 +54,33 @@ void load_conf_file(const char *filename)
             strcat(normal_pattern, url);
         }
 
-        regcomp(index_preg, index_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
-        regcomp(normal_preg, normal_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
+        ret = regcomp(index_preg, index_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
+        printf("index_preg load return code = %d.", ret);
+        ret = regcomp(normal_preg, normal_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
+        printf("normal_preg load return code = %d.", ret);
     }
 
     free(index_pattern);
     free(normal_pattern);
 }
 
-int link_regex(char *url)
+int link_regex(char *url, int flag)
 {
     int x,y;
 
-    x = regexec(index_preg, url, 0, NULL, 0);
-    y = regexec(normal_preg, url, 0, NULL, 0);
+    if(INDEX_MODE == flag)
+    {
+        x = regexec(index_preg, url, 0, NULL, 0);
+        return x;
+    }
 
-    if(x==0 && y==0)
-        return 0;
-    else if(x==0)
-        return 1;
-    else if(y==0)
-        return 2;
-    else
-        return -1;
+    if(NORMAL_MODE == flag)
+    {
+        y = regexec(normal_preg, url, 0, NULL, 0);
+        return y;
+    }
+
+    return -1;
 }
 
 void reload_conf_file()

@@ -90,7 +90,7 @@ void hash(char *keyStr,unsigned slotNum,unsigned *slotNo,unsigned *key)
 
 	assert(keyStr && slotNum>0 && slotNo && key);
 		
-	assert(MD5(keyStr, strlen(keyStr),(unsigned char *)signs));
+	assert(MD5((const unsigned char *)keyStr, strlen(keyStr),(unsigned char *)signs));
 
 	*slotNo = signs[0] % slotNum;
 	assert(*slotNo<slotNum);
