@@ -225,25 +225,32 @@ int fetch_url_thr()
     FILE *fetchfp = NULL;
     URLNODE_T urlNode;
 
-    rename("./xx_no_fetch_url", "./xx_fetchin_url");
-
-    fetchfp = fopen("./xx_fetchin_url", "r");
-    assert(fetchfp);
-
-    while(fgets(url, MAX_URL_LEN, fetchfp) != NULL)
+    while (1)
     {
-        int len = strlen(url);
-        url[len-1] = '\0';
+        usleep(500000);
+        rename("./xx_no_fetch_url", "./xx_fetchin_url");
 
-        bzero(&urlNode, sizeof(URLNODE_T));
-        urlNode.urlType = NORMAL;
+        fetchfp = fopen("./xx_fetchin_url", "r");
+        if (fetchfp == NULL)
+        {
+            continue;
+        }
 
-        node_send(&urlNode, url);
+        while (fgets(url, MAX_URL_LEN, fetchfp) != NULL)
+        {
+            int len = strlen(url);
+            url[len-1] = '\0';
+
+            bzero(&urlNode, sizeof(URLNODE_T));
+            urlNode.urlType = NORMAL;
+
+            node_send(&urlNode, url);
+        }
+
+        fclose(fetchfp);
+
+        unlink("./xx_fetchin_url");
     }
-
-    fclose(fetchfp);
-
-    unlink("./xx_fetchin_url");
 
     return 0;
 }
