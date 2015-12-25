@@ -4,6 +4,7 @@
 #include <strings.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
 #include "centerCache.h"
 #include "centerSelector.h"
 #include "centerbdb.h"
@@ -176,7 +177,9 @@ void transformer_storage(URLNODE_T * urlNode, char *url, int socket)
              urlNode->statusCode,
              urlNode->bbsMysqlId,
              urlNode->linkPickInfo,
-             urlNode->htmlLen, url, inet_ntoa(sin.sin_addr));
+             urlNode->htmlLen,
+             url,
+             inet_ntoa(sin.sin_addr));
 
     assert(MD5(url, strlen(url), (unsigned char *) key));
     neo_bdb_insert(key, str);
@@ -283,7 +286,7 @@ void work_send_thr(int socket)
         if (radar_send(socket, urlNode, url) == -1)
             return;
 
-        printf("radar: (%d) %s\n", listNum, url);
+        printf("radar send: (%d) %s\n", listNum, url);
 
         transformer_storage(urlNode, url, socket);
 

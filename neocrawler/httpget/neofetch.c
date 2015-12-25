@@ -133,7 +133,10 @@ int main(int argc, char **argv)
     pthread_attr_t attr;
 
     if (argc != 2)
+    {
+        printf("%s baseport\n", argv[0]);
         exit(1);
+    }
 
     g_basePort = atoi(argv[1]);
     assert(g_basePort > 1024 && g_basePort < 65535);

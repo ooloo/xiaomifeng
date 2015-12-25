@@ -710,7 +710,7 @@ int main(int argc, char *argv[])
     }
 
     load_conf_file("./produce.conf");
-    printf("neo init success\n");
+    printf("neoproduce init success.\n");
 
     //ret=link_filter("http://wow.tgbus.com/class/shaman", 0);
     //printf("filter: %d\n", ret);

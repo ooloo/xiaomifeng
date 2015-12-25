@@ -75,7 +75,7 @@ void *url_trim(char *url)
     if (strlen(url) < MAX_URL_LEN - 2 && !strchr(url + 8, '/'))
         strcat(url, "/");
 
-    if (!strncasecmp(url, "http://", 7))
+    if (strncasecmp(url, "http://", 7))
     {
         char tmpUrl[MAX_URL_LEN];
         strcpy(tmpUrl, url);

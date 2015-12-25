@@ -3,8 +3,8 @@
 
 #define MAX_REGEX_LEN 4*1024*1024
 
-regex_t *index_preg = NULL;
-regex_t *normal_preg = NULL;
+regex_t index_preg;
+regex_t normal_preg;
 
 void load_conf_file(const char *filename)
 {
@@ -25,6 +25,9 @@ void load_conf_file(const char *filename)
     assert(normal_pattern);
     bzero(normal_pattern, MAX_REGEX_LEN);
 
+    strcpy(index_pattern, "xiaomifeng");
+    strcpy(normal_pattern, "xiaomifeng");
+
     isIndex = 0;
     while(fgets(line,128,fp) != NULL)
     {
@@ -37,13 +40,15 @@ void load_conf_file(const char *filename)
         if(0 == strcasecmp(line, "[index_regex]"))
         {
             isIndex = 1;
+            continue;
         }
         else if(0 == strcasecmp(line, "[normal_regex]"))
         {
             isIndex = 0;
+            continue;
         }
 
-        snprintf(url, MAX_REGEX_LEN, "|\\^%s", line);
+        snprintf(url, 128, "|^%s", line);
 
         if(1 == isIndex)
         {
@@ -53,12 +58,12 @@ void load_conf_file(const char *filename)
         {
             strcat(normal_pattern, url);
         }
-
-        ret = regcomp(index_preg, index_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
-        printf("index_preg load return code = %d.", ret);
-        ret = regcomp(normal_preg, normal_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
-        printf("normal_preg load return code = %d.", ret);
     }
+
+    ret = regcomp(&index_preg, index_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
+    printf("index_preg load return code = %d.", ret);
+    ret = regcomp(&normal_preg, normal_pattern, REG_EXTENDED|REG_ICASE|REG_NOSUB);
+    printf("normal_preg load return code = %d.", ret);
 
     free(index_pattern);
     free(normal_pattern);
@@ -70,13 +75,13 @@ int link_regex(char *url, int flag)
 
     if(INDEX_MODE == flag)
     {
-        x = regexec(index_preg, url, 0, NULL, 0);
+        x = regexec(&index_preg, url, 0, NULL, 0);
         return x;
     }
 
     if(NORMAL_MODE == flag)
     {
-        y = regexec(normal_preg, url, 0, NULL, 0);
+        y = regexec(&normal_preg, url, 0, NULL, 0);
         return y;
     }
 
@@ -85,8 +90,8 @@ int link_regex(char *url, int flag)
 
 void reload_conf_file()
 {
-    regfree(index_preg);
-    regfree(normal_preg);
+    regfree(&index_preg);
+    regfree(&normal_preg);
 
     return;
 }
