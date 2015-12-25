@@ -18,12 +18,15 @@
 #include "tree_visitor_for_link.h"
 
 #include "entities.h"
-#include "charset-detector.h"
+//#include "charset-detector.h"
 
 #include "html_parser.h"
 
 int charset_detector(char *src, char *charsetbuff)
 {
+    // no 64bit _charset_detector
+    return -1;
+
     char *htmlBuffer;
     const char *detectedCharset;
     void *detector;
@@ -50,7 +53,7 @@ int charset_detector(char *src, char *charsetbuff)
 int html_parser::parse_init()
 {
 
-    outer_ = recode_new_outer(true);
+    //outer_ = recode_new_outer(true);
 
     page_ = (char *) malloc(max_page_len + 1);
     buffer_conv_ = (char *) malloc(max_page_len + 1);
@@ -119,8 +122,8 @@ void html_parser::parse_destroy()
         tree_ = NULL;
     }
 
-    if (outer_)
-        recode_delete_outer(outer_);
+    //if (outer_)
+    //  recode_delete_outer(outer_);
 }
 
 html_parser::~html_parser()
