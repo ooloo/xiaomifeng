@@ -239,9 +239,12 @@ int fetch_url_thr()
         while (fgets(url, MAX_URL_LEN, fetchfp) != NULL)
         {
             int len = strlen(url);
+            if(len <= 8) continue;
+
             url[len-1] = '\0';
 
             bzero(&urlNode, sizeof(URLNODE_T));
+            urlNode.urlLen = len-1;
             urlNode.urlType = NORMAL;
 
             node_send(&urlNode, url);

@@ -36,7 +36,11 @@ void load_conf_file(const char *filename)
             continue;
         }
 
-        line[strlen(line)-1] = '\0';
+        int len = strlen(line);
+
+        if (len <= 8) continue;
+
+        line[len-1] = '\0';
         if(0 == strcasecmp(line, "[index_regex]"))
         {
             isIndex = 1;
