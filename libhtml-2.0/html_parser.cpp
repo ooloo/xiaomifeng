@@ -26,7 +26,7 @@ int charset_detector(char *src, char *charsetbuff)
 {
     // no 64bit _charset_detector
     return -1;
-
+    /*
     char *htmlBuffer;
     const char *detectedCharset;
     void *detector;
@@ -48,6 +48,7 @@ int charset_detector(char *src, char *charsetbuff)
         release_charset_detector(detector);
         return -1;
     }
+    */
 }
 
 int html_parser::parse_init()

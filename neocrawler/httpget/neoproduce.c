@@ -1,5 +1,8 @@
+#define _GNU_SOURCE
+
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 #include <unistd.h>
 #include <pthread.h>
 #include "zlib.h"
@@ -632,9 +635,9 @@ int html_produce()
             } else if (domainType == NEWS)
             {
                 // soufun.com
-                if(strstr(links->links[i], "soufun.com") != NULL
-                        && (strstr(links->links[i], "rent/searchmore") != NULL 
-                            || strstr(links->links[i], "newsecond/searchmore")) != NULL)
+                if(strcasestr(links->links[i], "soufun.com") != NULL
+                        && (strcasestr(links->links[i], "rent/searchmore") != NULL 
+                            || strcasestr(links->links[i], "newsecond/searchmore") != NULL))
                 {
                     pageLinksType[i] = INDEX;
                 }

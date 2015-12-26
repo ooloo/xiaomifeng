@@ -15,9 +15,7 @@ neofetch	:  	neofetch.c http_fetcher.c http_error_codes.c ip_cache.c 1109.c
 	gcc -g $? -pthread -o $@ $(INC) $(LIB) -lz
 
 neoproduce	:  	neoproduce.c listpage.c tlds_domain.c
-	cd web_parser; make;
 	gcc -g $? -DECHO -pthread -o $@ $(INC) $(LIB) -lhtmlparse -lz
 clean:
-	cd web_parser; make clean;
 	rm -f $(TARGET) *.o *.a
 	touch *.c

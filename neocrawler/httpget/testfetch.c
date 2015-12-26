@@ -10,7 +10,10 @@
  * This code is placed in the public domain.
  */
 
+#define _GNU_SOURCE
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <http_fetcher.h>       /* Must include this to use HTTP Fetcher */
 
 int main(int argc, char *argv[])
