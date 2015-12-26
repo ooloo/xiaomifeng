@@ -8,9 +8,9 @@ LIBO = ./libhtmlparse.so
 
 $(LIBO): $(OBJS)
 	rm -f $@
-	g++ -shared -Wl -o $@ $? $(INC) $(LIB)
+	g++ -shared -o $@ $? $(INC) $(LIB)
 	rm -f *.o
-	cp ./libhtmlparse.so /usr/lib/
+	sudo cp ./libhtmlparse.so /usr/lib/
 
 all :  clean $(LIBO)
 

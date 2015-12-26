@@ -225,7 +225,7 @@ int load_file(char *manualFile)
 
         while (fgets(src, MAX_URL_LEN, fp))
         {
-            sscanf(src, "%hd %s", &urlNode.bbsMysqlId, url);
+            sscanf(src, "%hd %s\n", &urlNode.bbsMysqlId, url);
             pthread_mutex_lock(&cache_mutex);
             NEO_cache_domain(g_domainRBdict, url, &urlNode);
             pthread_mutex_unlock(&cache_mutex);
@@ -326,7 +326,7 @@ int main(int argc, char **argv)
 
     if (argc < 3 || argc > 4)
     {
-        printf("%s baseport host configfile\n", argv[0]);
+        printf("%s baseport host [bbs.mysql.file]\n", argv[0]);
         exit(1);
     }
 

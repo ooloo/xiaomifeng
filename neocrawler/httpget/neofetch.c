@@ -146,7 +146,7 @@ int main(int argc, char **argv)
     assert(pthread_attr_init(&attr) == 0);
     assert(pthread_attr_setstacksize(&attr, 1048576) == 0);
 
-    for (i = 0; i < 64; i++)
+    for (i = 0; i < 8; i++)
     {
         ret = pthread_create(&id, &attr, (void *) http_get, NULL);
         if (ret != 0)
