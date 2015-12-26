@@ -1,5 +1,5 @@
-INC = -I../../../libhtml-2.0/
-LIB = ../../../libhtml-2.0/htmlparser.a
+INC = -I../../libhtml-2.0/
+LIB = ../../libhtml-2.0/htmlparser.a
 
 CPPFLAGS := $(CPPFLAGS) -g -fPIC -Wall $(INC)
 
